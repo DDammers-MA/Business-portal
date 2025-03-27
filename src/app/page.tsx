@@ -3,8 +3,8 @@ import styles from "./page.module.scss"
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.page__main}>
+    <div className={styles.body}>
+      <main className={styles.main}>
        
         </main>
     </div>

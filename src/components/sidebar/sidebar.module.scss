@@ -1,87 +1,136 @@
-/* Sidebar Container */
+/* Sidebar */
 .sidebar {
   position: fixed;
-  left: -250px; /* Start hidden */
   top: 0;
+  left: -250px;  /* Initially off-screen */
   width: 250px;
-  height: 100vh;
+  height: 100%;
   background-color: #BC76F1;
-  color: white;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  transition: left 0.3s ease-in-out;
+  transition: left 0.3s ease;
+  z-index: 1000;
+padding: 1rem 4rem;
 
   &--open {
-    left: 0; /* Sidebar shown when open */
+    left: 0;  /* Move to the left when open */
   }
 
-  &__title {
-    font-size: 2rem;
-    margin-bottom: 20px;
-  }
-
-  &__navList {
+  &__container{
     display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 7rem;
+  }
+
+  &__navList{
+ 
+    height: auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
     flex-direction: column;
-    gap: 1rem;
+    gap: 3rem;
   }
 
-  &__navItem {
-    list-style: none;
-  }
-
-  &__navLink {
-    text-decoration: none;
+  &__navLink{
     color: white;
-    font-size: 1.2rem;
-    &:hover {
-      text-decoration: underline;
-    }
+    text-decoration: none;
   }
-}
 
-/* Toggle Button (default: outside when closed) */
-.toggleButton {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  background: none;
-  border: none;
-  color: black;
-  font-size: 2rem;
-  cursor: pointer;
-  z-index: 1000;
+  &__navItem{
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
 
-  &--inside {
-    left: 230px; /* Moves inside the sidebar when it's open */
+
+  &__title{
+   
+    color: white;
+
   }
 }
 
 /* Header */
 .header {
-  background: red;
-  width: 100%;
+  display: flex;
+  justify-content: flex-start;  /* Align items to the left */
+  align-items: center;
+  padding: 1rem;
+  transition: margin-left 0.3s ease;
+  background: #BC76F1;
+ padding: 1rem 4rem;
+   /* Background color for header */
+
+  &--shifted {
+    margin-left: 250px;  /* Shift header to the right when the sidebar is open */
+  }
 
   &__nav {
-    margin-top: 10px;
-
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    /* Background color for nav */
+    width: 100%;  /* Full width of header */
+  }
     &__navList {
-      display: flex;
-      gap: 2rem;
       list-style: none;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 3rem;
+      
+
+      &--first{
+     
+      
+      }
     }
 
-    &__navItem {
-      list-style: none;
+    &__navListFIrst{
+     
+    }
+
+   &__navItem {
+      display: inline-block;
     }
 
     &__navLink {
       text-decoration: none;
       color: white;
-      &:hover {
-        text-decoration: underline;
-      }
+    }
+
+    &__logo {
+      height: 5rem;
+      
+    }
+
+    /* Toggle Button (Hamburger Icon) */
+
+  }
+
+  .toggleButton {
+    background: none;
+    border: none;
+    font-size: 2rem;  /* Larger size for the hamburger icon */
+    cursor: pointer;
+    z-index: 1100;
+    color: white;  /* Make sure button is on top */
+
+    &--sidebarOpen {
+      color: white;
+      position: absolute;
+      top: 0;
+      left: 50%;  /* Align it to the middle of the sidebar */
+      transform: translateX(-50%);  /* Center the button */
+    }
+
+    &--hidden {
+      display: none; 
+      color: white;
+       /* Hide the hamburger button in the header when sidebar is open */
     }
   }
-}

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import "./globals.css";
 import Sidebar from "@/components/sidebar/sidebar";
+import Script from "next/script";
 
 
 const geistSans = Geist({
@@ -29,9 +30,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-    <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <main style={{ flex: 1, padding: "20px" }}>
+      <Script src="https://kit.fontawesome.com/e0075003b5.js"  defer></Script>
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
       <Sidebar/>
+        <main style={{ flex: 1, padding: "20px" }}>
+
           {children}
         </main>
     
