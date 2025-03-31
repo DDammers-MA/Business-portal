@@ -1,14 +1,40 @@
+"use client";
+
+import { Modal } from "@/components/modal/modal";
 import styles from "./page.module.scss";
-import Projecten from "@/components/Projecten/projecten";
+// import Projecten from "@/components/Projecten/projecten";
+import { useState } from "react";
 
 export default function Home() {
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
   return (
+<>
+      <button onClick={() => {
+        setIsModalOpen(true)
+      }}
+        className={styles.modal__button}
+       
+      >
+        open Modal
+      </button>
 
-    <div className={styles.page}>
-      <main className={styles.page__main}>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false)
+        }}
+      >
+        <p>hallo</p>
+
+      </Modal>
+
+
+
+      {/* <main className={styles.page__main}>
         <Projecten />
-      </main>
+      </main> */}
 
-    </div>
+    </>
   );
 }
