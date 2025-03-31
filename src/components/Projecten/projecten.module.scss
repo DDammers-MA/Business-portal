@@ -1,0 +1,102 @@
+.projecten {
+    padding: 20px;
+    background-color: #f9f9f9;
+
+    &__list {
+        display: grid;
+        grid-template-columns: repeat(3, 350px); 
+        gap: 1rem; 
+        justify-content: center; 
+    }
+}
+
+.project {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 350px; 
+    position: relative; 
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    &__image {
+        width: 100%;
+        height: 200px; 
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 2rem; 
+    }
+
+    &__title {
+        font-size: 2.5rem;
+        margin-bottom: 2rem; 
+        color: black;
+    }
+
+    &__description {
+        font-size: 1.4rem;
+        color: black;
+        margin-bottom: 5rem; 
+    }
+
+    &__actions {
+        position: absolute;
+        bottom: 10px; 
+        left: 10px; 
+        display: flex;
+        gap: 1rem; 
+        font-size: 1.5rem;
+        color: black;
+        cursor: pointer;
+
+        i {
+            transition: color 0.3s ease;
+        }
+
+        i {
+            transition: color 0.3s ease;
+        }
+        
+    }
+
+    .toggle {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        width: 6rem;
+        height: 25px;
+        background-color: #f57c00; 
+        border-radius: 25px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        padding: 0 5px;
+        transition: background-color 0.3s ease;
+    
+        &__circle {
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50%;
+            transform: translateX(25px);
+            transition: transform 0.3s ease; 
+        }
+    
+        &__on {
+            background-color: #9e9e9e; 
+    
+            .toggle__circle {
+                transform: translateX(0); 
+            }
+        }
+    }
+
+    
+}

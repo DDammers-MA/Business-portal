@@ -3,14 +3,15 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import "./globals.css";
 import Sidebar from "@/components/sidebar/sidebar";
-import Script from "next/script";
+
+import Script from 'next/script'; // Vergeet niet Script te importeren
 
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
   display: "swap",
-})
+});
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -30,15 +31,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Script src="https://kit.fontawesome.com/e0075003b5.js"  defer></Script>
+
+      <head>
+        {/* Laad Font Awesome-script asynchroon */}
+        <Script
+          src="https://kit.fontawesome.com/8a111eb1bb.js"
+          crossOrigin="anonymous"
+          strategy="afterInteractive" // Dit zorgt ervoor dat het script pas na de interactie wordt geladen
+        />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-      <Sidebar/>
         <main style={{ flex: 1, padding: "20px" }}>
+          <Sidebar />
 
           {children}
         </main>
-    
-    </body>
-  </html>
+      </body>
+    </html>
   );
 }
