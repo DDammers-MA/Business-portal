@@ -3,7 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import "./globals.css";
 import Sidebar from "@/components/sidebar/sidebar";
+
 import Script from 'next/script'; // Vergeet niet Script te importeren
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,6 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+
       <head>
         {/* Laad Font Awesome-script asynchroon */}
         <Script
@@ -40,6 +43,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <main style={{ flex: 1, padding: "20px" }}>
           <Sidebar />
+
           {children}
         </main>
       </body>

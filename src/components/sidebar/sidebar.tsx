@@ -1,6 +1,6 @@
 "use client";
 
-import { useState,  } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import styles from "./sidebar.module.scss";
 
@@ -9,33 +9,57 @@ const Sidebar = () => {
 
   return (
     <>
-      <header className={styles.header}>
+      <header className={`${styles.header} ${isOpen ? styles["header--shifted"] : ""}`}>
+        {/* Header content */}
         <nav className={styles.header__nav}>
-          <ul className={styles.header__navList}>
+          <ul className={`${styles.header__navList} ${styles["header__navList--first"]}`}>
+
+          <button
+            className={`${styles.toggleButton} ${isOpen ? styles["toggleButton--hidden"] : ""}`}
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            {isOpen ? <i className="fa-solid fa-x"></i> : <i className="fa-solid fa-bars"></i>} {/* Toggle between hamburger and close icon */}
+          </button>
+
+          
             <li className={styles.header__navItem}>
-              <a href="" className={styles.header__navLink}>Home</a>
+              <a href="#" className={styles.header__navLink}>Home</a>
             </li>
             <li className={styles.header__navItem}>
-              <a href="" className={styles.header__navLink}>About</a>
+              <a href="#" className={styles.header__navLink}>About</a>
             </li>
             <li className={styles.header__navItem}>
-              <a href="" className={styles.header__navLink}>Contact</a>
+              <a href="#" className={styles.header__navLink}>Contact</a>
             </li>
           </ul>
+
+          <ul className={styles.header__navList}>
+          <li className={styles.header__navItem}>
+              <img className={styles.header__logo} src="logo.png" alt="Logo" />
+            </li>
+          </ul>
+
+          {/* Toggle Button (Hamburger Icon) */}
+          {/* Hide this button when sidebar is open */}
+   
         </nav>
       </header>
 
-      {/* Toggle Button - Moves inside when open */}
-      <button
-        className={`${styles.toggleButton} ${isOpen ? styles["toggleButton--inside"] : ""}`}
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        {isOpen ? "×" : "☰"}
-      </button>
-
       {/* Sidebar */}
       <div className={`${styles.sidebar} ${isOpen ? styles["sidebar--open"] : ""}`}>
-        <h2 className={styles.sidebar__title}>Dashboard</h2>
+        <div className={styles.sidebar__container}>
+
+        <h2 className={styles.sidebar__title}>
+          Dashboard
+          {/* Show the hamburger button only when sidebar is open */}
+        </h2>
+          <button
+            className={styles.toggleButton}
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            {isOpen ? "×" : "☰"}
+          </button>
+        </div>
         <nav>
           <ul className={styles.sidebar__navList}>
             <SidebarItem href="/" label="Home" />
