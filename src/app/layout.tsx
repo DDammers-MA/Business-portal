@@ -41,7 +41,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <main style={{ flex: 1, padding: "20px" }}>
+        <main style={{ flex: 1 }}>
           <Sidebar />
 
           {children}

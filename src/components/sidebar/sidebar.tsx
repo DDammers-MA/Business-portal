@@ -57,7 +57,7 @@ const Sidebar = () => {
             className={styles.toggleButton}
             onClick={() => setIsOpen(!isOpen)}
           >
-            {isOpen ? "×" : "☰"}
+            {isOpen ? <i className="fa-solid fa-x"></i> : <i className="fa-solid fa-bars"></i>}
           </button>
         </div>
         <nav>
