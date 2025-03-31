@@ -2,7 +2,7 @@
 
 import { Modal } from "@/components/modal/modal";
 import styles from "./page.module.scss";
-// import Projecten from "@/components/Projecten/projecten";
+import Projecten from "@/components/Projecten/projecten";
 import { useState } from "react";
 
 export default function Home() {
@@ -31,9 +31,9 @@ export default function Home() {
 
 
 
-      {/* <main className={styles.page__main}>
+      <main className={styles.page__main}>
         <Projecten />
-      </main> */}
+      </main>
 
     </>
   );

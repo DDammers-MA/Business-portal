@@ -29,7 +29,7 @@ export const Modal = ({
             <div className={style.model__backdrop}>
                 <div className={style.model__content}>
 
-                    <button onClick={onClose}>Close</button>
+                    <button className={style.model__closeButton} onClick={onClose}><i className="fa-solid fa-x" style={{ color:" #e01010" }}></i></button>
                     {children}
                 </div>
             </div>

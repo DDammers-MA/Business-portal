@@ -22,4 +22,22 @@
      max-width: 50rem;
      position: relative;
     }
+
+    &__closeButton{
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: transparent;
+        border: none;
+        font-size: 2rem;
+        color: #FC9047;
+        cursor: pointer;
+
+        &:hover{
+            color: #c26120;
+            transform: scale(1.05);
+            transition: all 0.3s ease-in-out;
+        }
+
+    }
 }

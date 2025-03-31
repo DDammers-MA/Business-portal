@@ -4,11 +4,23 @@
 
 .modal{
     &__button{
-        padding: 0.4rem 0.2rem ; 
-        background: #BC76F1;
+        position: absolute;
+        bottom: 1rem;
+        right: 1rem;
+        padding: 1rem 3rem ; 
+        background: #FC9047;
         color: white;
-        border-radius: 1rem;
-        
+        border-radius: 300rem;
+        border: none;
+
+        &:hover{
+            background: #c26120;
+            cursor: pointer;
+            transform: scale(1.05);
+            transition: all 0.3s ease-in-out;
+        }
+
+
     
     }
 }
