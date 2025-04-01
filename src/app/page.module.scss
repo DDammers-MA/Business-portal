@@ -1,3 +1,27 @@
 .body{
   
 }
+
+.modal{
+    &__button{
+        position: fixed;
+        bottom: 1rem;
+        right: 1rem;
+        padding: 1rem 3rem ; 
+        background: #FC9047;
+        color: white;
+        border-radius: 300rem;
+        border: none;
+        z-index: 99999;
+
+        &:hover{
+            background: #c26120;
+            cursor: pointer;
+            transform: scale(1.05);
+            transition: all 0.3s ease-in-out;
+        }
+
+
+    
+    }
+}

@@ -22,21 +22,19 @@ const Sidebar = () => {
           </button>
 
           
-            <li className={styles.header__navItem}>
-              <a href="#" className={styles.header__navLink}>Home</a>
-            </li>
-            <li className={styles.header__navItem}>
-              <a href="#" className={styles.header__navLink}>About</a>
-            </li>
-            <li className={styles.header__navItem}>
-              <a href="#" className={styles.header__navLink}>Contact</a>
-            </li>
+            <HeaderItem href="/" label="Home" />
+            <HeaderItem href="/" label="Activities" />
+            <HeaderItem href="/" label="Published" />
+            <HeaderItem href="/" label="Unpublished" />
+            <HeaderItem href="/" label="Drafs" />
+         
           </ul>
 
           <ul className={styles.header__navList}>
           <li className={styles.header__navItem}>
               <img className={styles.header__logo} src="logo.png" alt="Logo" />
             </li>
+
           </ul>
 
           {/* Toggle Button (Hamburger Icon) */}
@@ -49,10 +47,6 @@ const Sidebar = () => {
       <div className={`${styles.sidebar} ${isOpen ? styles["sidebar--open"] : ""}`}>
         <div className={styles.sidebar__container}>
 
-        <h2 className={styles.sidebar__title}>
-          Dashboard
-          {/* Show the hamburger button only when sidebar is open */}
-        </h2>
           <button
             className={styles.toggleButton}
             onClick={() => setIsOpen(!isOpen)}
@@ -60,11 +54,32 @@ const Sidebar = () => {
             {isOpen ? <i className="fa-solid fa-x"></i> : <i className="fa-solid fa-bars"></i>}
           </button>
         </div>
-        <nav>
+        <nav className={styles.sidebar__nav}>
           <ul className={styles.sidebar__navList}>
+            
+        <h2 className={styles.sidebar__title}>
+          Admin
+          {/* Show the hamburger button only when sidebar is open */}
+            </h2>
+            
+            <SidebarItem href="/" label="Users" />
+            <SidebarItem href="/profile" label="Unapproved activities" />
+            <SidebarItem href="/settings" label="Statistics" />
+          </ul>
+
+          <ul className={`${styles.sidebar__navList} ${styles['sidebar__navList--second']}`}>
+
+            
+          <h2 className={styles.sidebar__title}>
+          Navigation
+          {/* Show the hamburger button only when sidebar is open */}
+        </h2>
+
             <SidebarItem href="/" label="Home" />
-            <SidebarItem href="/profile" label="Profile" />
-            <SidebarItem href="/settings" label="Settings" />
+            <SidebarItem href="/" label="Activities" />
+            <SidebarItem href="/" label="Published" />
+            <SidebarItem href="/" label="Unpublished" />
+            <SidebarItem href="/" label="Drafs" />
           </ul>
         </nav>
       </div>
@@ -76,6 +91,16 @@ const SidebarItem = ({ href, label }: { href: string; label: string }) => {
   return (
     <li className={styles.sidebar__navItem}>
       <Link href={href} className={styles.sidebar__navLink}>
+        {label}
+      </Link>
+    </li>
+  );
+};
+
+const HeaderItem = ({ href, label }: { href: string; label: string }) => {
+  return (
+    <li className={styles.header__navItem}>
+      <Link href={href} className={styles.header__navLink}>
         {label}
       </Link>
     </li>
