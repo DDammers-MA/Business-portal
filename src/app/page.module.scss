@@ -4,7 +4,7 @@
 
 .modal{
     &__button{
-        position: absolute;
+        position: fixed;
         bottom: 1rem;
         right: 1rem;
         padding: 1rem 3rem ; 
@@ -12,6 +12,7 @@
         color: white;
         border-radius: 300rem;
         border: none;
+        z-index: 99999;
 
         &:hover{
             background: #c26120;

@@ -2,16 +2,16 @@
 .sidebar {
   position: fixed;
   top: 0;
-  left: -250px;  /* Initially off-screen */
+  left: -500px; 
   width: 250px;
   height: 100%;
   background-color: #BC76F1;
   transition: left 0.3s ease;
-  z-index: 1000;
+  z-index: 10000;
 padding: 1rem 4rem;
 
   &--open {
-    left: 0;  /* Move to the left when open */
+    left: 0;  
   }
 
   &__container{
@@ -21,15 +21,31 @@ padding: 1rem 4rem;
     height: 7rem;
   }
 
+  &__nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
   &__navList{
- 
+    width: 100%;
     height: auto;
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
     flex-direction: column;
-    gap: 3rem;
+    gap: 2rem;
+
+
+    &--second{
+      display: none;
+    }
+  
   }
+
+
 
   &__navLink{
     color: white;
@@ -42,6 +58,7 @@ padding: 1rem 4rem;
     align-items: center;
     justify-content: space-between;
     gap: 2rem;
+ 
   }
 
 
@@ -52,19 +69,20 @@ padding: 1rem 4rem;
   }
 }
 
-/* Header */
+
 .header {
   display: flex;
-  justify-content: flex-start;  /* Align items to the left */
+  justify-content: flex-start;
   align-items: center;
   padding: 1rem;
   transition: margin-left 0.3s ease;
   background: #BC76F1;
  padding: 1rem 4rem;
-   /* Background color for header */
+ min-height: 7.5rem;
+
 
   &--shifted {
-    margin-left: 250px;  /* Shift header to the right when the sidebar is open */
+    margin-left: 250px;  
   }
 
   &__nav {
@@ -72,8 +90,8 @@ padding: 1rem 4rem;
     gap: 1rem;
     align-items: center;
     justify-content: space-between;
-    /* Background color for nav */
-    width: 100%;  /* Full width of header */
+
+    width: 100%;  
   }
     &__navList {
       list-style: none;
@@ -96,6 +114,7 @@ padding: 1rem 4rem;
 
    &__navItem {
       display: inline-block;
+      
     }
 
     &__navLink {
@@ -115,22 +134,58 @@ padding: 1rem 4rem;
   .toggleButton {
     background: none;
     border: none;
-    font-size: 2rem;  /* Larger size for the hamburger icon */
+    font-size: 2rem;  
     cursor: pointer;
     z-index: 1100;
-    color: white;  /* Make sure button is on top */
+    color: white; 
 
     &--sidebarOpen {
       color: white;
       position: absolute;
       top: 0;
-      left: 50%;  /* Align it to the middle of the sidebar */
-      transform: translateX(-50%);  /* Center the button */
+      left: 50%; 
+      transform: translateX(-50%); 
     }
 
     &--hidden {
       display: none; 
       color: white;
-       /* Hide the hamburger button in the header when sidebar is open */
+    
     }
+  }
+
+
+  @media screen and ( max-width: 750px){
+
+    .header {
+      &__navItem {
+        display: none;
+      }
+    }
+
+    .sidebar {
+      left: -100vw; /* Hidden by default */
+      width: 100vw; /* Full screen width */
+  
+      &--open {
+        left: 0;
+      } 
+      
+
+    &__navList{
+      width: 100%;
+      height: auto;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      flex-direction: column;
+      gap: 2rem;
+ 
+  
+      &--second{
+    display: flex;
+      }
+    
+    }
+  }
   }

@@ -110,3 +110,16 @@
 
     
 }
+
+@media Screen and (max-width: 1090px) {
+    .projecten__list {
+        grid-template-columns: 1fr 1fr; 
+    }
+}
+
+@media Screen and (max-width: 750px) {
+    .projecten__list {
+        grid-template-columns: 1fr; 
+    }
+}
+
