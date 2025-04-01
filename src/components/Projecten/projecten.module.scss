@@ -1,0 +1,125 @@
+.projecten {
+    padding: 20px;
+    background-color: #f9f9f9;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+
+
+    &__list {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr; 
+        gap: 1rem; 
+        justify-content: center;
+
+    }
+
+}
+
+.project {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 2rem;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 35rem;
+    position: relative; 
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    &__image {
+        width: 100%;
+        height: 200px; 
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 2rem; 
+    }
+
+    &__title {
+        font-size: 2.5rem;
+        margin-bottom: 2rem; 
+        color: black;
+    }
+
+    &__description {
+        font-size: 1.4rem;
+        color: black;
+        margin-bottom: 5rem; 
+    }
+
+    &__footer{
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    &__actions {
+        display: flex;
+        gap: 1rem; 
+        font-size: 1.5rem;
+        color: black;
+        cursor: pointer;
+        
+
+        i {
+            transition: color 0.3s ease;
+        }
+
+        i {
+            transition: color 0.3s ease;
+        }
+        
+    }
+
+    .toggle {
+        width: 4rem;
+        height: 2rem;
+        background-color: #f57c00; 
+        border-radius: 25px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        padding: 0 5px;
+        transition: background-color 0.3s ease;
+    
+        &__circle {
+           width: 1.5rem;
+           aspect-ratio: 1/1;
+            background-color: white;
+            border-radius: 50%;
+            transform: translateX(1.5rem);
+            transition: transform 0.3s ease; 
+        }
+    
+        &__on {
+            background-color: #9e9e9e; 
+    
+            .toggle__circle {
+                transform: translateX(0); 
+            }
+        }
+    }
+
+    
+}
+
+@media Screen and (max-width: 1090px) {
+    .projecten__list {
+        grid-template-columns: 1fr 1fr; 
+    }
+}
+
+@media Screen and (max-width: 750px) {
+    .projecten__list {
+        grid-template-columns: 1fr; 
+    }
+}
+
