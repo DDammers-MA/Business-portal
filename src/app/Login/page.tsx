@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { FirebaseError } from 'firebase/app';
@@ -13,11 +13,16 @@ export default function Login() {
 	const [password, setPassword] = useState('');
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState(false);
+	const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 	const router = useRouter();
+	const searchParams = useSearchParams();
 
 	useEffect(() => {
+		if (searchParams.get('registered') === 'true') {
+			setShowSuccessMessage(true);
+		}
 		console.log('[Login Page Component] Component Mounted in Browser');
-	}, []);
+	}, [searchParams, router]);
 
 	const handleLogin = async () => {
 		if (!email) {
@@ -58,7 +63,8 @@ export default function Login() {
 				throw new Error(data.message || 'Failed to set session.');
 			}
 
-			router.push('/');
+			const redirectedFrom = searchParams.get('redirectedFrom');
+			router.push(redirectedFrom || '/');
 		} catch (err) {
 			console.error('Login or Session Error:', err);
 			if (err instanceof FirebaseError) {
@@ -92,6 +98,11 @@ export default function Login() {
 					height={50}
 					className={styles.logo}
 				/>{' '}
+				{showSuccessMessage && (
+					<div className={styles.successBanner}>
+						Registration successful! You can now log in.
+					</div>
+				)}
 				<form
 					onSubmit={(e) => {
 						e.preventDefault();
@@ -123,7 +134,7 @@ export default function Login() {
 						type="submit"
 						disabled={loading}
 					>
-						{loading ? 'Logging in...' : 'Login'}
+						{loading ? <span className={styles.spinner}></span> : 'Login'}
 					</button>
 					{error && <div className={styles.errorBanner}>{error}</div>}
 				</form>
