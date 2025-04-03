@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-
+import { getAuth } from 'firebase/auth';
 import { getFirestore, collection } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
@@ -16,6 +16,7 @@ const app = initializeApp(clientCredentials);
 
 const db = getFirestore(app);
 const storage = getStorage(app);
+const auth = getAuth(app);
 
 const postsCollection = collection(db, 'posts');
 const commentsCollection = collection(db, 'comments');
@@ -25,6 +26,7 @@ export {
 	app,
 	db,
 	storage,
+	auth,
 	postsCollection,
 	commentsCollection,
 	usersCollection,
