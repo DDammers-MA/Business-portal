@@ -1,7 +1,7 @@
 import styles from "./regrister.module.scss";
 
 export default function Register() {
-    return(
+    return (
         <div className={styles.container}>
             <div className={styles.registerBox}>
                 <img src="/logo.png" alt="Logo" className={styles.logo} />
@@ -11,7 +11,31 @@ export default function Register() {
                     placeholder="Company name"
                     className={styles.inputField}
                 />
+                <input
+                    type="email"
+                    placeholder="Company email"
+                    className={styles.inputField}
+                />
+                <input
+                    type="tel"
+                    placeholder="Phone number"
+                    className={styles.inputField}
+                />
+                <input
+                    type="password"
+                    placeholder="Password"
+                    className={styles.inputField}
+                />
+                <input
+                    type="password"
+                    placeholder="Repeat password"
+                    className={styles.inputField}
+                />
+                <div className={styles.buttonContainer}>
+                    <button className={styles.loginButton}>Login</button>
+                    <button className={styles.registerButton}>Register</button>
+                </div>
+            </div>
         </div>
-        </div>
-    )
+    );
 }
