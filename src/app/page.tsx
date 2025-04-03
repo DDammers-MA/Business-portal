@@ -1,12 +1,35 @@
-import styles from "./page.module.scss";
-import Projecten from "@/components/Projecten/projecten";
+'use client';
+
+import { Modal } from '@/components/modal/modal';
+import styles from './page.module.scss';
+import Activiteiten from '@/components/Activiteiten/activiteiten';
+import { useState } from 'react';
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.page__main}>
-        <Projecten />
-      </main>
-    </div>
-  );
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	return (
+		<>
+			<button
+				onClick={() => {
+					setIsModalOpen(true);
+				}}
+				className={styles.modal__button}
+			>
+				open Modal
+			</button>
+
+			<Modal
+				isOpen={isModalOpen}
+				onClose={() => {
+					setIsModalOpen(false);
+				}}
+			>
+				<p>hallo</p>
+			</Modal>
+
+			<main className={styles.page__main}>
+				<Activiteiten />
+			</main>
+		</>
+	);
 }
