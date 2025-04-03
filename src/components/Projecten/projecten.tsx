@@ -78,19 +78,19 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ image, title, description }) 
       <h2 className={styles.project__title}>{title}</h2>
       <p className={styles.project__description}>{description}</p>
 
-      <div className={styles.project__footer}>
+      { <div className={styles.project__footer}>
       <div className={styles.project__actions}>
       <i className="fa-solid fa-trash" style={{ color: "#f00f0f" }}></i>
       <i className="fa-regular fa-pen-to-square"></i>
       </div>
-      {/* Toggle switch */}
+      {}
       <div
         className={`${styles.toggle} ${isToggled ? styles.toggle__on : ""}`}
         onClick={handleToggle}
       >
         <div className={styles.toggle__circle}></div>
       </div>
-      </div>
+      </div> }
 
     
     </div>
