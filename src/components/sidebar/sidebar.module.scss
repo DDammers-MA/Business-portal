@@ -2,8 +2,8 @@
 .sidebar {
   position: fixed;
   top: 0;
-  left: -500px; 
-  width: 250px;
+  left: -50rem; 
+  width: 25rem;
   height: 100%;
   background-color: #BC76F1;
   transition: left 0.3s ease;
@@ -82,7 +82,7 @@ padding: 1rem 4rem;
 
 
   &--shifted {
-    margin-left: 250px;  
+    margin-left: 25rem;  
   }
 
   &__nav {
@@ -127,7 +127,6 @@ padding: 1rem 4rem;
       
     }
 
-    /* Toggle Button (Hamburger Icon) */
 
   }
 
