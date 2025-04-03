@@ -34,3 +34,46 @@
     font-size: 16px;
     color: #000; 
 }
+
+.inputField::placeholder {
+    color: #000; 
+    opacity: 1; 
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.loginButton {
+    width: 48%;
+    padding: 10px 20px;
+    background-color: #BC76F1; 
+    color: #ffffff;
+    border: none;
+    border-radius: 40px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.loginButton:hover {
+    background-color: #a05edb;
+}
+
+.registerButton {
+    width: 48%;
+    padding: 10px 20px;
+    background-color: #FC9047; 
+    color: #ffffff;
+    border: none;
+    border-radius: 40px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.registerButton:hover {
+    background-color: #e67a3c;
+}
