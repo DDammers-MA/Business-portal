@@ -10,17 +10,17 @@
     position: relative;
     top: 50%;
     transform: translateY(20%);
-  }
-  
-  .header {
+}
+
+.header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
     gap: 10px;
-  }
+}
 
-  .searchBar {
+.searchBar {
     display: flex;
     align-items: center;
     background-color: #ffffff;
@@ -29,11 +29,43 @@
     padding: 5px 10px;
     width: 60%;
     margin-left: auto;
-  }
-  
-  .searchBar i {
+}
+
+.searchBar i {
     margin-right: 10px;
     font-size: 20px;
     font-weight: bold;
     color: #000;
-  }
+}
+
+.inputField {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 16px;
+    color: #333;
+}
+
+.inputField::placeholder {
+    color: #333;
+    font-weight: bold;
+}
+
+.addUserButton {
+    background-color: #fc9047;
+    color: #ffffff;
+    border: none;
+    border-radius: 20px;
+    padding: 5px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    height: 40px;
+}
+
+.addUserButton:hover {
+    background-color: #e67a3c;
+}
+
+.userList {
+    margin-top: 20px;
+}
