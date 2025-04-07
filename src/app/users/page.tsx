@@ -64,7 +64,15 @@ export default function Search() {
       </div>
 
       {}
-     
+      <div className={`${styles.modalOverlay} ${isModalOpen ? styles.show : ""}`}>
+        <div className={styles.modal}>
+          <h2>Gebruiker editten</h2>
+          <p>Gebruiker editten {selectedUser !== null ? selectedUser + 1 : ""}</p>
+          <button onClick={closeModal} className={styles.closeButton}>
+            Sluit
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
