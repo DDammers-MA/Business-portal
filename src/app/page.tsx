@@ -2,7 +2,7 @@
 
 import { Modal } from '@/components/modal/modal';
 import styles from './page.module.scss';
-import Activiteiten from '@/components/Activiteiten/activiteiten';
+import Activiteiten from '@/components/activiteiten/activiteiten';
 import { useState } from 'react';
 
 export default function Home() {
