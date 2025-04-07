@@ -20,6 +20,19 @@ export default function Search() {
             className={styles.inputField}
           />
         </div>
+        <button className={styles.addUserButton}>Add new user</button>
+      </div>
+      <div className={styles.userList}>
+        {Array.from({ length: 6 }).map((_, index) => (
+          <div key={index} className={styles.userRow}>
+         <i className={`fa-regular fa-circle-user ${styles.userIcon}`}></i>
+            <span className={styles.userName}>John Doe</span> {}
+            <i
+              className={`fa-regular fa-pen-to-square ${styles.editIcon}`}
+              onClick={() => handleEditUser(index)} 
+            ></i>
+          </div>
+        ))}
       </div>
     </div>
   );
