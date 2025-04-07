@@ -117,3 +117,14 @@
 .editIcon:hover {
     color: #333;
 }
+
+.deleteIcon {
+    font-size: 14px; 
+    color: #ff0000; 
+    cursor: pointer; 
+    margin-left: 10px; 
+  }
+  
+  .deleteIcon:hover {
+    color: #cc0000; 
+  }

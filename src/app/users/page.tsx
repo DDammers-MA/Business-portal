@@ -5,9 +5,13 @@ import styles from "./user.module.scss";
 export default function Search() {
   const handleEditUser = (userIndex: number) => {
     console.log(`Edit user ${userIndex + 1}`);
-    //Hier komt de back-end voor de functie toeveogen om een gebruiker te bewerken
+    // Hier komt de back-end voor de functie om een gebruiker te bewerken
   };
 
+  const handleDeleteUser = (userIndex: number) => {
+    console.log(`Delete user ${userIndex + 1}`);
+    // Hier komt de back-end voor de functie om een gebruiker te verwijderen
+  };
 
   return (
     <div className={styles.container}>
@@ -25,11 +29,15 @@ export default function Search() {
       <div className={styles.userList}>
         {Array.from({ length: 6 }).map((_, index) => (
           <div key={index} className={styles.userRow}>
-         <i className={`fa-regular fa-circle-user ${styles.userIcon}`}></i>
-            <span className={styles.userName}>John Doe</span> {}
+            <i className={`fa-regular fa-circle-user ${styles.userIcon}`}></i>
+            <span className={styles.userName}>John Doe</span>
             <i
               className={`fa-regular fa-pen-to-square ${styles.editIcon}`}
-              onClick={() => handleEditUser(index)} 
+              onClick={() => handleEditUser(index)}
+            ></i>
+            <i
+              className={`fa-solid fa-trash ${styles.deleteIcon}`}
+              onClick={() => handleDeleteUser(index)}
             ></i>
           </div>
         ))}
