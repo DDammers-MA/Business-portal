@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 
 import styles from "./search.module.scss";
 
@@ -10,9 +10,17 @@ export default function Search() {
 
 
   return (
-    <div className={styles.search}>
-      <h1>Search</h1>
-      <p>Search page content goes here.</p>
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <div className={styles.searchBar}>
+          <i className="fa-solid fa-magnifying-glass"></i>
+          <input
+            type="text"
+            placeholder="Search users"
+            className={styles.inputField}
+          />
+        </div>
+      </div>
     </div>
   );
 }
