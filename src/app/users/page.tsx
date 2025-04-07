@@ -1,14 +1,17 @@
 "use client";
 
-import { useRouter } from "next/navigation"; 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./user.module.scss";
 
 export default function Search() {
-  const router = useRouter(); 
+  const router = useRouter();
+  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [selectedUser, setSelectedUser] = useState<number | null>(null); 
 
   const handleEditUser = (userIndex: number) => {
-    console.log(`Edit user ${userIndex + 1}`);
-    // Hier komt de back-end voor de functie om een gebruiker te bewerken
+    setSelectedUser(userIndex); 
+    setIsModalOpen(true); 
   };
 
   const handleDeleteUser = (userIndex: number) => {
@@ -17,7 +20,12 @@ export default function Search() {
   };
 
   const handleAddUser = () => {
-    router.push("/register"); 
+    router.push("/register");
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedUser(null); 
   };
 
   return (
@@ -33,7 +41,7 @@ export default function Search() {
         </div>
         <button
           className={styles.addUserButton}
-          onClick={handleAddUser} 
+          onClick={handleAddUser}
         >
           Add new user
         </button>
@@ -54,6 +62,9 @@ export default function Search() {
           </div>
         ))}
       </div>
+
+      {}
+     
     </div>
   );
 }
