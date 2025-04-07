@@ -1,8 +1,11 @@
 "use client";
 
+import { useRouter } from "next/navigation"; 
 import styles from "./user.module.scss";
 
 export default function Search() {
+  const router = useRouter(); 
+
   const handleEditUser = (userIndex: number) => {
     console.log(`Edit user ${userIndex + 1}`);
     // Hier komt de back-end voor de functie om een gebruiker te bewerken
@@ -11,6 +14,10 @@ export default function Search() {
   const handleDeleteUser = (userIndex: number) => {
     console.log(`Delete user ${userIndex + 1}`);
     // Hier komt de back-end voor de functie om een gebruiker te verwijderen
+  };
+
+  const handleAddUser = () => {
+    router.push("/register"); 
   };
 
   return (
@@ -24,7 +31,12 @@ export default function Search() {
             className={styles.inputField}
           />
         </div>
-        <button className={styles.addUserButton}>Add new user</button>
+        <button
+          className={styles.addUserButton}
+          onClick={handleAddUser} 
+        >
+          Add new user
+        </button>
       </div>
       <div className={styles.userList}>
         {Array.from({ length: 6 }).map((_, index) => (
