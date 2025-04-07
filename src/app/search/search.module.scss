@@ -80,8 +80,8 @@
     height: 6rem;
 }
 
-.userRow:not(:last-child)::after {
-    content: "";
+.userRow::after {
+    content: ""; 
     position: absolute;
     bottom: 0;
     left: 0;
