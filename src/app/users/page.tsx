@@ -7,17 +7,17 @@ import styles from "./user.module.scss";
 export default function Search() {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<number | null>(null); 
+  const [selectedUser, setSelectedUser] = useState<number | null>(null);
   const [formData, setFormData] = useState({
     companyName: "",
     companyEmail: "",
     phoneNumber: "",
     password: "",
-  }); 
+  });
 
   const handleEditUser = (userIndex: number) => {
-    setSelectedUser(userIndex); 
-    setIsModalOpen(true); 
+    setSelectedUser(userIndex);
+    setIsModalOpen(true);
   };
 
   const handleDeleteUser = (userIndex: number) => {
@@ -31,13 +31,13 @@ export default function Search() {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setSelectedUser(null); 
+    setSelectedUser(null);
     setFormData({
       companyName: "",
       companyEmail: "",
       phoneNumber: "",
       password: "",
-    }); 
+    });
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,6 +46,12 @@ export default function Search() {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleSaveChanges = () => {
+    console.log("Wijzigingen opgeslagen:", formData);
+    // Hier komt de back-end logica om de wijzigingen op te slaan
+    closeModal(); // Sluit de modal na het opslaan
   };
 
   return (
@@ -83,7 +89,7 @@ export default function Search() {
         ))}
       </div>
 
-      {}
+      {/* Modal */}
       <div className={`${styles.modalOverlay} ${isModalOpen ? styles.show : ""}`}>
         <div className={styles.modal}>
           <h2>Edit User</h2>
@@ -93,7 +99,7 @@ export default function Search() {
               name="companyName"
               placeholder="Company Name"
               value={formData.companyName}
-              onChange={handleInputChange} 
+              onChange={handleInputChange}
               className={styles.inputField}
             />
             <input
@@ -121,9 +127,14 @@ export default function Search() {
               className={styles.inputField}
             />
           </form>
-          <button onClick={closeModal} className={styles.closeButton}>
-            Close
-          </button>
+          <div className={styles.modalButtons}>
+            <button onClick={closeModal} className={styles.closeButton}>
+              Close
+            </button>
+            <button onClick={handleSaveChanges} className={styles.saveButton}>
+              Wijzig
+            </button>
+          </div>
         </div>
       </div>
     </div>
