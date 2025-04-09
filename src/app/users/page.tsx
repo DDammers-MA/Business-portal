@@ -6,8 +6,14 @@ import styles from "./user.module.scss";
 
 export default function Search() {
   const router = useRouter();
-  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<number | null>(null); 
+  const [formData, setFormData] = useState({
+    companyName: "",
+    companyEmail: "",
+    phoneNumber: "",
+    password: "",
+  }); 
 
   const handleEditUser = (userIndex: number) => {
     setSelectedUser(userIndex); 
@@ -26,6 +32,20 @@ export default function Search() {
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedUser(null); 
+    setFormData({
+      companyName: "",
+      companyEmail: "",
+      phoneNumber: "",
+      password: "",
+    }); 
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   return (
@@ -66,10 +86,43 @@ export default function Search() {
       {}
       <div className={`${styles.modalOverlay} ${isModalOpen ? styles.show : ""}`}>
         <div className={styles.modal}>
-          <h2>Gebruiker editten</h2>
-          <p>Gebruiker editten {selectedUser !== null ? selectedUser + 1 : ""}</p>
+          <h2>Edit User</h2>
+          <form className={styles.modalForm}>
+            <input
+              type="text"
+              name="companyName"
+              placeholder="Company Name"
+              value={formData.companyName}
+              onChange={handleInputChange} 
+              className={styles.inputField}
+            />
+            <input
+              type="email"
+              name="companyEmail"
+              placeholder="Company Email"
+              value={formData.companyEmail}
+              onChange={handleInputChange}
+              className={styles.inputField}
+            />
+            <input
+              type="text"
+              name="phoneNumber"
+              placeholder="Phone Number"
+              value={formData.phoneNumber}
+              onChange={handleInputChange}
+              className={styles.inputField}
+            />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleInputChange}
+              className={styles.inputField}
+            />
+          </form>
           <button onClick={closeModal} className={styles.closeButton}>
-            Sluit
+            Close
           </button>
         </div>
       </div>
