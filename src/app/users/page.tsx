@@ -51,7 +51,7 @@ export default function Search() {
   const handleSaveChanges = () => {
     console.log("Wijzigingen opgeslagen:", formData);
     // Hier komt de back-end logica om de wijzigingen op te slaan
-    closeModal(); // Sluit de modal na het opslaan
+    closeModal(); 
   };
 
   return (
@@ -89,7 +89,7 @@ export default function Search() {
         ))}
       </div>
 
-      {/* Modal */}
+      {}
       <div className={`${styles.modalOverlay} ${isModalOpen ? styles.show : ""}`}>
         <div className={styles.modal}>
           <h2>Edit User</h2>
