@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./form.module.scss";
 import FormInput from "./FormInput";
+import ReviewSubmit from "./ReviewSubmit";
 
 interface LocationInfoProps {
   formData: {
@@ -39,6 +40,9 @@ interface LocationInfoProps {
 
 const LocationInfo: React.FC<LocationInfoProps> = ({ formData, setFormData, nextStep, prevStep }) => {
   return (
+
+    <div className={styles.form__Container} >
+
     <div className={styles.form__textContainer}>
       <h2>Location Information</h2>
 
@@ -115,7 +119,32 @@ const LocationInfo: React.FC<LocationInfoProps> = ({ formData, setFormData, next
       <button className={styles.nextBtn} onClick={prevStep}>Back</button>
       <button className={styles.nextBtn} onClick={nextStep}>Next</button>
       </div>
-    </div>
+      </div>
+
+      <div className={styles.form__previewContainer}>
+
+<ReviewSubmit formData={{
+   title: formData.title,
+   beschrijving: formData.beschrijving,
+   opeingsTime: formData.opeingsTime,
+   streetName:  formData.streetName,
+   Date:  formData.Date,
+   PostalCode:  formData.PostalCode,
+   place:  formData.place,
+   StartTime:  formData.StartTime,
+   Budget:  formData.Budget,
+   endTime:  formData.endTime,
+   ImagePicker: formData.ImagePicker,
+   email:  formData.email,
+   phone: formData.phone,
+        }} prevStep={function (): void {
+          throw new Error("Function not implemented.");
+        } } submitForm={function (): void {
+          throw new Error("Function not implemented.");
+        } } step={0}/>
+</div>
+
+      </div>
   );
 };
 

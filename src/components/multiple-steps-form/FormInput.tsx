@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./form.module.scss"; // Adjust path as needed
+import styles from "./form.module.scss";
 
 interface FormInputProps {
   label: string;
@@ -7,7 +7,7 @@ interface FormInputProps {
   placeholder?: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  className?: string; // Optional extra class
+  className?: string; 
 }
 
 const FormInput: React.FC<FormInputProps> = ({

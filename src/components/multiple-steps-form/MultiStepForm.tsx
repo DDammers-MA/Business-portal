@@ -37,7 +37,14 @@ const MultiStepForm = () => {
     <form className={styles.form} >
       {step === 1 && <EventInfo formData={formData} setFormData={setFormData} nextStep={nextStep} />}
       {step === 2 && <LocationInfo formData={formData} setFormData={setFormData} nextStep={nextStep} prevStep={prevStep} />}
-      {step === 3 && <ReviewSubmit formData={formData} prevStep={prevStep} submitForm={submitForm} />}
+      {step === 3 && (
+        <ReviewSubmit
+          formData={formData}
+          prevStep={prevStep}
+          submitForm={submitForm}
+          step={step}
+        />
+      )}
     </form>
   );
 };
