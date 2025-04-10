@@ -1,0 +1,149 @@
+.footer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+ 
+    background-color: #BC76F1;
+    padding:2rem;
+    text-align: center;
+    width: 100%;
+    height: auto;
+    flex-wrap: wrap;
+  
+
+
+    &__container{
+        max-width: 132rem;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        height: 100%;
+      
+      
+    }
+
+    &__leftContainer{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+   
+        gap: 1rem;
+        width: 70%;
+        height: 100%;
+ 
+
+    }
+
+    &__rightContainer{
+        display: flex;
+        align-items: flex-end;
+        justify-content: start;
+        flex-direction: column;
+        gap: 1rem;
+        width: 50%;
+        height: 100%;
+
+    }
+
+    &__rightContainer__logoContainer{
+        width: 30rem;
+        height: 10rem;
+      }
+
+    &__rightContainer__logo{
+        width: 100%;
+        height: 100%;
+       
+    }
+
+
+
+    &__list{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 100%;
+        width: 100%; 
+       
+    }
+
+
+    &__title{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 2rem;
+        font-size: 2.6rem;
+        font-weight: 600;
+        color: white;
+   
+
+    }
+
+    &__listContainer{
+    
+        height: 100%;
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        &--contact{
+            gap: 3rem;
+        }
+    }
+
+
+    &__listItem{
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        list-style: none;
+        margin: 0;
+        text-align:right;
+        padding: 0;
+        color: white;
+
+        &--address{
+
+            margin-top: 1rem;
+            list-style: none;
+            flex-direction: column;
+            gap: 0rem;
+            align-items: flex-start;
+        }
+
+
+        a{
+            color: white;
+            text-decoration: none;
+
+            &:hover{
+          
+                cursor: pointer;
+            }
+        }
+    }
+
+
+    &__copyright{
+        border-top: white 0.2rem solid;
+        margin-top: 2rem;
+        width: 100%;
+        height: 4rem;
+      
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+    }
+}
+
+
+

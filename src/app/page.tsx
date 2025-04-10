@@ -4,20 +4,25 @@ import { Modal } from '@/components/modal/modal';
 import styles from './page.module.scss';
 import Activiteiten from '@/components/activiteiten/activiteiten';
 import { useState } from 'react';
+import Link from 'next/link';
 
 export default function Home() {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	return (
 		<>
-			<button
+			{/* <button
 				onClick={() => {
 					setIsModalOpen(true);
 				}}
 				className={styles.modal__button}
 			>
 				open Modal
-			</button>
+			</button> */}
 
+			<button className={styles.modal__button}>
+				<Link href='/create'>Add new</Link>
+			</button>
+ 
 			<Modal
 				isOpen={isModalOpen}
 				onClose={() => {

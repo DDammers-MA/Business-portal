@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import PersonalInfo from "./PersonalInfo ";
-import ContactInfo from "./ContactInfo";
+import EventInfo from "./EventInfo";
+import LocationInfo from "./LocationInfo";
 import ReviewSubmit from "./ReviewSubmit";
 import styles from "./form.module.scss"
 
@@ -12,8 +12,17 @@ const MultiStepForm = () => {
     title: "",
     beschrijving: "",
     opeingsTime: "",
+    ImagePicker: "",
+    Budget: "",
+    streetName: "",
+    PostalCode: "",
+    Date: "",
+    place: '',
+    StartTime: "",
+    endTime: "",
     email: "",
     phone: "",
+
   });
 
   const nextStep = () => setStep((prev) => prev + 1);
@@ -26,11 +35,19 @@ const MultiStepForm = () => {
 
   return (
     <form className={styles.form} >
-      {step === 1 && <PersonalInfo formData={formData} setFormData={setFormData} nextStep={nextStep} />}
-      {step === 2 && <ContactInfo formData={formData} setFormData={setFormData} nextStep={nextStep} prevStep={prevStep} />}
-      {step === 3 && <ReviewSubmit formData={formData} prevStep={prevStep} submitForm={submitForm} />}
+      {step === 1 && <EventInfo formData={formData} setFormData={setFormData} nextStep={nextStep} />}
+      {step === 2 && <LocationInfo formData={formData} setFormData={setFormData} nextStep={nextStep} prevStep={prevStep} />}
+      {step === 3 && (
+        <ReviewSubmit
+          formData={formData}
+          prevStep={prevStep}
+          submitForm={submitForm}
+          step={step}
+        />
+      )}
     </form>
   );
 };
+
 
 export default MultiStepForm;
