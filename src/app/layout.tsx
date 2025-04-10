@@ -4,7 +4,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Sidebar from "@/components/sidebar/sidebar";
 
-import Script from 'next/script'; // Vergeet niet Script te importeren
+import Script from 'next/script';
+import Footer from '@/components/footer/footer';
 
 
 const geistSans = Geist({
@@ -46,6 +47,9 @@ export default function RootLayout({
 
           {children}
         </main>
+
+        <Footer />
+        
       </body>
     </html>
   );
