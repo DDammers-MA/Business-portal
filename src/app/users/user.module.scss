@@ -1,133 +1,143 @@
-.container {
+.user{
+    padding: 4rem;
+    height: 100%;
     width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #ffffff;
-    border: 2px solid #000;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    position: relative;
-    top: 50%;
-    transform: translateY(20%);
-    height: 52rem;
-}
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    gap: 10px;
-}
-
-.searchBar {
     display: flex;
     align-items: center;
-    background-color: #ffffff;
-    border: 2px solid #ccc;
-    border-radius: 20px;
-    padding: 5px 10px;
-    width: 60%;
-    margin-left: auto;
+    justify-content: center;
+    &__container {
+      
+        max-width: 132rem;
+        width: 100%;
+         border: 0.2rem solid #000;
+        border-radius: 0.8rem;
+        box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.1);
+        margin: 0 auto;
+        padding: 2rem;
+        
+
+
+        // margin: 0 auto;
+        // padding: 20px;
+        // background-color: #ffffff;
+       
+        // 
+        // position: relative;
+        // top: 50%;
+        // transform: translateY(20%);
+        // height: 52rem;
+    }
+
+    &__header {
+      
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        gap: 1rem;
+    }
+
+    &__searchBar {
+        display: flex;
+        align-items: center;
+        background-color: #ffffff;
+        border: 2px solid #ccc;
+        border-radius: 20px;
+        padding: 5px 10px;
+
+        i {
+            margin-right: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+        }
+       
+
+    }
+
+    &__inputField {
+        border: none; 
+        outline: none;
+        width: 100%;
+        font-size: 1.6rem;
+        color: #333;
+
+        &::placeholder {
+            color: #333;
+            font-weight: bold;
+        }
+    }
+
+    &__addUserButton {
+        background-color: #fc9047;
+        color: #ffffff;
+        border: none;
+        border-radius: 2rem;
+        padding: 0.5rem 2rem;
+        font-size: 1.6rem;
+        cursor: pointer;
+        height: 4rem;
+
+        &:hover {
+            background-color: #e67a3c;
+        }
+    }
+    
+
+    &__userList {
+       
+    }
+
+    &__userRow {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #ffffff;
+        padding: 1rem;
+        position: relative;
+        height: 6rem;
+     
+    
+        border-bottom: 0.3rem solid #fc9047 ;
+    }
+
+    &__userIcon {
+        font-size: 3rem;
+        margin-right: 0.4rem;
+        color: #333;
+    }
+
+    &__userName {
+        flex-grow: 1;
+        font-size: 1.6rem;
+        color: #333;
+        font-weight: bold;
+        margin-left: 1rem;
+    }
+
+    &__editIcon {
+        font-size: 1.4rem;
+        color: #000;
+        cursor: pointer;
+
+        &:hover {
+            color: #333;
+        }
+    }
+  
+    &__deleteIcon {
+        font-size: 1.4rem;
+        color: #ff0000;
+        cursor: pointer;
+        margin-left: 1rem;
+        &:hover {
+            color: #cc0000;
+        }
+    }
 }
 
-.searchBar i {
-    margin-right: 10px;
-    font-size: 20px;
-    font-weight: bold;
-    color: #000;
-}
 
-.inputField {
-    border: none; 
-    outline: none;
-    width: 100%;
-    font-size: 16px;
-    color: #333;
-}
-
-.inputField::placeholder {
-    color: #333;
-    font-weight: bold;
-}
-
-.addUserButton {
-    background-color: #fc9047;
-    color: #ffffff;
-    border: none;
-    border-radius: 20px;
-    padding: 5px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    height: 40px;
-}
-
-.addUserButton:hover {
-    background-color: #e67a3c;
-}
-
-.userList {
-    margin-top: 20px;
-}
-
-.userRow {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #ffffff;
-    padding: 10px;
-    position: relative;
-    height: 6rem;
-    margin-left: 60px;
-    margin-right: 60px;
-    border-radius: 60px;
-}
-
-.userRow::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background-color: #fc9047;
-}
-
-.userIcon {
-    font-size: 30px;
-    margin-right: 4px;
-    color: #333;
-}
-
-.userName {
-    flex-grow: 1;
-    font-size: 16px;
-    color: #333;
-    font-weight: bold;
-    margin-left: 10px;
-}
-
-.editIcon {
-    font-size: 14px;
-    color: #000;
-    cursor: pointer;
-}
-
-.editIcon:hover {
-    color: #333;
-}
-
-.deleteIcon {
-    font-size: 14px;
-    color: #ff0000;
-    cursor: pointer;
-    margin-left: 10px;
-}
-
-.deleteIcon:hover {
-    color: #cc0000;
-}
 
 .modalOverlay {
     position: fixed;
@@ -154,33 +164,33 @@
 .modal {
     width: 50%; 
     background-color: #ffffff;
-    border-radius: 12px;
-    padding: 30px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    border-radius: 1.2rem;
+    padding: 3rem;
+    box-shadow: 0 0.8rem 1.6rem rgba(0, 0, 0, 0.2);
     text-align: center;
     transform: scale(0.8);
     transition: transform 0.3s ease;
     display: flex;
     flex-direction: column;
     align-items: center; 
-    gap: 20px; 
+    gap: 2rem; 
 }
 
 .modalForm {
     display: flex;
     flex-direction: column;
-    gap: 20px; 
+    gap: 2rem; 
     width: 100%; 
 }
 
 .modalForm .inputField {
-    border: 2px solid #ccc; 
+    border: 0.2rem solid #ccc; 
     outline: none;
     width: 100%;
-    font-size: 16px;
+    font-size: 1.6rem;
     color: #333;
-    padding: 10px;
-    border-radius: 8px; 
+    padding: 1rem;
+    border-radius: 0.8rem; 
     transition: border-color 0.3s ease;
 }
 
@@ -195,8 +205,8 @@
 .modalButtons {
     display: flex;
     justify-content: space-between;
-    gap: 20px; 
-    margin-top: 20px;
+    gap: 2rem; 
+    margin-top: 2rem;
     width: 100%;
 }
 
@@ -205,11 +215,11 @@
 .closeButton,
 .saveButton {
     flex: 1;
-    padding: 10px 20px;
+    padding: 1rem 2rem;
     background-color: #fc9047;
     color: #ffffff;
     border: none;
-    border-radius: 4px;
+    border-radius: 0.4rem;
     cursor: pointer;
     text-align: center;
 }

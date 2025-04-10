@@ -1,10 +1,16 @@
-.projecten {
+.event {
     padding: 20px;
     background-color: #f9f9f9;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+
+    &__container{
+        max-width: 132rem;
+        width: 100%;
+
+    }
 
 
 
@@ -26,7 +32,7 @@
     text-align: center;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    width: 35rem;
+    width: 100%;
     position: relative; 
 
     &:hover {
@@ -112,14 +118,35 @@
 }
 
 @media Screen and (max-width: 1090px) {
-    .projecten__list {
+    .event__list {
         grid-template-columns: 1fr 1fr; 
     }
 }
 
 @media Screen and (max-width: 750px) {
-    .projecten__list {
+    .event__list {
         grid-template-columns: 1fr; 
     }
+    .project{
+        width: 35rem;
+    } 
+
+
+    .event {
+        padding: 20px;
+        background-color: #f9f9f9;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    
+        &__container{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 132rem;
+            width: 100%;
+    
+        }}
 }
 

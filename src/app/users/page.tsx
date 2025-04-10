@@ -55,34 +55,39 @@ export default function Search() {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <div className={styles.searchBar}>
+    <div className={styles.user}>
+      <div className={styles.user__container}>
+        
+      <div className={styles.user__header}>
+        <div className={styles.user__searchBar}>
           <i className="fa-solid fa-magnifying-glass"></i>
           <input
             type="text"
             placeholder="Search users"
-            className={styles.inputField}
+            className={styles.user__inputField}
           />
         </div>
         <button
-          className={styles.addUserButton}
+          className={styles.user__addUserButton}
           onClick={handleAddUser}
         >
           Add new user
         </button>
-      </div>
-      <div className={styles.userList}>
+        </div>
+        
+
+
+      <div className={styles.user__userList}>
         {Array.from({ length: 6 }).map((_, index) => (
-          <div key={index} className={styles.userRow}>
-            <i className={`fa-regular fa-circle-user ${styles.userIcon}`}></i>
-            <span className={styles.userName}>John Doe</span>
+          <div key={index} className={styles.user__userRow}>
+            <i className={`fa-regular fa-circle-user ${styles.user__userIcon}`}></i>
+            <span className={styles.user__userName}>John Doe</span>
             <i
-              className={`fa-regular fa-pen-to-square ${styles.editIcon}`}
+              className={`fa-regular fa-pen-to-square ${styles.user__editIcon}`}
               onClick={() => handleEditUser(index)}
             ></i>
             <i
-              className={`fa-solid fa-trash ${styles.deleteIcon}`}
+              className={`fa-solid fa-trash ${styles.user__deleteIcon}`}
               onClick={() => handleDeleteUser(index)}
             ></i>
           </div>
@@ -137,6 +142,7 @@ export default function Search() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+      </div>
   );
 }
