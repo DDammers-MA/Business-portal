@@ -11,6 +11,9 @@ const Sidebar = () => {
     <>
       <header className={`${styles.header} ${isOpen ? styles["header--shifted"] : ""}`}>
         {/* Header content */}
+        <div className={styles.header__container}>
+
+      
         <nav className={styles.header__nav}>
           <ul className={`${styles.header__navList} ${styles["header__navList--first"]}`}>
 
@@ -40,7 +43,8 @@ const Sidebar = () => {
           {/* Toggle Button (Hamburger Icon) */}
           {/* Hide this button when sidebar is open */}
    
-        </nav>
+          </nav>
+          </div>
       </header>
 
       {/* Sidebar */}

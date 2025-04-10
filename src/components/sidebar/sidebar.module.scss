@@ -72,17 +72,23 @@ padding: 1rem 4rem;
 
 .header {
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   padding: 1rem;
   transition: margin-left 0.3s ease;
   background: #BC76F1;
  padding: 1rem 4rem;
  min-height: 7.5rem;
+ width: 100%;
 
 
   &--shifted {
     margin-left: 25rem;  
+  }
+
+  &__container{
+    max-width: 132rem;
+    width: 100%;
   }
 
   &__nav {
