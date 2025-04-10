@@ -67,6 +67,7 @@ export default function Login() {
 			router.push(redirectedFrom || '/');
 		} catch (err) {
 			console.error('Login or Session Error:', err);
+			setLoading(false);
 			if (err instanceof FirebaseError) {
 				if (
 					err.code === 'auth/invalid-email' ||
@@ -83,8 +84,6 @@ export default function Login() {
 			} else {
 				setError('An unexpected error occurred. Please try again.');
 			}
-		} finally {
-			setLoading(false);
 		}
 	};
 
@@ -97,7 +96,7 @@ export default function Login() {
 					width={150}
 					height={50}
 					className={styles.logo}
-				/>{' '}
+				/>
 				{showSuccessMessage && (
 					<div className={styles.successBanner}>
 						Registration successful! You can now log in.
