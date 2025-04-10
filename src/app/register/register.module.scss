@@ -117,20 +117,20 @@
 	}
 }
 
-/* Added Container for Password Input + Toggle */
+
 .passwordInputContainer {
 	position: relative;
 	width: 100%;
-	margin-bottom: 15px; /* Match inputField margin */
+	margin-bottom: 15px; 
 }
 
-/* Make input fill container */
+
 .passwordInputContainer .inputField {
-	margin-bottom: 0; /* Remove margin from input inside container */
-	padding-right: 60px; /* Add padding to prevent text overlap with button */
+	margin-bottom: 0; 
+	padding-right: 60px; 
 }
 
-/* Style for the toggle button */
+
 .showPasswordButton {
 	position: absolute;
 	right: 10px;
@@ -138,14 +138,14 @@
 	transform: translateY(-50%);
 	background: none;
 	border: none;
-	color: #888; /* Adjust color as needed */
+	color: #888; 
 	cursor: pointer;
 	padding: 5px;
-	font-size: 12px; /* Adjust size as needed */
+	font-size: 12px; 
 }
 
 .showPasswordButton:hover {
-	color: #333; /* Darken color on hover */
+	color: #333; 
 }
 
 .showPasswordButton:disabled {
