@@ -1,121 +1,119 @@
 .container {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 100vh;
-	background-color: #ffffff;
-}
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #ffffff;
 
-.loginBox {
-	width: 40rem;
-	padding: 2rem;
-	background-color: #ffffff;
-	box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.1);
-	border-radius: 0.8rem;
-	text-align: center;
-}
+    .loginBox {
+        width: 40rem;
+        padding: 2rem;
+        background-color: #ffffff;
+        box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.1);
+        border-radius: 0.8rem;
+        text-align: center;
 
-.logo {
-	width: 15rem;
-}
+        .logo {
+            width: 15rem;
+        }
 
-.title {
-	font-size: 2.4rem;
-	font-weight: bold;
-	margin-bottom: 5rem;
-}
+        .title {
+            font-size: 2.4rem;
+            font-weight: bold;
+            margin-bottom: 5rem;
+        }
 
-.inputField {
-	width: 100%;
-	padding: 1rem;
-	margin-bottom: 1.5rem;
-	border: 0.2rem solid #000;
-	border-radius: 0.4rem;
-	font-size: 1.6rem;
-	color: #000;
-	transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
+        .inputField {
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: 0.2rem solid #000;
+            border-radius: 0.4rem;
+            font-size: 1.6rem;
+            color: #000;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
 
-.inputField::placeholder {
-	color: #000;
-	opacity: 1;
-}
+            &::placeholder {
+                color: #000;
+                opacity: 1;
+            }
 
-.inputField:focus {
-	outline: none;
-	border-color: #fc9047;
-	box-shadow: 0 0 0 0.2rem rgba(252, 144, 71, 0.3);
-}
+            &:focus {
+                outline: none;
+                border-color: #fc9047;
+                box-shadow: 0 0 0 0.2rem rgba(252, 144, 71, 0.3);
+            }
+        }
 
-.forgotPassword {
-	display: block;
-	text-align: left;
-	font-size: 1.4rem;
-	color: #fc9047;
-	text-decoration: none;
-	margin-bottom: 2rem;
-	cursor: pointer;
-	transition: color 0.3s ease;
-}
+        .forgotPassword {
+            display: block;
+            text-align: left;
+            font-size: 1.4rem;
+            color: #fc9047;
+            text-decoration: none;
+            margin-bottom: 2rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
 
-.forgotPassword:hover {
-	text-decoration: underline;
-}
+            &:hover {
+                text-decoration: underline;
+            }
+        }
 
-.loginButton {
-	width: 18rem;
-	padding: 1rem 0;
-	background-color: #fc9047;
-	color: #ffffff;
-	border: none;
-	border-radius: 4rem;
-	font-size: 2.5rem;
-	cursor: pointer;
-	transition: background-color 0.3s ease;
-}
+        .loginButton {
+            width: 18rem;
+            padding: 1rem 0;
+            background-color: #fc9047;
+            color: #ffffff;
+            border: none;
+            border-radius: 4rem;
+            font-size: 2.5rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
 
-.loginButton:hover {
-	background-color: #e67a3c;
-}
+            &:hover {
+                background-color: #e67a3c;
+            }
+        }
 
-.errorBanner {
-	background-color: #f8d7da; 
-	color: #721c24; 
-	padding: 1rem;
-	margin-top: 1.5rem; 
-	border: 0.1rem solid #f5c6cb; 
-	border-radius: 0.4rem;
-	width: 100%;
-	box-sizing: border-box; 
-	text-align: center;
-	font-size: 1.4rem;
-}
+        .errorBanner {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            border: 0.1rem solid #f5c6cb;
+            border-radius: 0.4rem;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+            font-size: 1.4rem;
+        }
 
+        .successBanner {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: 0.1rem solid #c3e6cb;
+            border-radius: 0.4rem;
+            text-align: center;
+        }
 
-.successBanner {
-	background-color: #d4edda; 
-	color: #155724;
-	padding: 1rem;
-	margin-bottom: 1.5rem;
-	border: 0.1rem solid #c3e6cb; 
-	border-radius: 0.4rem;
-	text-align: center;
-}
+        .spinner {
+            border: 0.4rem solid rgba(255, 255, 255, 0.3);
+            border-left-color: #ffffff;
+            border-radius: 50%;
+            width: 1.8rem;
+            height: 1.8rem;
+            display: inline-block;
+            vertical-align: middle;
+            animation: spin 1s linear infinite;
 
-
-.spinner {
-	border: 0.4rem solid rgba(255, 255, 255, 0.3); 
-	border-left-color: #ffffff; 
-	border-radius: 50%;
-	width: 1.8rem; 
-	height: 1.8rem; 
-	display: inline-block;
-	vertical-align: middle; 
-	animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-	to {
-		transform: rotate(360deg);
-	}
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+        }
+    }
 }
