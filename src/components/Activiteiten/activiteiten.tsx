@@ -4,7 +4,8 @@ import React, { useState } from 'react';
 import styles from './activiteiten.module.scss';
 
 const Activiteiten = () => {
-    const activiteiten = [
+    //De useState beheer ik de activiteitenlijst die ik heb gemaakt hieronder
+    const [activiteiten, setActiviteiten] = useState([
         {
             id: 1,
             image: '/images/image.png',
@@ -41,19 +42,21 @@ const Activiteiten = () => {
             title: 'Activiteit 6',
             description: 'Dit is een beschrijving van activiteit 6.',
         },
-    ];
+    ]);
+
+   
+    const handleDelete = (id: number) => {
+        setActiviteiten((prevActiviteiten) =>
+            prevActiviteiten.filter((activiteit) => activiteit.id !== id)
+        );
+    };
 
     return (
         <div className={styles.event}>
             <div className={styles.event__container}>
                 <div className={styles.event__list}>
                     {activiteiten.map((activiteit) => (
-                        <ActiviteitCard
-                            key={activiteit.id}
-                            image={activiteit.image}
-                            title={activiteit.title}
-                            description={activiteit.description}
-                        />
+                        
                     ))}
                 </div>
             </div>
@@ -65,18 +68,16 @@ interface ActiviteitCardProps {
     image: string;
     title: string;
     description: string;
+    onDelete: () => void; // Voeg een prop toe voor de verwijderfunctie
 }
 
 const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
     image,
     title,
     description,
+    onDelete,
 }) => {
-    const [isToggled, setIsToggled] = useState(false);
-
-    const handleToggle = () => {
-        setIsToggled((prev) => !prev);
-    };
+   
 
     return (
         <div
@@ -90,7 +91,11 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 
             <div className={styles.project__footer}>
                 <div className={styles.project__actions}>
-                    <i className="fa-solid fa-trash" style={{ color: '#f00f0f' }}></i>
+                    <i
+                        className="fa-solid fa-trash"
+                        style={{ color: '#f00f0f', cursor: 'pointer' }}
+                        
+                    ></i>
                     <i className="fa-regular fa-pen-to-square"></i>
                 </div>
                 <div
