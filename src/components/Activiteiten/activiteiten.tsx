@@ -94,7 +94,7 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
                     <i
                         className="fa-solid fa-trash"
                         style={{ color: '#f00f0f', cursor: 'pointer' }}
-                        
+                        onClick={onDelete} 
                     ></i>
                     <i className="fa-regular fa-pen-to-square"></i>
                 </div>
