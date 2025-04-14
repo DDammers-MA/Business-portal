@@ -1,167 +1,168 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import styles from "./user.module.scss";
-
 import { Modal } from '@/components/modal/modal';
 
 export default function Search() {
 
-  const users = [
+  const [users, setUsers] = useState([
     {
       id: 1,
-      image: '/images/image.png',
-      Name: 'JOHN DOE',
-     
+    
+      companyName: 'JOHN DOE',
+      companyEmail: "JOHN@example.com",
+      phoneNumber: "1234567890",
+      password: "password123",
     },
-  ];
+  ]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<number | null>(null);
-  const [formData, setFormData] = useState({
-    companyName: "",
-    companyEmail: "",
-    phoneNumber: "",
-    password: "",
-  });
+  const [currentUser, setCurrentUser] = useState(null);
 
-  const handleEditUser = (userIndex: number) => {
-    setSelectedUser(userIndex);
-    setIsModalOpen(true);
+  const handleDeleteUser = (userIndex) => {
+    const updatedUsers = users.filter((_, index) => index !== userIndex);
+    setUsers(updatedUsers);
   };
 
-  const handleDeleteUser = (userIndex: number) => {
-    console.log(`Delete user ${userIndex + 1}`);
-    // Hier komt de back-end voor de functie om een gebruiker te verwijderen
-  };
-
-  const closeModal = () => {
+  const handleFormSubmit = (user) => {
+    if (user.id) {
+      // Edit existing user
+      setUsers(users.map((u) => (u.id === user.id ? user : u)));
+    } else {
+      // Add new user
+      setUsers([...users, { ...user, id: Date.now() }]);
+    }
     setIsModalOpen(false);
-    setSelectedUser(null);
-    setFormData({
-      companyName: "",
-      companyEmail: "",
-      phoneNumber: "",
-      password: "",
-    });
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSaveChanges = () => {
-    console.log("Wijzigingen opgeslagen:", formData);
-    // Hier komt de back-end logica om de wijzigingen op te slaan
-    closeModal(); 
   };
 
   return (
     <div className={styles.user}>
       <div className={styles.user__container}>
-        
-      <div className={styles.user__header}>
-        <div className={styles.user__searchBar}>
-          <i className="fa-solid fa-magnifying-glass"></i>
-          <input
-            type="text"
-            placeholder="Search users"
-            className={styles.user__inputField}
-          />
+        <div className={styles.user__header}>
+          <div className={styles.user__searchBar}>
+            <i className="fa-solid fa-magnifying-glass"></i>
+            <input
+              type="text"
+              placeholder="Search users"
+              className={styles.user__inputField}
+            />
+          </div>
+          <button
+            className={styles.user__addUserButton}
+            onClick={() => {
+              setCurrentUser(null);
+              setIsModalOpen(true);
+            }}
+          >
+            Add new user
+          </button>
         </div>
-        <button
-          className={styles.user__addUserButton}
-        	onClick={() => {
-            setIsModalOpen(true);
-          }}
-        >
-          Add new user
-        </button>
-        </div>
-        
-
 
         <div className={styles.user__userList}>
-  {users.map((user, index) => (
-    <div key={user.id} className={styles.user__userRow}>
-       <i className={'fa-regular fa-circle-user ${styles.user__userIcon'}></i>
-      <span className={styles.user__userName}>{user.Name}</span>
-      <i
-        className={`fa-regular fa-pen-to-square ${styles.user__editIcon}`}
-        onClick={() => handleEditUser(index)}
-      ></i>
-      <i
-        className={`fa-solid fa-trash ${styles.user__deleteIcon}`}
-        onClick={() => handleDeleteUser(index)}
-      ></i>
-    </div>
-  ))}
-</div>
-
-      {}
-      <div className={`${styles.modalOverlay} ${isModalOpen ? styles.show : ""}`}>
-        <div className={styles.modal}>
-          <h2>Edit User</h2>
-          <form className={styles.modalForm}>
-            <input
-              type="text"
-              name="companyName"
-              placeholder="Company Name"
-              value={formData.companyName}
-              onChange={handleInputChange}
-              className={styles.inputField}
-            />
-            <input
-              type="email"
-              name="companyEmail"
-              placeholder="Company Email"
-              value={formData.companyEmail}
-              onChange={handleInputChange}
-              className={styles.inputField}
-            />
-            <input
-              type="text"
-              name="phoneNumber"
-              placeholder="Phone Number"
-              value={formData.phoneNumber}
-              onChange={handleInputChange}
-              className={styles.inputField}
-            />
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={formData.password}
-              onChange={handleInputChange}
-              className={styles.inputField}
-            />
-          </form>
-          <div className={styles.modalButtons}>
-            <button onClick={closeModal} className={styles.closeButton}>
-              Close
-            </button>
-            <button onClick={handleSaveChanges} className={styles.saveButton}>
-              Wijzig
-            </button>
-          </div>
+          {users.map((user, index) => (
+            <div key={user.id} className={styles.user__userRow}>
+              <i className={'fa-regular fa-circle-user ${styles.user__userIcon'}></i>
+              <span className={styles.user__userName}>{user.companyName}</span>
+              <i
+                className={`fa-regular fa-pen-to-square ${styles.user__editIcon}`}
+                onClick={() => {
+                  setCurrentUser(user);
+                  setIsModalOpen(true);
+                }}
+              ></i>
+              <i
+                className={`fa-solid fa-trash ${styles.user__deleteIcon}`}
+                onClick={() => handleDeleteUser(index)}
+              ></i>
+            </div>
+          ))}
         </div>
-      </div>
       </div>
 
       <Modal
-              isOpen={isModalOpen}
-              onClose={() => {
-                setIsModalOpen(false);
-              }}
-            >
-              <p>hallo</p>
-            </Modal>
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+        }}
+      >
+        <UserForm
+          user={currentUser}
+          onSubmit={handleFormSubmit}
+        />
+      </Modal>
+    </div>
+  );
+}
+
+function UserForm({ user, onSubmit }) {
+  const [formData, setFormData] = useState(user || {
+    companyName: '',
+    companyEmail: '',
+    phoneNumber: '',
+    password: ''
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit(formData);
+  };
+
+  return (
+    <form className={styles.modalForm} onSubmit={handleSubmit}>
+
+<h3>{user ? `Edit ${formData.companyName || 'User'}` : 'Add New User'}</h3>
 
 
+      <div>
+        <label>companyName:</label>
+        <input
+          type="text"
+          name="companyName"
+          value={formData.companyName}
+          onChange={handleChange}
+          className={styles.inputField}
+        />
       </div>
+
+      <div>
+        <label>companyEmail:</label>
+        <input
+          type="text"
+          name="companyEmail"
+          value={formData.companyEmail}
+          onChange={handleChange}
+          className={styles.inputField}
+        />
+      </div>
+
+      <div>
+        <label>phoneNumber:</label>
+        <input
+          type="text"
+          name="phoneNumber"
+          value={formData.phoneNumber}
+          onChange={handleChange}
+          className={styles.inputField}
+        />
+      </div>
+
+      <div>
+        <label>password:</label>
+        <input
+          type="text"
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          className={styles.inputField}
+        />
+      </div>
+
+      <button className={styles.saveButton} type="submit">Save</button>
+    </form>
   );
 }
