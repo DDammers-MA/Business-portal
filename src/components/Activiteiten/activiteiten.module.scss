@@ -1,6 +1,5 @@
 .event {
-    padding: 20px;
-    background-color: #f9f9f9;
+    padding: 2rem;
     width: 100%;
     display: flex;
     align-items: center;
@@ -21,18 +20,18 @@
 
 .project {
     background: white;
-    border: 1px solid #ddd;
+    border: 0.1px solid #ddd;
     border-radius: 2rem;
     padding: 1.5rem;
     text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0.4rem 0.6rem rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
     width: 100%;
     position: relative;
 
     &:hover {
         transform: translateY(-5px);
-        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 0.6rem 0.10rem rgba(0, 0, 0, 0.15);
     }
 
     &__toggled {
@@ -41,9 +40,9 @@
 
     &__image {
         width: 100%;
-        height: 200px;
+        height: 20rem;
         object-fit: cover;
-        border-radius: 8px;
+        border-radius: 0.8rem;
         margin-bottom: 2rem;
     }
 
@@ -81,11 +80,11 @@
         width: 4rem;
         height: 2rem;
         background-color: #f57c00;
-        border-radius: 25px;
+        border-radius: 2.5rem;
         cursor: pointer;
         display: flex;
         align-items: center;
-        padding: 0 5px;
+        padding: 0 0.5rem;
         transition: background-color 0.3s ease;
 
         &__circle {
@@ -124,7 +123,6 @@
 
     .event {
         padding: 20px;
-        background-color: #f9f9f9;
         width: 100%;
         display: flex;
         align-items: center;
