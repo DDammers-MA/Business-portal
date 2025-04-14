@@ -4,8 +4,18 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./user.module.scss";
 
+import { Modal } from '@/components/modal/modal';
+
 export default function Search() {
-  const router = useRouter();
+
+  const users = [
+    {
+      id: 1,
+      image: '/images/image.png',
+      Name: 'JOHN DOE',
+     
+    },
+  ];
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<number | null>(null);
   const [formData, setFormData] = useState({
@@ -23,10 +33,6 @@ export default function Search() {
   const handleDeleteUser = (userIndex: number) => {
     console.log(`Delete user ${userIndex + 1}`);
     // Hier komt de back-end voor de functie om een gebruiker te verwijderen
-  };
-
-  const handleAddUser = () => {
-    router.push("/register");
   };
 
   const closeModal = () => {
@@ -55,39 +61,46 @@ export default function Search() {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <div className={styles.searchBar}>
+    <div className={styles.user}>
+      <div className={styles.user__container}>
+        
+      <div className={styles.user__header}>
+        <div className={styles.user__searchBar}>
           <i className="fa-solid fa-magnifying-glass"></i>
           <input
             type="text"
             placeholder="Search users"
-            className={styles.inputField}
+            className={styles.user__inputField}
           />
         </div>
         <button
-          className={styles.addUserButton}
-          onClick={handleAddUser}
+          className={styles.user__addUserButton}
+        	onClick={() => {
+            setIsModalOpen(true);
+          }}
         >
           Add new user
         </button>
-      </div>
-      <div className={styles.userList}>
-        {Array.from({ length: 6 }).map((_, index) => (
-          <div key={index} className={styles.userRow}>
-            <i className={`fa-regular fa-circle-user ${styles.userIcon}`}></i>
-            <span className={styles.userName}>John Doe</span>
-            <i
-              className={`fa-regular fa-pen-to-square ${styles.editIcon}`}
-              onClick={() => handleEditUser(index)}
-            ></i>
-            <i
-              className={`fa-solid fa-trash ${styles.deleteIcon}`}
-              onClick={() => handleDeleteUser(index)}
-            ></i>
-          </div>
-        ))}
-      </div>
+        </div>
+        
+
+
+        <div className={styles.user__userList}>
+  {users.map((user, index) => (
+    <div key={user.id} className={styles.user__userRow}>
+       <i className={'fa-regular fa-circle-user ${styles.user__userIcon'}></i>
+      <span className={styles.user__userName}>{user.Name}</span>
+      <i
+        className={`fa-regular fa-pen-to-square ${styles.user__editIcon}`}
+        onClick={() => handleEditUser(index)}
+      ></i>
+      <i
+        className={`fa-solid fa-trash ${styles.user__deleteIcon}`}
+        onClick={() => handleDeleteUser(index)}
+      ></i>
+    </div>
+  ))}
+</div>
 
       {}
       <div className={`${styles.modalOverlay} ${isModalOpen ? styles.show : ""}`}>
@@ -137,6 +150,18 @@ export default function Search() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+
+      <Modal
+              isOpen={isModalOpen}
+              onClose={() => {
+                setIsModalOpen(false);
+              }}
+            >
+              <p>hallo</p>
+            </Modal>
+
+
+      </div>
   );
 }

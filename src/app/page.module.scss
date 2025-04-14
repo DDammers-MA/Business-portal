@@ -2,18 +2,23 @@
   
 }
 
-
 .modal{
     &__button{
         position: fixed;
         bottom: 1rem;
         right: 1rem;
+        font-size: 2rem;
         padding: 1rem 3rem ; 
         background: #FC9047;
         color: white;
         border-radius: 300rem;
         border: none;
         z-index: 99999;
+        
+        a{
+            color: white;
+           text-decoration: none;
+        }
 
         &:hover{
             background: #c26120;

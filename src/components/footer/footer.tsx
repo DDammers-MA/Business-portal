@@ -81,14 +81,14 @@ const footer = () => {
                     <div className={styles.footer__rightContainer}>
 
                         <div className={styles.footer__rightContainer__logoContainer}>
-                        <img className={styles.footer__rightContainer__logo} src="logo.png" alt="Logo" />
+                        <img className={styles.footer__rightContainer__logo} src="test complete logo.png" alt="Logo" />
                         </div>
 
-                        <li className={styles.footer__listItem}>Onderneem activiteiten via DOEdeal! met het héle gezin</li>
+                        <li className={styles.footer__listItem}>Unite, Explore & Connect</li>
 
                     </div>
 
-                    
+                     
 
                     
 

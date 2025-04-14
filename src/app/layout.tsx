@@ -1,12 +1,10 @@
+// layout.tsx (SERVER COMPONENT)
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-
 import "./globals.css";
-import Sidebar from "@/components/sidebar/sidebar";
-
-import Script from 'next/script';
-import Footer from '@/components/footer/footer';
-
+import Script from "next/script";
+import Footer from "@/components/footer/footer";
+import LayoutWrapper from "@/app/layoutWrapper"; // <- new client-side wrapper
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,29 +25,21 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-
       <head>
-        {/* Laad Font Awesome-script asynchroon */}
         <Script
           src="https://kit.fontawesome.com/8a111eb1bb.js"
           crossOrigin="anonymous"
-          strategy="afterInteractive" // Dit zorgt ervoor dat het script pas na de interactie wordt geladen
+          strategy="afterInteractive"
         />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <main style={{ flex: 1 }}>
-          <Sidebar />
-
-          {children}
-        </main>
-
+        <LayoutWrapper>{children}</LayoutWrapper>
         <Footer />
-        
       </body>
     </html>
   );

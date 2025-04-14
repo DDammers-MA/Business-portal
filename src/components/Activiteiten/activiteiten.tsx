@@ -44,8 +44,9 @@ const Activiteiten = () => {
 	];
 
 	return (
-		<div className={styles.projecten}>
-			<div className={styles.projecten__list}>
+		<div className={styles.event}>
+			<div className={styles.event__container}>
+			<div className={styles.event__list}>
 				{activiteiten.map((activiteit) => (
 					<ActiviteitCard
 						key={activiteit.id}
@@ -54,7 +55,8 @@ const Activiteiten = () => {
 						description={activiteit.description}
 					/>
 				))}
-			</div>
+				</div>
+				</div>
 		</div>
 	);
 };
