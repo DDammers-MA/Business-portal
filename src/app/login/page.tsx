@@ -3,7 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import {
+	signInWithEmailAndPassword,
+	sendPasswordResetEmail,
+} from 'firebase/auth';
 import { FirebaseError } from 'firebase/app';
 import { auth } from '../../../utils/firebase.browser';
 import styles from './login.module.scss';
@@ -14,6 +17,8 @@ export default function Login() {
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState(false);
 	const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+	const [resetLoading, setResetLoading] = useState(false);
+	const [resetMessage, setResetMessage] = useState<string | null>(null);
 	const router = useRouter();
 	const searchParams = useSearchParams();
 
@@ -27,21 +32,25 @@ export default function Login() {
 	const handleLogin = async () => {
 		if (!email) {
 			setError('Please enter your company email.');
+			setResetMessage(null);
 			return;
 		}
 
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!emailRegex.test(email)) {
 			setError('Please enter a valid email address.');
+			setResetMessage(null);
 			return;
 		}
 		if (!password) {
 			setError('Please enter your password.');
+			setResetMessage(null);
 			return;
 		}
 
 		setLoading(true);
 		setError(null);
+		setResetMessage(null);
 		try {
 			const userCredential = await signInWithEmailAndPassword(
 				auth,
@@ -87,6 +96,44 @@ export default function Login() {
 		}
 	};
 
+	const handlePasswordReset = async () => {
+		if (!email) {
+			setError('Please enter your email address to reset the password.');
+			setResetMessage(null);
+			return;
+		}
+
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (!emailRegex.test(email)) {
+			setError('Please enter a valid email address.');
+			setResetMessage(null);
+			return;
+		}
+
+		setResetLoading(true);
+		setError(null);
+		setResetMessage(null);
+
+		try {
+			await sendPasswordResetEmail(auth, email);
+			setResetMessage('Password reset email sent! Check your inbox.');
+		} catch (err) {
+			console.error('Password Reset Error:', err);
+			if (err instanceof FirebaseError) {
+				if (err.code === 'auth/user-not-found') {
+					setError('No user found with this email address.');
+				} else {
+					setError('Failed to send password reset email. Please try again.');
+				}
+			} else {
+				setError('An unexpected error occurred. Please try again.');
+			}
+			setResetMessage(null);
+		} finally {
+			setResetLoading(false);
+		}
+	};
+
 	return (
 		<div className={styles.container}>
 			<div className={styles.loginBox}>
@@ -125,9 +172,23 @@ export default function Login() {
 						onChange={(e) => setPassword(e.target.value)}
 						disabled={loading}
 					/>
-					<a href="#" className={styles.forgotPassword}>
-						Forgot password
-					</a>
+					<span
+						onClick={handlePasswordReset}
+						className={styles.forgotPassword}
+						style={{
+							cursor: 'pointer',
+							display: 'block',
+							marginBottom: '10px',
+							textAlign: 'right',
+						}}
+						role="button"
+						tabIndex={0}
+						onKeyDown={(e) => {
+							if (e.key === 'Enter' || e.key === ' ') handlePasswordReset();
+						}}
+					>
+						{resetLoading ? 'Sending...' : 'Forgot password'}
+					</span>
 					<button
 						className={styles.loginButton}
 						type="submit"
@@ -136,6 +197,9 @@ export default function Login() {
 						{loading ? <span className={styles.spinner}></span> : 'Login'}
 					</button>
 					{error && <div className={styles.errorBanner}>{error}</div>}
+					{resetMessage && (
+						<div className={styles.successBanner}>{resetMessage}</div>
+					)}
 				</form>
 			</div>
 		</div>

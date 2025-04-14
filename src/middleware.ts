@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-const protectedPaths = ['/', '/create', '/activities', '/users', '/statistics'];
-const adminPaths = ['/bahblahjavg'];
-const publicOnlyPaths = ['/login', '/register'];
+const protectedPaths = ['/', '/create'];
+const adminPaths = ['/users', '/activities/approve', '/statistics'];
+const publicOnlyPaths = ['/login'];
 
 export async function middleware(request: NextRequest) {
 	const { pathname } = request.nextUrl;
