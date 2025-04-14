@@ -1,11 +1,16 @@
 "use client";
 
-import { useState } from "react";
+// import { useState } from "react";
 import Link from "next/link";
 import styles from "./sidebar.module.scss";
 
-const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+type SidebarProps = {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+};
+
+const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
+
 
   return (
     <>
@@ -63,10 +68,10 @@ const Sidebar = () => {
             
         <h2 className={styles.sidebar__title}>
           Admin
-          {/* Show the hamburger button only when sidebar is open */}
+          {/* Show the h amburger button only when sidebar is open */}
             </h2>
             
-            <SidebarItem href="/" label="Users" />
+            <SidebarItem href="/users" label="Users" />
             <SidebarItem href="/profile" label="Unapproved activities" />
             <SidebarItem href="/settings" label="Statistics" />
           </ul>

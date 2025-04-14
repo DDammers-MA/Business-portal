@@ -84,6 +84,11 @@ padding: 1rem 4rem;
 
   &--shifted {
     margin-left: 25rem;  
+   
+      width: calc(100% - 25rem);
+      margin-left: 25rem;
+    
+      transition: 0.2s all ;
   }
 
   &__container{

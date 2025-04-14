@@ -1,0 +1,29 @@
+/* layoutWrapper.module.scss */
+.layoutWrapper {
+    display: flex;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  
+  .main {
+    flex: 1;
+    transition: margin-left 0.3s ease;
+    padding: 2rem;
+    margin-left: 0;
+  }
+  
+  .mainShifted {
+    margin-left: 250px; // Or whatever your sidebar width is
+  }
+  .main {
+    transition: margin-left 0.3s ease;
+    padding: 2rem;
+    margin-left: 0;
+
+    min-height: 100vh;
+  }
+  
+  .mainShifted {
+    margin-left: 250px; // match sidebar width
+  }
+  
