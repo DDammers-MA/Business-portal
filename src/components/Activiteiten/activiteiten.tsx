@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import styles from './activiteiten.module.scss';
 
 const Activiteiten = () => {
-    //De useState beheer ik de activiteitenlijst die ik heb gemaakt hieronder
+   
     const [activiteiten, setActiviteiten] = useState([
         {
             id: 1,
@@ -56,19 +56,25 @@ const Activiteiten = () => {
             <div className={styles.event__container}>
                 <div className={styles.event__list}>
                     {activiteiten.map((activiteit) => (
-                        
+                        <ActiviteitCard
+                            key={activiteit.id} 
+                            image={activiteit.image}
+                            title={activiteit.title}
+                            description={activiteit.description}
+                            onDelete={() => handleDelete(activiteit.id)} 
+                        />
                     ))}
                 </div>
             </div>
         </div>
     );
-};
+}; 
 
 interface ActiviteitCardProps {
     image: string;
     title: string;
     description: string;
-    onDelete: () => void; // Voeg een prop toe voor de verwijderfunctie
+    onDelete: () => void; 
 }
 
 const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
@@ -77,7 +83,11 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
     description,
     onDelete,
 }) => {
-   
+    const [isToggled, setIsToggled] = useState(false);
+
+    const handleToggle = () => {
+        setIsToggled((prev) => !prev);
+    };
 
     return (
         <div
