@@ -1,195 +1,193 @@
 .form {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 
-   
-    box-shadow: 0.1rem 0.1rem 1rem 0.1rem rgba(0, 0, 0, 0.2);
-    width: 100%;
-    height: 80vh;
-    max-height: 80vh;
-    padding: 2rem;
-    border-radius: 2rem;
+	box-shadow: 0.1rem 0.1rem 1rem 0.1rem rgba(0, 0, 0, 0.2);
+	width: 100%;
+	height: 80vh;
+	max-height: 80vh;
+	padding: 2rem;
+	border-radius: 2rem;
 
-    &__Container {
+	&__Container {
+		display: flex;
+		align-items: start;
+		justify-content: flex-start;
+		width: 100%;
+		gap: 1rem;
+		height: 100%;
+	}
 
-        display: flex;
-        align-items: start;
-        justify-content: flex-start;
-        width: 100%;
-        gap: 1rem;
-        height: 100%;
-     
-    }
+	&__textContainer {
+		display: flex;
+		align-items: start;
+		justify-content: space-between;
+		flex-direction: column;
+		gap: 1rem;
+		width: 50%;
+		height: 100%;
+	}
 
-    &__textContainer{
-        display: flex;
-        align-items: start;
-        justify-content: space-between;
-        flex-direction: column;
-        gap: 1rem;
-        width: 50%;
-        height: 100%;
- 
-        
-     
-    }
+	&__previewContainer {
+		height: 100%;
+		width: 50%;
+		display: flex;
+		align-items: start;
+		justify-content: start;
+		flex-direction: column;
+	}
 
-    &__previewContainer {
-        height: 100%;
-        width: 50%;
-   display: flex;
-   align-items: start;
-   justify-content: start;
-   flex-direction: column;
-  
-       
-    
-    }
+	&__infoTitle {
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+	}
 
-    &__infoTitle {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-    }
+	&__input {
+		background: white;
+		border-radius: 1rem;
+		padding: 1rem;
 
-    &__input {
-        background: white;
-        border-radius: 1rem;
-        padding: 1rem;
-    
-        border: 0.2rem solid black;
-        
+		border: 0.2rem solid black;
 
-        &--title {
-            width: 100%; 
-        }
-    }
+		&--title {
+			width: 100%;
+		}
+	}
 
-    &__textarea {
-        width: 100%;  
-        background: white;
-        border-radius: 1rem;
-        padding: 0.5rem 1rem;
-        border: 0.2rem solid black;
-        height: 20rem;
-    }
+	&__textarea {
+		width: 100%;
+		background: white;
+		border-radius: 1rem;
+		padding: 0.5rem 1rem;
+		border: 0.2rem solid black;
+		height: 20rem;
+	}
 
-    &__divContainer {
-        display: flex;
-        align-items: center;
-        justify-content: space-between; 
-        gap: 2rem; 
-        width: 100%;  
+	&__divContainer {
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 2rem;
+		width: 100%;
+	}
 
-    
-    }
+	&__div {
+		width: 100%;
+		position: relative;
+		padding-bottom: 1.5em;
+	}
 
-    &__div{
-        width: 100%;
-    }
+	&__timepicker,
+	&__imgPicker {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.5rem;
+		width: 100%;
+	}
 
-    &__timepicker,
-    &__imgPicker {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-        width: 100%; 
-        ;
-    }
+	.timepicker:before {
+		content: 'Opening time:';
+		color: #9d9d9d;
+		margin-bottom: 0.2rem;
+		font-size: 14px;
+		font-weight: bold;
+	}
 
-    .timepicker:before {
-        content: "Opening time:";
-        color: #9d9d9d;
-        margin-bottom: 0.2rem;
-        font-size: 14px;
-        font-weight: bold;
-    }
+	.imgPicker:before {
+		content: 'Upload image:';
+		color: #9d9d9d;
 
-    .imgPicker:before {
-        content: "Upload image:";
-        color: #9d9d9d;
-       
-        font-size: 14px;
-        font-weight: bold;
-    }
+		font-size: 14px;
+		font-weight: bold;
+	}
 
-    input[type="time"],
-    input[type="file"] {
-        width: 100%; 
-        padding: 0.5rem;
-        border-radius: 0.5rem;
-        border: 0.2rem solid black;
+	input[type='time'],
+	input[type='file'] {
+		width: 100%;
+		padding: 0.5rem;
+		border-radius: 0.5rem;
+		border: 0.2rem solid black;
 
-        background: white;
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-      
+		background: white;
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+	}
 
-    }
+	&__loactionDiv {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
 
-
-    &__loactionDiv{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      
-    }
-
-    &__buttonContainer{
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-      
-
-    }
-
-
-
-
+	&__buttonContainer {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+	}
 }
 
 .nextBtn {
-    background: #bc76f1;
-    padding: 1rem 3rem;
-    border-radius: 1rem;
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: background 0.3s;
+	background: #bc76f1;
+	padding: 1rem 3rem;
+	border-radius: 1rem;
+	color: white;
+	border: none;
+	cursor: pointer;
+	transition: background 0.3s;
 
-    &:hover {
-        background: darken(#bc76f1, 10%);
-    }
+	&:hover {
+		background: darken(#bc76f1, 10%);
+	}
 }
 
 .fileUpload {
-  position: relative; 
-  width: 100%;
+	position: relative;
+	width: 100%;
 
-  &__input {
-    display: none !important
-  }
+	&__input {
+		display: none !important;
+	}
 
+	&__button {
+		width: 100%;
+		display: inline-block;
+		background: #bc76f1;
+		color: white;
+		padding: 1rem 2rem;
+		border-radius: 1rem;
+		cursor: pointer;
+		text-align: center;
+		transition: background 0.3s;
 
-  &__button {
-  width: 100%;
-    display: inline-block;
-    background: #bc76f1;
-    color: white;
-    padding: 1rem 2rem;
-    border-radius: 1rem;
-    cursor: pointer;
-    text-align: center;
-    transition: background 0.3s;
-
-    &:hover {
-      background: #a65ed1;
-    }
-  }
+		&:hover {
+			background: #a65ed1;
+		}
+	}
 }
 
+/* Add styles for validation errors */
+.form__error {
+	color: red;
+	font-size: 0.875em;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+}
 
+.form__input--error,
+.form__textarea--error {
+	border-color: red;
+	box-shadow: 0 0 0 1px red;
+}
+
+/* Style for disabled button */
+.nextBtn:disabled {
+	background-color: #ccc;
+	cursor: not-allowed;
+}

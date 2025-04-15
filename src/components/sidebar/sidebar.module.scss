@@ -1,202 +1,223 @@
 /* Sidebar */
 .sidebar {
-  position: fixed;
-  top: 0;
-  left: -50rem; 
-  width: 25rem;
-  height: 100%;
-  background-color: #BC76F1;
-  transition: left 0.3s ease;
-  z-index: 10000;
-padding: 1rem 4rem;
+	position: fixed;
+	top: 0;
+	left: -50rem;
+	width: 25rem;
+	height: 100%;
+	background-color: #bc76f1;
+	transition: left 0.3s ease;
+	z-index: 10000;
+	padding: 1rem 4rem;
 
-  &--open {
-    left: 0;  
-  }
+	&--open {
+		left: 0;
+	}
 
-  &__container{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 7rem;
-  }
+	&__container {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		height: 7rem;
+	}
 
-  &__nav{
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-    flex-direction: column;
-    gap: 3rem;
-  }
+	&__nav {
+		display: flex;
+		align-items: center;
+		justify-content: space-evenly;
+		flex-direction: column;
+		gap: 3rem;
+	}
 
-  &__navList{
-    width: 100%;
-    height: auto;
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-    flex-direction: column;
-    gap: 2rem;
+	&__navList {
+		width: 100%;
+		height: auto;
+		display: flex;
+		align-items: flex-start;
+		justify-content: flex-start;
+		flex-direction: column;
+		gap: 2rem;
 
+		&--second {
+			display: none;
+		}
+	}
 
-    &--second{
-      display: none;
-    }
-  
-  }
+	&__navLink {
+		color: white;
+		text-decoration: none;
+	}
 
+	&__navItem {
+		list-style: none;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 2rem;
+	}
 
-
-  &__navLink{
-    color: white;
-    text-decoration: none;
-  }
-
-  &__navItem{
-    list-style: none;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
- 
-  }
-
-
-  &__title{
-   
-    color: white;
-
-  }
+	&__title {
+		color: white;
+	}
 }
 
-
 .header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 1rem;
-  transition: margin-left 0.3s ease;
-  background: #BC76F1;
- padding: 1rem 4rem;
- min-height: 7.5rem;
- width: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 1rem;
+	transition: margin-left 0.3s ease;
+	background: #bc76f1;
+	padding: 1rem 4rem;
+	min-height: 7.5rem;
+	width: 100%;
 
+	&--shifted {
+		margin-left: 25rem;
 
-  &--shifted {
-    margin-left: 25rem;  
-   
-      width: calc(100% - 25rem);
-      margin-left: 25rem;
-    
-      transition: 0.2s all ;
-  }
+		width: calc(100% - 25rem);
+		margin-left: 25rem;
 
-  &__container{
-    max-width: 132rem;
-    width: 100%;
-  }
+		transition: 0.2s all;
+	}
 
-  &__nav {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    justify-content: space-between;
+	&__container {
+		max-width: 132rem;
+		width: 100%;
+	}
 
-    width: 100%;  
-  }
-    &__navList {
-      list-style: none;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 3rem;
-      
+	&__nav {
+		display: flex;
+		gap: 1rem;
+		align-items: center;
+		justify-content: space-between;
 
-      &--first{
-     
-      
-      }
-    }
+		width: 100%;
+	}
+	&__navList {
+		list-style: none;
+		padding: 0;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 3rem;
+	}
 
-    &__navListFIrst{
-     
-    }
+	&__navItem {
+		display: inline-block;
+	}
 
-   &__navItem {
-      display: inline-block;
-      
-    }
+	&__navLink {
+		text-decoration: none;
+		color: white;
+	}
 
-    &__navLink {
-      text-decoration: none;
-      color: white;
-    }
+	&__logo {
+		height: 5rem;
+	}
+}
 
-    &__logo {
-      height: 5rem;
-      
-    }
+.toggleButton {
+	background: none;
+	border: none;
+	font-size: 2rem;
+	cursor: pointer;
+	z-index: 1100;
+	color: white;
 
+	&--sidebarOpen {
+		color: white;
+		position: absolute;
+		top: 0;
+		left: 50%;
+		transform: translateX(-50%);
+	}
 
-  }
+	&--hidden {
+		display: none;
+		color: white;
+	}
+}
 
-  .toggleButton {
-    background: none;
-    border: none;
-    font-size: 2rem;  
-    cursor: pointer;
-    z-index: 1100;
-    color: white; 
+/* New Profile Dropdown Styles */
+.profileDropdownContainer {
+	position: relative; /* Needed for absolute positioning of the dropdown */
+}
 
-    &--sidebarOpen {
-      color: white;
-      position: absolute;
-      top: 0;
-      left: 50%; 
-      transform: translateX(-50%); 
-    }
+.profileButton {
+	background: none;
+	border: none;
+	color: white;
+	cursor: pointer;
+	font-size: 2.8rem; /* Adjust size as needed */
+	padding: 0; /* Remove default padding */
+	display: flex; /* Align icon nicely */
+	align-items: center;
+	justify-content: center;
+}
 
-    &--hidden {
-      display: none; 
-      color: white;
-    
-    }
-  
-  }
+.profileDropdown {
+	position: absolute;
+	top: 100%; /* Position below the button */
+	right: 0;
+	background-color: white; /* White background for contrast */
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	padding: 0.8rem 0; /* Padding top/bottom */
+	min-width: 150px; /* Minimum width */
+	z-index: 1000; /* Ensure it's above other content */
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem; /* Spacing between items */
 
+	a,
+	button {
+		background: none;
+		border: none;
+		color: #333; /* Darker text color */
+		padding: 0.8rem 1.5rem; /* Padding inside items */
+		text-align: left;
+		cursor: pointer;
+		display: block; /* Make items take full width */
+		width: 100%;
+		font-size: 1rem;
+		text-decoration: none; /* Remove underline from link */
+	}
 
-  @media screen and ( max-width: 750px){
+	a:hover,
+	button:hover {
+		background-color: #f0f0f0; /* Light grey background on hover */
+	}
+}
 
-    .header {
-      &__navItem {
-        display: none;
-      }
-    }
+@media screen and (max-width: 750px) {
+	.header {
+		&__navItem {
+			display: none;
+		}
+	}
 
-    .sidebar {
-      left: -100vw; /* Hidden by default */
-      width: 100vw; /* Full screen width */
-  
-      &--open {
-        left: 0;
-      } 
-      
+	.sidebar {
+		left: -100vw; /* Hidden by default */
+		width: 100vw; /* Full screen width */
 
-    &__navList{
-      width: 100%;
-      height: auto;
-      display: flex;
-      align-items: flex-start;
-      justify-content: flex-start;
-      flex-direction: column;
-      gap: 2rem;
- 
-  
-      &--second{
-    display: flex;
-      }
-    
-    }
-  }
-  }
+		&--open {
+			left: 0;
+			width: 100px;
+		}
+
+		&__navList {
+			width: 100%;
+			height: auto;
+			display: flex;
+			align-items: flex-start;
+			justify-content: flex-start;
+			flex-direction: column;
+			gap: 2rem;
+
+			&--second {
+				display: flex;
+			}
+		}
+	}
+}

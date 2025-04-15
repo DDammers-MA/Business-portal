@@ -1,0 +1,20 @@
+export interface FormData {
+	id?: string;
+	type: string;
+	name: string;
+	addr: string;
+	description: string;
+	opening_hours: string;
+	image_url: string;
+	image_file?: File;
+	email: string;
+	phone: string;
+	budget: string;
+	start_time: string;
+	end_time: string;
+	date: string;
+	place: string;
+	postal_code: string;
+	active?: boolean;
+	status?: 'published' | 'unpublished' | 'draft';
+}
