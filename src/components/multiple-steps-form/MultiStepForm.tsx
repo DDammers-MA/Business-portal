@@ -30,7 +30,7 @@ const MultiStepForm = () => {
 		place: '',
 		postal_code: '',
 		active: true,
-		status: 'unpublish',
+		status: 'unpublished',
 	});
 
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -144,7 +144,7 @@ const MultiStepForm = () => {
 				place: '',
 				postal_code: '',
 				active: true,
-				status: 'unpublish',
+				status: 'unpublished',
 			});
 			setStep(1);
 			router.push('/');

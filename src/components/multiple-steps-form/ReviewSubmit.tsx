@@ -129,7 +129,7 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
 							value={formData.status ?? 'unpublish'}
 							onChange={(e) => handleInputChange('status', e.target.value)}
 						>
-							<option value="unpublish">Unpublish</option>
+							<option value="unpublished">Unpublish</option>
 							<option value="draft">Draft</option>
 						</select>
 					</div>
