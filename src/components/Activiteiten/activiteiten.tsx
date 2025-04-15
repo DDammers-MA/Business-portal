@@ -90,7 +90,7 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 				// Apply user-specific filter if not admin and logged in
 				if (!isAdmin && user) {
 					// Use 'creatorId' as confirmed
-					q = query(q, where('creatorId', '==', user.uid));
+					q = query(q, where('creatorUid', '==', user.uid));
 				}
 
 				const querySnapshot = await getDocs(q);
