@@ -82,7 +82,7 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
 
 	return (
 		<div className={styles.preview}>
-			<h2 className={styles.preview__title}>Preview of Card</h2>
+			<h2 className={styles.preview__title}>Preview in app</h2>
 			<div className={styles.preview__Container}>
 				<div className={styles.card} style={cardStyle}>
 					<div

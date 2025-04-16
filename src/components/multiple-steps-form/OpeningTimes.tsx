@@ -68,7 +68,7 @@ const OpeningTimes: React.FC<OpeningTimesProps> = ({
 			<div className={styles.form__textContainer}>
 				<h2>Opening Times</h2>
 				{daysOfWeek.map((day) => (
-					<div key={day} className={styles.form__divContainer}>
+					<div key={day} className={`${styles.form__divContainer} ${!formData.openingTimes[day] ? styles['form__day--disabled'] : ''}`}>
 						<div className={styles.form__dayToggle}>
 							<input
 								type="checkbox"
@@ -78,23 +78,26 @@ const OpeningTimes: React.FC<OpeningTimesProps> = ({
 							/>
 							<label className={styles.form__label}>{day}</label>
 						</div>
-						<div className={styles.form__timeRow}>
-							<input
-								type="time"
-								value={formData.openingTimes[day]?.start || ''}
-								onChange={(e) => handleTimeChange(day, 'start', e.target.value)}
-								className={styles['form__input--time']}
-								disabled={!formData.openingTimes[day]} // Disable if day is unchecked
-							/>
+						{!formData.openingTimes[day] ? (
+							<span className={styles.form__closedLabel}>Closed</span>
+						) : (
+							<div className={styles.form__timeRow}>
+								<span className={styles.form__timeLabel}>From</span>
+								<input
+									type="time"
+									value={formData.openingTimes[day]?.start || ''}
+									onChange={(e) => handleTimeChange(day, 'start', e.target.value)}
+									className={styles['form__input--time']}
+								/>
 								<span className={styles.form__timeSeparator}>to</span>
-							<input
-								type="time"
-								value={formData.openingTimes[day]?.end || ''}
-								onChange={(e) => handleTimeChange(day, 'end', e.target.value)}
-								className={styles['form__input--time']}
-								disabled={!formData.openingTimes[day]} // Disable if day is unchecked
-							/>
-						</div>
+								<input
+									type="time"
+									value={formData.openingTimes[day]?.end || ''}
+									onChange={(e) => handleTimeChange(day, 'end', e.target.value)}
+									className={styles['form__input--time']}
+								/>
+							</div>
+						)}
 						{errors[day] && (
 							<span className={styles.form__error} role="alert">
 								{errors[day]}

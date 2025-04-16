@@ -27,14 +27,16 @@
 		gap: 1rem;
 		width: 50%;
 		height: 100%;
+	
 	}
 
 	&__previewContainer {
 		height: 100%;
 		width: 50%;
 		display: flex;
-		align-items: start;
-		justify-content: start;
+		align-items: flex-start;
+		justify-content: flex-start;
+
 		flex-direction: column;
 	}
 
@@ -71,6 +73,7 @@
 		justify-content: space-between;
 		gap: 2rem;
 		width: 100%;
+		
 	}
 
 	&__div {
@@ -129,6 +132,62 @@
 		justify-content: space-between;
 		width: 100%;
 	}
+
+	&__timeRow {
+		display: flex;
+		align-items: center;
+		gap: 10px; 
+	}
+	
+	&__input--time {
+		width: 120px; 
+	}
+	
+	&__timeSeparator {
+		font-size: 16px;
+		color: #333; 
+	}
+	
+	&__dayToggle {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		margin-bottom: 5px;
+	}
+	
+	&__checkbox {
+		width: 16px;
+		height: 16px;
+		cursor: pointer;
+	}
+	
+	&__timeLabel {
+		font-size: 14px;
+		color: #333;
+		margin-right: 5px;
+	}
+	
+	&__day--disabled {
+		opacity: 0.5; 
+	}
+	
+	&__day--disabled{
+		pointer-events: auto; 
+		opacity: 1; 
+	}
+	
+	&__checkbox {
+		pointer-events: auto; 
+		opacity: 1; 
+	}
+	
+	&__closedLabel {
+		font-size: 14px;
+		color: #999;
+		font-style: italic;
+		margin-left: 10px;
+	}
+	
 }
 
 .nextBtn {
@@ -170,7 +229,7 @@
 	}
 }
 
-/* Add styles for validation errors */
+
 .form__error {
 	color: red;
 	font-size: 0.875em;
@@ -186,36 +245,9 @@
 	box-shadow: 0 0 0 1px red;
 }
 
-/* Style for disabled button */
+
 .nextBtn:disabled {
 	background-color: #ccc;
 	cursor: not-allowed;
 }
 
-.form__timeRow {
-	display: flex;
-	align-items: center;
-	gap: 10px; /* Space between inputs and separator */
-}
-
-.form__input--time {
-	width: 120px; /* Adjust width as needed */
-}
-
-.form__timeSeparator {
-	font-size: 16px;
-	color: #333; /* Adjust color as needed */
-}
-
-.form__dayToggle {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	margin-bottom: 5px;
-}
-
-.form__checkbox {
-	width: 16px;
-	height: 16px;
-	cursor: pointer;
-}
