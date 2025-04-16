@@ -67,7 +67,7 @@
 
 	&__divContainer {
 		display: flex;
-		align-items: flex-end;
+		align-items: flex-start;
 		justify-content: space-between;
 		gap: 2rem;
 		width: 100%;
@@ -190,4 +190,32 @@
 .nextBtn:disabled {
 	background-color: #ccc;
 	cursor: not-allowed;
+}
+
+.form__timeRow {
+	display: flex;
+	align-items: center;
+	gap: 10px; /* Space between inputs and separator */
+}
+
+.form__input--time {
+	width: 120px; /* Adjust width as needed */
+}
+
+.form__timeSeparator {
+	font-size: 16px;
+	color: #333; /* Adjust color as needed */
+}
+
+.form__dayToggle {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 5px;
+}
+
+.form__checkbox {
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
 }

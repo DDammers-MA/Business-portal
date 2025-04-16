@@ -17,20 +17,26 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
 	nextStep,
 	prevStep,
 }) => {
+
+	
 	return (
 		<div className={styles.form__Container}>
 			<div className={styles.form__textContainer}>
 				<h2>Location Information</h2>
 
 				<div className={styles.form__divContainer}>
-					<FormInput
-						label="Address"
+
+				<FormInput
+						label="Place"
 						type="text"
-						placeholder="Enter address"
-						value={formData.addr}
-						onChange={(e) => setFormData({ ...formData, addr: e.target.value })}
+						placeholder="Enter Place"
+						value={formData.place}
+						onChange={(e) =>
+							setFormData({ ...formData, place: e.target.value })
+						}
 						className={styles['form__input--title']}
 					/>
+				
 
 					<FormInput
 						label="Date"
@@ -54,16 +60,16 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
 						className={styles['form__input--title']}
 					/>
 
-					<FormInput
-						label="Place"
+<FormInput
+						label="Address"
 						type="text"
-						placeholder="Enter Place"
-						value={formData.place}
-						onChange={(e) =>
-							setFormData({ ...formData, place: e.target.value })
-						}
+						placeholder="Enter address"
+						value={formData.addr}
+						onChange={(e) => setFormData({ ...formData, addr: e.target.value })}
 						className={styles['form__input--title']}
 					/>
+
+			
 				</div>
 
 				<div className={styles.form__divContainer}>
