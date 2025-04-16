@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import Script from 'next/script';
-import Footer from '@/components/footer/footer';
+// import Footer from '@/components/footer/footer';
 import LayoutWrapper from '@/app/layoutWrapper'; // <- new client-side wrapper
 
 const geistSans = Geist({
@@ -39,7 +39,7 @@ export default function RootLayout({
 			</head>
 			<body className={`${geistSans.variable} ${geistMono.variable}`}>
 				<LayoutWrapper>{children}</LayoutWrapper>
-				<Footer />
+	
 			</body>
 		</html>
 	);
