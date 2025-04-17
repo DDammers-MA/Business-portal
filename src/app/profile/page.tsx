@@ -12,6 +12,14 @@ const ProfilePage = () => {
         password: '********',
     });
 
+	
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [error, setError] = useState<string | null>(null); 
+
+    
+    const [showPasswordForm, setShowPasswordForm] = useState(false);
     
 };
 
