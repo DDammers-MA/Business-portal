@@ -42,13 +42,13 @@ const handlePasswordChange = (e: React.FormEvent) => {
 
 return (
 	<div className={styles.profileContainer}>
-		{}
+		{ }
 		<h1 className={styles.title}>Mijn Profiel</h1>
 
-		{}
+		{ }
 		{error && <p className={styles.error}>{error}</p>}
 
-		{}
+		{ }
 		<div className={styles.profileInfo}>
 			<div className={styles.infoItem}>
 				<strong>Bedrijfsnaam:</strong> <span>{profile.companyName}</span>
@@ -64,13 +64,77 @@ return (
 			</div>
 		</div>
 
-		{}
+		{ }
 		<button
-                className={styles.toggleButton}
-                onClick={() => setShowPasswordForm(!showPasswordForm)}
-            >
-                {showPasswordForm ? 'Annuleren' : 'Wachtwoord wijzigen'}
-            </button>
+			className={styles.toggleButton}
+			onClick={() => setShowPasswordForm(!showPasswordForm)}
+		>
+			{showPasswordForm ? 'Annuleren' : 'Wachtwoord wijzigen'}
+		</button>
 
+		{}
+		{showPasswordForm && (
+			<div className={styles.passwordSection}>
+				<h2 className={styles.subtitle}>Wachtwoord wijzigen</h2>
+				<form className={styles.passwordForm} onSubmit={handlePasswordChange}>
+					{}
+					<div className={styles.formGroup}>
+						<label htmlFor="currentPassword">Huidig wachtwoord</label>
+						<div className={styles.passwordInput}>
+							<input
+								type={showCurrentPassword ? 'text' : 'password'} 
+								id="currentPassword"
+								value={currentPassword}
+								onChange={(e) => setCurrentPassword(e.target.value)}
+								required
+							/>
+							<span
+								className={styles.showText}
+								onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+							>
+								{showCurrentPassword ? 'Hide' : 'Show'}
+							</span>
+						</div>
+					</div>
 
-export default ProfilePage;
+					{}
+					<div className={styles.formGroup}>
+						<label htmlFor="newPassword">Nieuw wachtwoord</label>
+						<div className={styles.passwordInput}>
+							<input
+								type={showNewPassword ? 'text' : 'password'} 
+								id="newPassword"
+								value={newPassword}
+								onChange={(e) => setNewPassword(e.target.value)}
+								required
+							/>
+							<span
+								className={styles.showText}
+								onClick={() => setShowNewPassword(!showNewPassword)}
+							>
+								{showNewPassword ? 'Hide' : 'Show'}
+							</span>
+						</div>
+					</div>
+
+					{}
+					<div className={styles.formGroup}>
+						<label htmlFor="confirmPassword">Bevestig nieuw wachtwoord</label>
+						<div className={styles.passwordInput}>
+							<input
+								type={showConfirmPassword ? 'text' : 'password'} 
+								id="confirmPassword"
+								value={confirmPassword}
+								onChange={(e) => setConfirmPassword(e.target.value)}
+								required
+							/>
+							<span
+								className={styles.showText}
+								onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+							>
+								{showConfirmPassword ? 'Hide' : 'Show'}
+							</span>
+						</div>
+					</div>
+
+					export default ProfilePage;
