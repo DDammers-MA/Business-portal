@@ -24,4 +24,21 @@ const ProfilePage = () => {
 
 };
 
+
+const handlePasswordChange = (e: React.FormEvent) => {
+	e.preventDefault();
+
+	if (newPassword !== confirmPassword) {
+		setError('De nieuwe wachtwoorden komen niet overeen.');
+		return;
+	}
+
+	setError(null);
+	console.log('Wachtwoord succesvol gewijzigd.');
+	setCurrentPassword('');
+	setNewPassword('');
+	setConfirmPassword('');
+};
+
+
 export default ProfilePage;
