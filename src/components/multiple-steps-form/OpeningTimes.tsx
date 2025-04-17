@@ -21,17 +21,22 @@ const OpeningTimes: React.FC<OpeningTimesProps> = ({
 	const [errors, setErrors] = useState<Record<string, string>>({});
 
 	const handleTimeChange = (day: string, type: 'start' | 'end', value: string) => {
-		setFormData((prev) => ({
-			...prev,
-			openingTimes: {
-				...prev.openingTimes,
-				[day]: {
-					...prev.openingTimes[day],
-					[type]: value,
+		setFormData((prev) => {
+			const prevTimes = prev.openingTimes[day] || { start: '', end: '' };
+			const updatedTime = {
+				start: type === 'start' ? value : prevTimes.start,
+				end: type === 'end' ? value : prevTimes.end,
+			};
+			return {
+				...prev,
+				openingTimes: {
+					...prev.openingTimes,
+					[day]: updatedTime,
 				},
-			},
-		}));
+			};
+		});
 	};
+	
 
 	const handleDayToggle = (day: string) => {
 		setFormData((prev) => ({
@@ -40,7 +45,7 @@ const OpeningTimes: React.FC<OpeningTimesProps> = ({
 				...prev.openingTimes,
 				[day]: prev.openingTimes[day]
 					? undefined
-					: { start: '', end: '' }, // Reset times when enabling
+					: { start: '', end: '' }, // Ensure strict type adherence
 			},
 		}));
 	};

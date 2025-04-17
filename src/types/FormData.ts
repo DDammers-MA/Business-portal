@@ -17,5 +17,5 @@ export interface FormData {
 	postal_code: string;
 	active?: boolean;
 	status?: 'published' | 'unpublished' | 'draft';
-	openingTimes: Record<string, { start: string; end: string }>;
+	openingTimes: Record<string, { start: string; end: string } | undefined>;
 }

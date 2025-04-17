@@ -33,7 +33,8 @@
 	align-items: flex-start;
 	justify-content: flex-start;
 	flex-direction: column;
-	gap: 2rem;
+	gap: 0rem;
+
 
 
 	&__Container {
@@ -61,19 +62,23 @@
 
 // Input Grouping and Styling
 .inputGroup {
+
 	display: flex;
-	flex-direction: column;
+justify-content: center;
 	align-items: center;
 	gap: 1.5rem;
 	width: 100%;
-	max-width: 350px;
+
 	margin-top: 1rem;
 }
 
+
 .formControl {
+
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	max-width: 350px;
 	width: 100%;
 }
 

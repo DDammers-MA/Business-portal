@@ -176,6 +176,7 @@ const EventInfo: React.FC<EventInfoProps> = ({
         />         */}
 
 					<FormInput
+						iconClass="fa-solid fa-euro-sign"
 						label="Budget"
 						type="number"
 						placeholder="Enter Budget"

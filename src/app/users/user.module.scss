@@ -9,23 +9,14 @@
       
         max-width: 132rem;
      width: 100%;
-         border: 0.2rem solid #000;
+
+     height: 70vh;
+     overflow-y: scroll;
         border-radius: 0.8rem;
         box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.1);
         margin: 0 auto;
         padding: 2rem;
-        
 
-
-        // margin: 0 auto;
-        // padding: 20px;
-        // background-color: #ffffff;
-       
-        // 
-        // position: relative;
-        // top: 50%;
-        // transform: translateY(20%);
-        // height: 52rem;
     }
 
     &__header {
@@ -98,8 +89,10 @@
         position: relative;
         height: 6rem;
      
+        &:nth-child(even){
+            background-color: #ebebeb;
+        }
     
-        border-bottom: 0.3rem solid #fc9047 ;
     }
 
     &__userIcon {
