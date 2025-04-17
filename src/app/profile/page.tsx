@@ -64,5 +64,13 @@ return (
 			</div>
 		</div>
 
+		{}
+		<button
+                className={styles.toggleButton}
+                onClick={() => setShowPasswordForm(!showPasswordForm)}
+            >
+                {showPasswordForm ? 'Annuleren' : 'Wachtwoord wijzigen'}
+            </button>
+
 
 export default ProfilePage;
