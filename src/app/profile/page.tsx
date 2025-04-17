@@ -40,5 +40,29 @@ const handlePasswordChange = (e: React.FormEvent) => {
 	setConfirmPassword('');
 };
 
+return (
+	<div className={styles.profileContainer}>
+		{}
+		<h1 className={styles.title}>Mijn Profiel</h1>
+
+		{}
+		{error && <p className={styles.error}>{error}</p>}
+
+		{}
+		<div className={styles.profileInfo}>
+			<div className={styles.infoItem}>
+				<strong>Bedrijfsnaam:</strong> <span>{profile.companyName}</span>
+			</div>
+			<div className={styles.infoItem}>
+				<strong>Bedrijfsemail:</strong> <span>{profile.companyEmail}</span>
+			</div>
+			<div className={styles.infoItem}>
+				<strong>Telefoonnummer:</strong> <span>{profile.phoneNumber}</span>
+			</div>
+			<div className={styles.infoItem}>
+				<strong>Wachtwoord:</strong> <span>{profile.password}</span>
+			</div>
+		</div>
+
 
 export default ProfilePage;
