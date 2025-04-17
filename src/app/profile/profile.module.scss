@@ -11,9 +11,10 @@
         font-weight: bold;
         margin-bottom: 2rem;
         text-align: center;
-       }   color: #333;
+        color: #333;
+    }
 
-       .profileInfo {
+    .profileInfo {
         display: flex;
         flex-direction: column;
         gap: 1.5rem;
@@ -36,4 +37,95 @@
             }
         }
     }
+
+    .toggleButton {
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+        color: #fff;
+        background-color: #fc9047;
+        border: none;
+        border-radius: 0.8rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+            background-color: #e67a3c;
+        }
     }
+
+    .passwordSection {
+        margin-top: 2rem;
+
+        .subtitle {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .passwordForm {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+
+            .formGroup {
+                display: flex;
+                flex-direction: column;
+
+                label {
+                    font-size: 0.9rem;
+                    color: #000;
+                    margin-bottom: 0.5rem;
+                }
+
+                .passwordInput {
+                    display: flex;
+                    align-items: center;
+                    width: 29rem;
+                    border: 0.2rem solid #fc9047;
+                    border-radius: 0.8rem;
+                    overflow: hidden;
+
+                    input {
+                        flex: 1;
+                        padding: 0.8rem;
+                        font-size: 1rem;
+                        border: none;
+                        outline: none;
+                        background-color: #fff;
+                    }
+
+                    .showText {
+                        padding: 0 1rem;
+                        font-size: 0.9rem;
+                        color: #888;
+                        cursor: pointer;
+                        user-select: none;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+
+                        &:hover {
+                            color: #555;
+                        }
+                    }
+                }
+            }
+
+            .submitButton {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+                color: #fff;
+                background-color: #fc9047;
+                border: none;
+                border-radius: 0.8rem;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+
+                &:hover {
+                    background-color: #e67a3c;
+                }
+            }
+        }
+    }
+}
