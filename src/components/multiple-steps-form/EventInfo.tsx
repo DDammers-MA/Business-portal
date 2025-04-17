@@ -183,7 +183,7 @@ const EventInfo: React.FC<EventInfoProps> = ({
 						value={formData.budget}
 						onChange={(e) => handleChange(e, 'budget')}
 						onBlur={(e) => handleBlur(e, 'budget')}
-						className={styles['form__input--title']}
+						className={`${styles['form__input--title']} ${styles['form__input--budget']}`}
 						error={touched.budget && errors.budget ? errors.budget : undefined}
 					/>
 

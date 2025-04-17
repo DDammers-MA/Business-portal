@@ -150,3 +150,11 @@ justify-content: center;
 		box-shadow: 0 0 0 2px rgba(138, 43, 226, 0.2);
 	}
 }
+
+@media screen and (max-width: 900px){
+
+	.inputGroup{
+		padding: 2rem;
+	}
+
+}
