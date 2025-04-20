@@ -45,59 +45,55 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 				}`}
 			>
 				<div className={styles.header__container}>
-					<nav className={styles.header__nav}>
-						{isAdmin && (
-							<button
-								className={`${styles.toggleButton} ${
-									isOpen ? styles['toggleButton--hidden'] : ''
-								}`}
-								onClick={() => setIsOpen(!isOpen)}
-							>
-								{isOpen ? (
-									<i className="fa-solid fa-x"></i>
-								) : (
-									<i className="fa-solid fa-bars"></i>
-								)}{' '}
-							</button>
-						)}
+				<nav className={styles.header__nav}>
+	<div className={styles.header__left}>
+		{isAdmin && (
+			<button
+				className={`${styles.toggleButton} ${
+					isOpen ? styles['toggleButton--hidden'] : ''
+				}`}
+				onClick={() => setIsOpen(!isOpen)}
+			>
+				{isOpen ? <i className="fa-solid fa-x"></i> : <i className="fa-solid fa-bars"></i>}
+			</button>
+		)}
+	</div>
 
-						{isLoggedIn && (
-							<ul
-								className={`${styles.header__navList} ${styles['header__navList--first']}`}
-							>
-								<HeaderItem href="/" label="Activities" />
-								<HeaderItem href="/?filter=published" label="Published" />
-								<HeaderItem href="/?filter=unpublished" label="Unpublished" />
-								<HeaderItem href="/?filter=drafts" label="Drafts" />
-							</ul>
-						)}
+	<div className={styles.header__center}>
+		{isLoggedIn && (
+			<ul className={`${styles.header__navList} ${styles['header__navList--first']}`}>
+				<HeaderItem href="/" label="Activities" />
+				<HeaderItem href="/?filter=published" label="Published" />
+				<HeaderItem href="/?filter=unpublished" label="Unpublished" />
+				<HeaderItem href="/?filter=drafts" label="Drafts" />
+			</ul>
+		)}
+	</div>
 
-						<ul className={styles.header__navList}>
-							{isLoggedIn && (
-								<li
-									className={`${styles.header__navItem} ${styles.profileDropdownContainer}`}
-								>
-									<button
-										className={styles.profileButton}
-										onClick={() => setIsProfileOpen(!isProfileOpen)}
-									>
-										<i className="fas fa-user-circle"></i>
-									</button>
-									{isProfileOpen && (
-										<div className={styles.profileDropdown}>
-											<Link
-												href="/profile"
-												onClick={() => setIsProfileOpen(false)}
-											>
-												Profile
-											</Link>
-											<button onClick={handleLogout}>Logout</button>
-										</div>
-									)}
-								</li>
-							)}
-						</ul>
-					</nav>
+	<div className={styles.header__right}>
+		{isLoggedIn && (
+			<ul className={styles.header__navList}>
+				<li className={`${styles.header__navItem} ${styles.profileDropdownContainer}`}>
+					<button
+						className={styles.profileButton}
+						onClick={() => setIsProfileOpen(!isProfileOpen)}
+					>
+						<i className="fas fa-user-circle"></i>
+					</button>
+					{isProfileOpen && (
+						<div className={styles.profileDropdown}>
+							<Link href="/profile" onClick={() => setIsProfileOpen(false)}>
+								Profile
+							</Link>
+							<button onClick={handleLogout}>Logout</button>
+						</div>
+					)}
+				</li>
+			</ul>
+		)}
+	</div>
+</nav>
+
 				</div>
 			</header>
 

@@ -82,7 +82,7 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
 
 	return (
 		<div className={styles.preview}>
-			<h2 className={styles.preview__title}>Preview of Card</h2>
+			<h2 className={styles.preview__title}>Preview in app</h2>
 			<div className={styles.preview__Container}>
 				<div className={styles.card} style={cardStyle}>
 					<div
@@ -98,10 +98,10 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
 			</div>
 
 			{/* Add Toggle and Select Inputs - Only show in final step */}
-			{step === 3 && (
+			{step === 4 && (
 				<div className={styles.inputGroup}>
 					{/* Active Status Toggle */}
-					<div className={styles.formControl}>
+					{/* <div className={styles.formControl}>
 						<label htmlFor="activeToggle" className={styles.label}>
 							Active?
 						</label>
@@ -116,12 +116,12 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
 							/>
 							<span className={styles.slider}></span>
 						</label>
-					</div>
+					</div> */}
 
 					{/* Status Select */}
 					<div className={styles.formControl}>
 						<label htmlFor="statusSelect" className={styles.label}>
-							Initial Status
+							Status
 						</label>
 						<select
 							id="statusSelect"
@@ -138,7 +138,7 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
 
 			{submitError && <p className={style.errorText}>{submitError}</p>}
 
-			{step === 3 && (
+			{step === 4 && (
 				<div className={style.form__buttonContainer}>
 					<button
 						className={style.nextBtn}
@@ -152,7 +152,7 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
 						onClick={submitForm}
 						disabled={isSubmitting}
 					>
-						{isSubmitting ? 'Submitting...' : 'Submit'}
+						{isSubmitting ? 'Submitting...' : 'Submit for Review'}
 					</button>
 				</div>
 			)}

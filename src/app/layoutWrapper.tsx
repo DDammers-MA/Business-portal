@@ -5,6 +5,7 @@ import { useState } from 'react';
 import Sidebar from '@/components/sidebar/sidebar';
 import styles from './layout.module.scss';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
+import Footer from '@/components/footer/footer';
 
 // Inner component to access auth context
 const LayoutContent = ({ children }: { children: React.ReactNode }) => {
@@ -14,7 +15,13 @@ const LayoutContent = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<>
 			<Sidebar isOpen={isOpen} setIsOpen={setIsOpen} isAdmin={isAdmin} />
-			<main className={styles.main}>{children}</main>
+			<div
+		className={`${styles.pageWrapper} ${isOpen ? styles.pageWrapperShifted : ''}`}
+			>
+				<main className={styles.main}>{children}</main>
+				<Footer />
+				
+	</div>
 		</>
 	);
 };
