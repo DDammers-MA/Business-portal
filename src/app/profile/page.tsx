@@ -1,41 +1,78 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './profile.module.scss';
 
+import { db } from '../../../utils/firebase.browser';
+import {
+	doc,
+	getDoc,
+} from 'firebase/firestore';
+
+import { useAuth } from '@/context/AuthContext';
+
 const ProfilePage = () => {
-    const [profile, setProfile] = useState({
-        companyName: 'Jouw Bedrijf',
-        companyEmail: 'info@jouwbedrijf.nl',
-        kvkNumber: '12345678', 
-        phoneNumber: '+31 6 12345678',
-        password: '********',
-    });
+	const { user } = useAuth();
 
-    const [currentPassword, setCurrentPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [error, setError] = useState<string | null>(null);
+	const [profile, setProfile] = useState({
+		companyName: 'Jouw Bedrijf',
+		companyEmail: 'info@jouwbedrijf.nl',
+		kvkNumber: '12345678',
+		phoneNumber: '+31 6 12345678',
+		password: '********',
+	});
 
-    const [showPasswordForm, setShowPasswordForm] = useState(false);
-    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-    const [showNewPassword, setShowNewPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+	const [currentPassword, setCurrentPassword] = useState('');
+	const [newPassword, setNewPassword] = useState('');
+	const [confirmPassword, setConfirmPassword] = useState('');
+	const [error, setError] = useState<string | null>(null);
 
-    const handlePasswordChange = (e: React.FormEvent) => {
-        e.preventDefault();
+	const [showPasswordForm, setShowPasswordForm] = useState(false);
+	const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+	const [showNewPassword, setShowNewPassword] = useState(false);
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-        if (newPassword !== confirmPassword) {
-            setError('De nieuwe wachtwoorden komen niet overeen.');
-            return;
-        }
+	useEffect(() => {
+		const fetchUserProfile = async () => {
+            if (!user) return;
+            console.log('User UID:', user.uid);
 
-        setError(null);
-        console.log('Wachtwoord succesvol gewijzigd.');
-        setCurrentPassword('');
-        setNewPassword('');
-        setConfirmPassword('');
-    };
+			try {
+				const profileRef = doc(db, 'users', user.uid);
+				const profileSnap = await getDoc(profileRef);
+
+				if (profileSnap.exists()) {
+					const data = profileSnap.data();
+					setProfile({
+						companyName: data.companyName || '',
+						companyEmail: data.companyEmail || '',
+						kvkNumber: data.kvkNumber || '',
+						phoneNumber: data.phoneNumber || '',
+						password: '********', // Never expose the real password
+					});
+				}
+			} catch (err) {
+				console.error('Error fetching profile:', err);
+			}
+		};
+
+		fetchUserProfile();
+	}, [user]);
+
+	const handlePasswordChange = (e: React.FormEvent) => {
+		e.preventDefault();
+
+		if (newPassword !== confirmPassword) {
+			setError('De nieuwe wachtwoorden komen niet overeen.');
+			return;
+		}
+
+		setError(null);
+		console.log('Wachtwoord succesvol gewijzigd.');
+		setCurrentPassword('');
+		setNewPassword('');
+		setConfirmPassword('');
+	};
 
     return (
         <div className={styles.profileContainer}>
