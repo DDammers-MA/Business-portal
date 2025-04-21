@@ -25,6 +25,12 @@ const Publised = () => {
         },
     ]);
 
+    const handleDelete = (id: number) => {
+        setActiviteiten((prevActiviteiten) =>
+            prevActiviteiten.filter((activiteit) => activiteit.id !== id)
+        );
+    };
+
 };
 
 export default Publised;
