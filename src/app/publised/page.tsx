@@ -32,17 +32,17 @@ const Publised = () => {
     };
 
     return (
-        <div className={styles.event}> 
-            <div className={styles.event__container}> 
-                <div className={styles.event__list}> 
-                    
+        <div className={styles.event}>
+            <div className={styles.event__container}>
+                <div className={styles.event__list}>
+
                     {activiteiten.map((activiteit) => (
                         <ActiviteitCard
-                            key={activiteit.id} 
-                            image={activiteit.image} 
-                            title={activiteit.title} 
-                            description={activiteit.description} 
-                            onDelete={() => handleDelete(activiteit.id)} 
+                            key={activiteit.id}
+                            image={activiteit.image}
+                            title={activiteit.title}
+                            description={activiteit.description}
+                            onDelete={() => handleDelete(activiteit.id)}
                         />
                     ))}
                 </div>
@@ -51,10 +51,10 @@ const Publised = () => {
     );
 
     interface ActiviteitCardProps {
-        image: string; 
-        title: string; 
-        description: string; 
-        onDelete: () => void; 
+        image: string;
+        title: string;
+        description: string;
+        onDelete: () => void;
     }
 
     const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
@@ -63,6 +63,12 @@ const Publised = () => {
         description,
         onDelete,
     }) => {
-};
 
-export default Publised;
+
+        const [isToggled, setIsToggled] = useState(false);
+        const handleToggle = () => {
+            setIsToggled((prev) => !prev);
+        };
+    };
+
+    export default Publised;
