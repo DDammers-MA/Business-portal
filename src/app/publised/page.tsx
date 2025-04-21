@@ -35,7 +35,6 @@ const Publised = () => {
         <div className={styles.event}>
             <div className={styles.event__container}>
                 <div className={styles.event__list}>
-
                     {activiteiten.map((activiteit) => (
                         <ActiviteitCard
                             key={activiteit.id}
@@ -49,26 +48,55 @@ const Publised = () => {
             </div>
         </div>
     );
+};
 
-    interface ActiviteitCardProps {
-        image: string;
-        title: string;
-        description: string;
-        onDelete: () => void;
-    }
+interface ActiviteitCardProps {
+    image: string;
+    title: string;
+    description: string;
+    onDelete: () => void;
+}
 
-    const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
-        image,
-        title,
-        description,
-        onDelete,
-    }) => {
+const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
+    image,
+    title,
+    description,
+    onDelete,
+}) => {
+    const [isToggled, setIsToggled] = useState(false);
 
-
-        const [isToggled, setIsToggled] = useState(false);
-        const handleToggle = () => {
-            setIsToggled((prev) => !prev);
-        };
+    const handleToggle = () => {
+        setIsToggled((prev) => !prev);
     };
 
-    export default Publised;
+    return (
+        <div
+            className={`${styles.project} ${
+                isToggled ? styles.project__toggled : ''
+            }`}
+        >
+            <img src={image} alt={title} className={styles.project__image} />
+            <h2 className={styles.project__title}>{title}</h2>
+            <p className={styles.project__description}>{description}</p>
+
+            <div className={styles.project__footer}>
+                <div className={styles.project__actions}>
+                    <i
+                        className="fa-solid fa-trash"
+                        style={{ color: '#f00f0f', cursor: 'pointer' }}
+                        onClick={onDelete}
+                    ></i>
+                    <i className="fa-regular fa-pen-to-square"></i>
+                </div>
+                <div
+                    className={`${styles.toggle} ${isToggled ? styles.toggle__on : ''}`}
+                    onClick={handleToggle}
+                >
+                    <div className={styles.toggle__circle}></div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default Publised;
