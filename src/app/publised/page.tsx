@@ -31,6 +31,24 @@ const Publised = () => {
         );
     };
 
+    return (
+        <div className={styles.event}> 
+            <div className={styles.event__container}> 
+                <div className={styles.event__list}> 
+                    
+                    {activiteiten.map((activiteit) => (
+                        <ActiviteitCard
+                            key={activiteit.id} 
+                            image={activiteit.image} 
+                            title={activiteit.title} 
+                            description={activiteit.description} 
+                            onDelete={() => handleDelete(activiteit.id)} 
+                        />
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
 };
 
 export default Publised;
