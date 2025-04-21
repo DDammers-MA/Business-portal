@@ -75,4 +75,33 @@
             transition: color 0.3s ease;
         }
     }
+
+    .toggle {
+        width: 4rem;
+        height: 2rem;
+        background-color: #f57c00;
+        border-radius: 2.5rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        padding: 0 0.5rem;
+        transition: background-color 0.3s ease;
+
+        &__circle {
+            width: 1.5rem;
+            aspect-ratio: 1/1;
+            background-color: white;
+            border-radius: 50%;
+            transform: translateX(1.5rem);
+            transition: transform 0.3s ease;
+        }
+
+        &__on {
+            background-color: #474141;
+
+            .toggle__circle {
+                transform: translateX(0);
+            }
+        }
+    }
 }
