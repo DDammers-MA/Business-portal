@@ -49,6 +49,13 @@ const Publised = () => {
             </div>
         </div>
     );
+
+    interface ActiviteitCardProps {
+        image: string; 
+        title: string; 
+        description: string; 
+        onDelete: () => void; 
+    }
 };
 
 export default Publised;
