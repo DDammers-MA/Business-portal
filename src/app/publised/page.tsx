@@ -56,6 +56,13 @@ const Publised = () => {
         description: string; 
         onDelete: () => void; 
     }
+
+    const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
+        image,
+        title,
+        description,
+        onDelete,
+    }) => {
 };
 
 export default Publised;
