@@ -82,8 +82,8 @@ export default function UserManagementClient({
 			try {
 				if (currentUser && currentUser.id) {
 					// --- Edit User ---
-					const { companyName, phone } = userFormData;
-					const updateData = { companyName, phone };
+					const { companyName, phone, kvk } = userFormData;
+					const updateData = { companyName, phone, kvk };
 					const result: UpdateUserResult = await updateUserAction(
 						currentUser.id,
 						updateData
@@ -252,12 +252,15 @@ function UserForm({
 }: UserFormProps) {
 	const [formData, setFormData] = useState<Partial<CombinedUser>>({});
 
+
 	// Effect to initialize/reset form data when user or modal state changes
 	useEffect(() => {
 		setFormData({
 			companyName: user?.companyName || '',
 			email: user?.email || '',
 			phone: user?.phone || '',
+			
+			kvk: user?.kvk || '',
 			// Only include fields relevant to the form
 		});
 		// Clear previous errors when the form is re-initialized
@@ -294,12 +297,12 @@ function UserForm({
 					id="email"
 					type="email"
 					name="email"
-					value={formData.email || ''}
+					value={formData.email || ''} 
 					onChange={handleChange}
 					className={styles.inputField}
-					disabled={isLoading || isEditMode} // Disable email editing for existing users
-					required={!isEditMode} // Required only when adding
-					readOnly={isEditMode} // Make read-only when editing
+					disabled={isLoading || isEditMode} 
+					required={!isEditMode}
+					readOnly={isEditMode}
 					aria-describedby={
 						error && error.toLowerCase().includes('email')
 							? 'form-error'
@@ -325,6 +328,28 @@ function UserForm({
 					}
 				/>
 			</div>
+
+			<div>
+	<label htmlFor="kvk">KVK Number:</label>
+	<input
+		id="kvk"
+		type="number"
+		name="kvk"
+		value={formData.kvk || ''}
+		onChange={handleChange}
+		className={styles.inputField}
+		disabled={isLoading}
+		aria-describedby={
+			error && error.toLowerCase().includes('kvk')
+				? 'form-error'
+				: undefined
+		}
+	/>
+</div>
+
+
+
+
 
 			<div>
 				<label htmlFor="phone">Phone Number:</label>

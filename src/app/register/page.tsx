@@ -17,6 +17,7 @@ export default function Register() {
 	const [companyName, setCompanyName] = useState('');
 	const [email, setEmail] = useState('');
 	const [phone, setPhone] = useState('');
+	const [KVK, setKVK] = useState('');
 	const [password, setPassword] = useState('');
 	const [repeatPassword, setRepeatPassword] = useState('');
 	const [showPassword, setShowPassword] = useState(false);
@@ -189,6 +190,16 @@ export default function Register() {
 						onChange={(e) => setPhone(e.target.value)}
 						disabled={loading}
 					/>
+
+<input
+						type="number"
+						placeholder="KVK number"
+						className={styles.inputField}
+						value={KVK}
+						onChange={(e) => setKVK(e.target.value)}
+						disabled={loading}
+					/>
+
 					<div className={styles.passwordInputContainer}>
 						<input
 							type={showPassword ? 'text' : 'password'}

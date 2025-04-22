@@ -13,6 +13,7 @@ import type { UpdateData } from 'firebase-admin/firestore'; // Import UpdateData
 interface FirestoreUserData {
 	companyName?: string;
 	phone?: string;
+	kvk?: string;
 	createdAt?: admin.firestore.Timestamp | admin.firestore.FieldValue;
 	// Add other fields from Firestore as needed
 }
@@ -49,7 +50,7 @@ function formatFirebaseError(error: unknown): string {
 
 // --- Add User Action ---
 export async function addUserAction(
-	formData: Pick<CombinedUser, 'email' | 'companyName' | 'phone'>
+	formData: Pick<CombinedUser, 'email' | 'companyName' | 'phone' | 'kvk'>
 ): Promise<{ success: boolean; message: string; newUser?: CombinedUser }> {
 	console.log('Attempting to add user:', formData);
 	if (!formData.email) {
@@ -76,6 +77,7 @@ export async function addUserAction(
 		const userData: FirestoreUserData = {
 			companyName: formData.companyName || '',
 			phone: formData.phone || '',
+			kvk: formData.kvk || '',
 			createdAt: admin.firestore.FieldValue.serverTimestamp(), // Use server timestamp correctly
 		};
 		await db.collection('users').doc(newUserRecord.uid).set(userData);
@@ -91,6 +93,7 @@ export async function addUserAction(
 			photoURL: newUserRecord.photoURL,
 			companyName: userData.companyName,
 			phone: userData.phone,
+			kvk: userData.kvk,
 			// createdAt: userData.createdAt, // This won't be available immediately after set with serverTimestamp
 		};
 
@@ -117,7 +120,7 @@ export async function addUserAction(
 
 export async function updateUserAction(
 	userId: string,
-	formData: Pick<CombinedUser, 'companyName' | 'phone'>
+	formData: Pick<CombinedUser, 'companyName' | 'phone' | 'kvk'>
 ): Promise<{ success: boolean; message: string }> {
 	console.log(`Attempting to update user ${userId}:`, formData);
 	if (!userId) {
@@ -133,6 +136,8 @@ export async function updateUserAction(
 		if (formData.companyName !== undefined)
 			updateData.companyName = formData.companyName;
 		if (formData.phone !== undefined) updateData.phone = formData.phone;
+
+		if (formData.kvk !== undefined) updateData.kvk = formData.kvk;
 
 		if (Object.keys(updateData).length === 0) {
 			return { success: true, message: 'No changes detected to update.' };
