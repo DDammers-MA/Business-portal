@@ -113,6 +113,7 @@ export default function Register() {
 			const userData = {
 				companyName: companyName,
 				phone: phone,
+				kvk: KVK,
 				createdAt: new Date(),
 			};
 			await setDoc(userDocRef, userData);
