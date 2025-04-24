@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import styles from './activiteiten.module.scss';
+import Link from 'next/link'; // Add import for Link
 // Import Firestore functions and db instance
 import { db } from '../../../utils/firebase.browser';
 import {
@@ -28,8 +29,13 @@ const STATUS_CONFIG = {
 		backgroundColor: '#198754',
 		color: 'white',
 	},
-	unpublished: {
-		label: 'Unpublished',
+	inreview: {
+		label: 'In review',
+		backgroundColor: '#ffc107',
+		color: '#333',
+	},
+	denied: {
+		label: 'Denied',
 		backgroundColor: '#ffc107',
 		color: '#333',
 	},
@@ -82,9 +88,11 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 				// Base query for the activities collection
 				let q: Query<DocumentData> = query(collection(db, 'activities'));
 
+				console.log(filter);
+
 				// Apply filter if it's valid
 				if (filter && ['published', 'unpublished', 'draft'].includes(filter)) {
-					q = query(q, where('status', '==', filter));
+					q = query(q, where('status', '==', filter.toLowerCase()));
 				}
 
 				// Apply user-specific filter if not admin and logged in
@@ -161,7 +169,7 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 									title={activiteit.name}
 									description={activiteit.description}
 									badgeConfig={badgeConfig} // Pass the config object
-									active={activiteit.active || true} // Pass renamed prop
+									active={activiteit.active ?? false} // Pass correct prop, default to false if undefined
 									onDelete={() =>
 										handleDelete(activiteit.id || '', activiteit.name)
 									}
@@ -195,7 +203,7 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 	title,
 	description,
 	badgeConfig, // Receive badgeConfig
-	active, // Receive renamed prop
+	active, // Receive corrected prop
 	onDelete,
 }) => {
 	const defaultImage = '/images/default.png';
@@ -240,7 +248,7 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 	return (
 		<div
 			className={`${styles.project} ${
-				isToggled ? styles.project__toggled : '' // Style reflects the toggled status
+				!isToggled ? styles.project__toggled : '' // Apply toggled style when NOT toggled
 			}`}
 		>
 			{/* Status Badge - Now uses config props */}
@@ -284,10 +292,21 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 						style={{ color: '#f00f0f', cursor: 'pointer' }}
 						onClick={onDelete}
 					></i>
-					<i className="fa-regular fa-pen-to-square"></i>
+					{/* Wrap edit icon with Link */}
+					<Link href={`/activity/edit/${id}`} passHref legacyBehavior>
+						<a style={{ color: 'inherit', textDecoration: 'none' }}>
+							{' '}
+							{/* Optional: maintain styling */}
+							<i
+								className="fa-regular fa-pen-to-square"
+								style={{ cursor: 'pointer' }}
+							></i>
+						</a>
+					</Link>
 				</div>
 				<div
-					className={`${styles.toggle} ${isToggled ? styles.toggle__on : ''} ${
+					className={`${styles.toggle} ${!isToggled ? styles.toggle__on : ''} ${
+						// Apply 'on' style when NOT toggled
 						isUpdating ? styles.toggle__disabled : ''
 					}`}
 					onClick={handleToggle}

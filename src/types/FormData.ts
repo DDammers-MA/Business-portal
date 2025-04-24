@@ -16,6 +16,6 @@ export interface FormData {
 	place: string;
 	postal_code: string;
 	active?: boolean;
-	status?: 'published' | 'unpublished' | 'draft';
+	status?: 'published' | 'inreview' | 'denied' | 'draft';
 	openingTimes: Record<string, { start: string; end: string } | undefined>;
 }
