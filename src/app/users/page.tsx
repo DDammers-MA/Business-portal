@@ -20,6 +20,7 @@ export type CombinedUser = {
 	photoURL?: string | null; // From Auth
 	companyName?: string; // From Firestore
 	phone?: string; // From Firestore
+	kvk?: string;
 	// createdAt?: admin.firestore.Timestamp; // Optional: include if needed
 };
 

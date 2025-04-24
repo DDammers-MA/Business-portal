@@ -5,6 +5,7 @@ import { FormData } from '@/types/FormData';
 import EventInfo from './EventInfo';
 import LocationInfo from './LocationInfo';
 import ReviewSubmit from './ReviewSubmit';
+import OpeningTimes from './OpeningTimes';
 import styles from './form.module.scss';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage, auth } from '../../../utils/firebase.browser';
@@ -30,7 +31,8 @@ const MultiStepForm = () => {
 		place: '',
 		postal_code: '',
 		active: true,
-		status: 'unpublish',
+		status: 'unpublished',
+		openingTimes: {}, // Ensure openingTimes is part of the formData state
 	});
 
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -144,7 +146,8 @@ const MultiStepForm = () => {
 				place: '',
 				postal_code: '',
 				active: true,
-				status: 'unpublish',
+				status: 'unpublished',
+				openingTimes: {},
 			});
 			setStep(1);
 			router.push('/');
@@ -177,7 +180,15 @@ const MultiStepForm = () => {
 					prevStep={prevStep}
 				/>
 			)}
-			{step === 3 && (
+			{step === 3 && ( // Adjust step number for OpeningTimes
+				<OpeningTimes
+					formData={formData}
+					setFormData={setFormData}
+					nextStep={nextStep}
+					prevStep={prevStep}
+				/>
+			)}
+			{step === 4 && ( // Adjust step number for ReviewSubmit
 				<ReviewSubmit
 					formData={formData}
 					prevStep={prevStep}

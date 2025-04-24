@@ -27,14 +27,16 @@
 		gap: 1rem;
 		width: 50%;
 		height: 100%;
+	
 	}
 
 	&__previewContainer {
 		height: 100%;
 		width: 50%;
 		display: flex;
-		align-items: start;
-		justify-content: start;
+		align-items: flex-start;
+		justify-content: flex-start;
+
 		flex-direction: column;
 	}
 
@@ -53,7 +55,29 @@
 
 		&--title {
 			width: 100%;
+			
 		}
+
+		&--time{
+			width: 100%;
+			padding: 0.5rem;
+			border-radius: 1rem;
+	
+	
+			background: white;
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+		}
+
+		&--budget {
+			padding-left: 3rem; 
+			
+		}
+	}
+
+	&__label{
+	
 	}
 
 	&__textarea {
@@ -67,16 +91,19 @@
 
 	&__divContainer {
 		display: flex;
-		align-items: flex-end;
+		align-items: flex-start;
 		justify-content: space-between;
 		gap: 2rem;
 		width: 100%;
+		
+		
 	}
 
 	&__div {
 		width: 100%;
 		position: relative;
-		padding-bottom: 1.5em;
+		padding-bottom: 1em;
+		top: 0;
 	}
 
 	&__timepicker,
@@ -107,9 +134,9 @@
 	input[type='time'],
 	input[type='file'] {
 		width: 100%;
-		padding: 0.5rem;
-		border-radius: 0.5rem;
-		border: 0.2rem solid black;
+	
+		border-radius: 1rem;
+
 
 		background: white;
 		display: flex;
@@ -129,6 +156,77 @@
 		justify-content: space-between;
 		width: 100%;
 	}
+
+	&__timeRow {
+		display: flex;
+		align-items: center;
+		gap: 10px; 
+	}
+	
+	&__input--time {
+		width: 120px; 
+	}
+	
+	&__timeSeparator {
+		font-size: 16px;
+		color: #333; 
+	}
+	
+	&__dayToggle {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		margin-bottom: 5px;
+	}
+	
+	&__checkbox {
+		width: 16px;
+		height: 16px;
+		cursor: pointer;
+	}
+	
+	&__timeLabel {
+		font-size: 14px;
+		color: #333;
+		margin-right: 5px;
+	}
+	
+	&__day--disabled {
+		opacity: 0.5; 
+	}
+	
+	&__day--disabled{
+		pointer-events: auto; 
+		opacity: 1; 
+	}
+	
+	&__checkbox {
+		pointer-events: auto; 
+		opacity: 1; 
+	}
+	
+	&__closedLabel {
+		font-size: 14px;
+		color: #999;
+		font-style: italic;
+		margin-left: 10px;
+	}
+
+	&__inputWrapper {
+		position: relative;
+		display: flex;
+		align-items: center;
+	}
+	
+	&__icon {
+		position: absolute;
+		left: 10px; /* Adjust based on your design */
+		color: #000000;
+		font-size: 1.5rem;
+	}
+	
+
+	
 }
 
 .nextBtn {
@@ -170,10 +268,10 @@
 	}
 }
 
-/* Add styles for validation errors */
+
 .form__error {
 	color: red;
-	font-size: 0.875em;
+	font-size: 1.4rem;
 	position: absolute;
 	bottom: 0;
 	left: 0;
@@ -186,8 +284,56 @@
 	box-shadow: 0 0 0 1px red;
 }
 
-/* Style for disabled button */
+
 .nextBtn:disabled {
 	background-color: #ccc;
 	cursor: not-allowed;
+}
+
+
+@media screen and (max-width: 900px){
+	.form{
+
+		height: 100%; 
+		max-height: 100%;
+
+		&__textContainer{
+			width: 100%;
+		}
+
+		&__Container {
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			gap: 2rem;
+		}
+
+	}
+
+
+
+}
+
+@media screen and (max-width: 600px){
+	.form{
+
+		height: 100%; 
+		max-height: 100%;
+
+		&__div{
+			padding-bottom: 1.75em;
+		}
+
+		&__divContainer{
+			display: block;
+		}
+
+		&__previewContainer{
+			width: 100%;
+		}
+
+	}
+
+
+
 }
