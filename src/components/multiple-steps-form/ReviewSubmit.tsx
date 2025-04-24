@@ -126,10 +126,10 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
 						<select
 							id="statusSelect"
 							className={styles.selectInput}
-							value={formData.status ?? 'unpublish'}
+							value={formData.status ?? 'inreview'}
 							onChange={(e) => handleInputChange('status', e.target.value)}
 						>
-							<option value="unpublished">Unpublish</option>
+							<option value="inreview">Send for review</option>
 							<option value="draft">Draft</option>
 						</select>
 					</div>
@@ -152,7 +152,11 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
 						onClick={submitForm}
 						disabled={isSubmitting}
 					>
-						{isSubmitting ? 'Submitting...' : 'Submit for Review'}
+						{isSubmitting
+							? 'Submitting...'
+							: formData.status === 'draft'
+							? 'Save as Draft'
+							: 'Submit for Review'}
 					</button>
 				</div>
 			)}

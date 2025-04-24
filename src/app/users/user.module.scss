@@ -1,261 +1,261 @@
 .user {
-    padding: 4rem;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+	padding: 4rem;
+	height: 100%;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 
-    &__container {
-        max-width: 132rem;
-        width: 100%;
-        height: 70vh;
-        overflow-y: scroll;
-        border-radius: 0.8rem;
-        box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.1);
-        margin: 0 auto;
-        padding: 2rem;
-    }
+	&__container {
+		max-width: 132rem;
+		width: 100%;
+		height: 70vh;
+		overflow-y: scroll;
+		border-radius: 0.8rem;
+		box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.1);
+		margin: 0 auto;
+		padding: 2rem;
+	}
 
-    &__header {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-        gap: 1rem;
-    }
+	&__header {
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 2rem;
+		gap: 1rem;
+	}
 
-    &__searchBar {
-        display: flex;
-        align-items: center;
-        background-color: #ffffff;
-        border: 2px solid #ccc;
-        border-radius: 20px;
-        padding: 5px 10px;
+	&__searchBar {
+		display: flex;
+		align-items: center;
+		background-color: #ffffff;
+		border: 2px solid #ccc;
+		border-radius: 20px;
+		padding: 5px 10px;
 
-        i {
-            margin-right: 10px;
-            font-size: 20px;
-            font-weight: bold;
-            color: #000;
-        }
-    }
+		i {
+			margin-right: 10px;
+			font-size: 20px;
+			font-weight: bold;
+			color: #000;
+		}
+	}
 
-    &__inputField {
-        border: none;
-        outline: none;
-        width: 100%;
-        font-size: 1.6rem;
-        color: #333;
+	&__inputField {
+		border: none;
+		outline: none;
+		width: 100%;
+		font-size: 1.6rem;
+		color: #333;
 
-        &::placeholder {
-            color: #333;
-            font-weight: bold;
-        }
-    }
+		&::placeholder {
+			color: #333;
+			font-weight: bold;
+		}
+	}
 
-    &__addUserButton {
-        background-color: #fc9047;
-        color: #ffffff;
-        border: none;
-        border-radius: 2rem;
-        padding: 0.5rem 2rem;
-        font-size: 1.6rem;
-        cursor: pointer;
-        height: 4rem;
+	&__addUserButton {
+		background-color: #fc9047;
+		color: #ffffff;
+		border: none;
+		border-radius: 2rem;
+		padding: 0.5rem 2rem;
+		font-size: 1.6rem;
+		cursor: pointer;
+		height: 4rem;
 
-        &:hover {
-            background-color: #e67a3c;
-        }
-    }
+		&:hover {
+			background-color: #e67a3c;
+		}
+	}
 
-    &__userList {
-    }
+	&__userList {
+	}
 
-    &__userRow {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background-color: #ffffff;
-        padding: 1rem;
-        position: relative;
-        height: 6rem;
+	&__userRow {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		background-color: #ffffff;
+		padding: 1rem;
+		position: relative;
+		height: 6rem;
 
-        &:nth-child(even) {
-            background-color: #ebebeb;
-        }
-    }
+		&:nth-child(even) {
+			background-color: #ebebeb;
+		}
+	}
 
-    &__userIcon {
-        font-size: 3rem;
-        margin-right: 0.4rem;
-        color: #333;
-    }
+	&__userIcon {
+		font-size: 3rem;
+		margin-right: 0.4rem;
+		color: #333;
+	}
 
-    &__userName {
-        flex-grow: 1;
-        font-size: 1.6rem;
-        color: #333;
-        font-weight: bold;
-        margin-left: 1rem;
-    }
+	&__userName {
+		flex-grow: 1;
+		font-size: 1.6rem;
+		color: #333;
+		font-weight: bold;
+		margin-left: 1rem;
+	}
 
-    &__actions {
-        display: flex;
-        gap: 1rem;
-        font-size: 1.5rem;
-        color: black;
-        cursor: pointer;
+	&__actions {
+		display: flex;
+		gap: 1rem;
+		font-size: 1.5rem;
+		color: black;
+		cursor: pointer;
 
-        i {
-            transition: color 0.3s ease;
-        }
-    }
+		i {
+			transition: color 0.3s ease;
+		}
+	}
 
-    &__editIcon {
-        font-size: 1.4rem;
-        color: #000;
-        cursor: pointer;
-        padding-right: 1rem; 
+	&__editIcon {
+		font-size: 1.4rem;
+		color: #000;
+		cursor: pointer;
+		padding-right: 1rem;
 
-        &:hover {
-            color: #333;
-        }
-    }
+		&:hover {
+			color: #333;
+		}
+	}
 
-    &__deleteIcon {
-        font-size: 1.4rem;
-        color: #ff0000;
-        cursor: pointer;
+	&__deleteIcon {
+		font-size: 1.4rem;
+		color: #ff0000;
+		cursor: pointer;
 
-        &:hover {
-            color: #cc0000;
-        }
-    }
+		&:hover {
+			color: #cc0000;
+		}
+	}
 }
 
 .modalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .modalOverlay.show {
-    opacity: 1;
-    visibility: visible;
+	opacity: 1;
+	visibility: visible;
 }
 
 .modal {
-    width: 50%;
-    background-color: #ffffff;
-    border-radius: 1.2rem;
-    padding: 3rem;
-    box-shadow: 0 0.8rem 1.6rem rgba(0, 0, 0, 0.2);
-    text-align: center;
-    transform: scale(0.8);
-    transition: transform 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2rem;
+	width: 50%;
+	background-color: #ffffff;
+	border-radius: 1.2rem;
+	padding: 3rem;
+	box-shadow: 0 0.8rem 1.6rem rgba(0, 0, 0, 0.2);
+	text-align: center;
+	transform: scale(0.8);
+	transition: transform 0.3s ease;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 2rem;
 }
 
 .modalForm {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+	width: 100%;
 }
 
 .modalForm .inputField {
-    border: 0.2rem solid #ccc;
-    outline: none;
-    width: 100%;
-    font-size: 1.6rem;
-    color: #333;
-    padding: 1rem;
-    border-radius: 0.8rem;
-    transition: border-color 0.3s ease;
+	border: 0.2rem solid #ccc;
+	outline: none;
+	width: 100%;
+	font-size: 1.6rem;
+	color: #333;
+	padding: 1rem;
+	border-radius: 0.8rem;
+	transition: border-color 0.3s ease;
 }
 
 .modalForm .inputField:focus {
-    border-color: #fc9047;
+	border-color: #fc9047;
 }
 
 .modalOverlay.show .modal {
-    transform: scale(1);
+	transform: scale(1);
 }
 
 .modalButtons {
-    display: flex;
-    justify-content: space-between;
-    gap: 2rem;
-    margin-top: 2rem;
-    width: 100%;
+	display: flex;
+	justify-content: space-between;
+	gap: 2rem;
+	margin-top: 2rem;
+	width: 100%;
 }
 
 .closeButton,
 .saveButton {
-    flex: 1;
-    padding: 1rem 2rem;
-    background-color: #fc9047;
-    color: #ffffff;
-    border: none;
-    border-radius: 0.4rem;
-    cursor: pointer;
-    text-align: center;
+	flex: 1;
+	padding: 1rem 2rem;
+	background-color: #fc9047;
+	color: #ffffff;
+	border: none;
+	border-radius: 0.4rem;
+	cursor: pointer;
+	text-align: center;
 }
 
 .closeButton:hover,
 .saveButton:hover {
-    background-color: #e67a3c;
+	background-color: #e67a3c;
 }
 
 @media screen and (max-width: 600px) {
-    .user__container {
-        padding: 1rem;
-    }
+	.user__container {
+		padding: 1rem;
+	}
 
-    .user__header {
-        flex-direction: column;
-        gap: 1rem;
-    }
+	.user__header {
+		flex-direction: column;
+		gap: 1rem;
+	}
 
-    .user__addUserButton {
-        width: 17rem;
-        text-align: center;
-    }
+	.user__addUserButton {
+		width: 17rem;
+		text-align: center;
+	}
 
-    .user__userRow {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-        height: auto;
-    }
+	.user__userRow {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 1rem;
+		height: auto;
+	}
 
-    .user__actions {
-        display: flex;
-        justify-content: flex-start;
-    }
+	.user__actions {
+		display: flex;
+		justify-content: flex-start;
+	}
 
-    .user__userName {
-        margin-left: 0;
-        font-size: 1.4rem;
-    }
+	.user__userName {
+		margin-left: 0;
+		font-size: 1.4rem;
+	}
 
-    .user__editIcon,
-    .user__deleteIcon {
-        font-size: 1.2rem;
-    }
+	.user__editIcon,
+	.user__deleteIcon {
+		font-size: 1.2rem;
+	}
 }

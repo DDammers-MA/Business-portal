@@ -1,0 +1,48 @@
+.page {
+	padding: 2rem;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start; // Align items to the top
+	min-height: calc(100vh - 100px); // Adjust based on header/footer height
+}
+
+.container {
+	max-width: 900px; // Or your preferred max width for the form
+	width: 100%;
+	background-color: #fff; // Optional: background for the form container
+	padding: 2rem;
+	border-radius: 8px; // Optional: rounded corners
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); // Optional: subtle shadow
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	h1 {
+		margin-bottom: 2rem;
+		color: #333;
+	}
+}
+
+.spinner {
+	border: 4px solid rgba(0, 0, 0, 0.1);
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	border-left-color: #8a2be2; // Or your theme color
+	animation: spin 1s ease infinite;
+	margin-bottom: 1rem;
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+.error {
+	color: #d9534f; // Bootstrap danger color
+	font-weight: bold;
+}

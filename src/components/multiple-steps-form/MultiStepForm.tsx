@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FormData } from '@/types/FormData';
 import EventInfo from './EventInfo';
 import LocationInfo from './LocationInfo';
@@ -11,32 +11,59 @@ import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage, auth } from '../../../utils/firebase.browser';
 import { useRouter } from 'next/navigation';
 
-const MultiStepForm = () => {
+// Define Props interface
+interface MultiStepFormProps {
+	mode: 'create' | 'edit';
+	initialData?: FormData & { id?: string }; // Include optional id for edit mode
+}
+
+const MultiStepForm = ({ mode, initialData }: MultiStepFormProps) => {
 	const router = useRouter();
 	const [step, setStep] = useState(1);
-	const [formData, setFormData] = useState<FormData>({
-		type: '',
-		name: '',
-		addr: '',
-		description: '',
-		opening_hours: '',
-		image_url: '',
-		image_file: undefined,
-		email: '',
-		phone: '',
-		budget: '',
-		start_time: '',
-		end_time: '',
-		date: '',
-		place: '',
-		postal_code: '',
-		active: true,
-		status: 'unpublished',
-		openingTimes: {}, // Ensure openingTimes is part of the formData state
+	// Initialize state with initialData if provided, else default
+	const [formData, setFormData] = useState<FormData>(() => {
+		const defaults: FormData = {
+			type: '',
+			name: '',
+			addr: '',
+			description: '',
+			opening_hours: '',
+			image_url: '',
+			image_file: undefined,
+			email: '',
+			phone: '',
+			budget: '',
+			start_time: '',
+			end_time: '',
+			date: '',
+			place: '',
+			postal_code: '',
+			active: true,
+			status: 'unpublished',
+			openingTimes: {},
+		};
+		return initialData ? { ...defaults, ...initialData } : defaults;
 	});
 
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [submitError, setSubmitError] = useState<string | null>(null);
+
+	// Effect to update state if initialData changes (e.g., after fetch in edit page)
+	// Important if initialData is fetched asynchronously
+	useEffect(() => {
+		if (initialData) {
+			const defaults: Partial<FormData> = {
+				active: true, // Ensure defaults are applied if missing in initialData
+				status: 'unpublished',
+				openingTimes: {},
+			};
+			setFormData((prev) => ({
+				...defaults,
+				...initialData,
+				image_file: prev.image_file,
+			})); // Keep existing image_file if any
+		}
+	}, [initialData]);
 
 	const nextStep = () => setStep((prev) => prev + 1);
 	const prevStep = () => setStep((prev) => prev - 1);
@@ -63,11 +90,13 @@ const MultiStepForm = () => {
 
 		try {
 			if (formData.image_file) {
+				console.log('New image file detected, starting upload...');
+				// **Optional: Delete old image here if initialData.image_url exists**
 				const file = formData.image_file;
 				const randomString = Math.random().toString(36).substring(7);
-				const fileName = `${Date.now()}-${randomString}-${formData.name}-${
-					file.name
-				}`;
+				const fileName = `${Date.now()}-${randomString}-${
+					formData.name || 'activity'
+				}-${file.name}`;
 				const storageRef = ref(storage, `activityImages/${fileName}`);
 
 				const metadata = {
@@ -77,37 +106,55 @@ const MultiStepForm = () => {
 				};
 
 				const uploadTask = uploadBytesResumable(storageRef, file, metadata);
-
 				await uploadTask;
-
 				finalImageUrl = await getDownloadURL(uploadTask.snapshot.ref);
 				console.log('File uploaded successfully. URL:', finalImageUrl);
+			} else {
+				console.log('No new image file, keeping existing URL:', finalImageUrl);
 			}
 
-			const finalData = {
-				type: 'activity',
-				name: formData.name,
-				addr: formData.addr,
-				description: formData.description,
-				opening_hours: formData.opening_hours,
-				image_url: finalImageUrl,
-				email: user.email || '',
-				phone: user.phoneNumber || '',
-				budget: formData.budget,
-				start_time: formData.start_time,
-				end_time: formData.end_time,
-				date: formData.date,
-				place: formData.place,
-				postal_code: formData.postal_code,
-				active: formData.active ?? true,
-				status: formData.status ?? 'unpublish',
+			// --- Prepare Data for API ---
+			// Remove image_file before sending to API
+			// Explicitly use the destructured variable 'dataToSend'
+			const { image_file, ...dataToSend } = formData;
+			// Use console.log or similar if needed to mark 'image_file' as used
+			if (image_file)
+				console.log('Preparing data, excluding image_file object.');
+
+			const finalData: Partial<FormData> = {
+				...dataToSend, // Use the rest of the form data
+				type: 'activity', // Ensure type is set
+				image_url: finalImageUrl, // Use the potentially updated URL
+				// Ensure user-related fields are set correctly, especially for create mode
+				email:
+					mode === 'create'
+						? user.email || ''
+						: formData.email || user.email || '',
+				phone:
+					mode === 'create'
+						? user.phoneNumber || ''
+						: formData.phone || user.phoneNumber || '',
+				// creatorUid is added server-side for create, don't send from client
+				// For update, it's used for validation server-side but not updated
 			};
 
 			const token = await user.getIdToken();
 
-			console.log('Submitting data to API:', finalData);
-			const response = await fetch('/api/activity/create', {
-				method: 'POST',
+			console.log(`Submitting data in ${mode} mode to API:`, finalData);
+
+			// --- API Call (Conditional) ---
+			const apiUrl =
+				mode === 'create'
+					? '/api/activity/create'
+					: `/api/activity/${initialData?.id}`;
+			const apiMethod = mode === 'create' ? 'POST' : 'PUT';
+
+			if (mode === 'edit' && !initialData?.id) {
+				throw new Error('Cannot update: Missing activity ID.');
+			}
+
+			const response = await fetch(apiUrl, {
+				method: apiMethod,
 				headers: {
 					'Content-Type': 'application/json',
 					Authorization: `Bearer ${token}`,
@@ -128,29 +175,32 @@ const MultiStepForm = () => {
 
 			const result = await response.json();
 			console.log('API Response:', result);
-			alert('Form Submitted Successfully!');
-			setFormData({
-				type: '',
-				name: '',
-				addr: '',
-				description: '',
-				opening_hours: '',
-				image_url: '',
-				image_file: undefined,
-				email: '',
-				phone: '',
-				budget: '',
-				start_time: '',
-				end_time: '',
-				date: '',
-				place: '',
-				postal_code: '',
-				active: true,
-				status: 'unpublished',
-				openingTimes: {},
-			});
-			setStep(1);
-			router.push('/');
+			alert(`Form Submitted Successfully for ${mode}!`);
+			// Reset form only in create mode, redirect in both
+			if (mode === 'create') {
+				setFormData({
+					type: '',
+					name: '',
+					addr: '',
+					description: '',
+					opening_hours: '',
+					image_url: '',
+					image_file: undefined,
+					email: '',
+					phone: '',
+					budget: '',
+					start_time: '',
+					end_time: '',
+					date: '',
+					place: '',
+					postal_code: '',
+					active: true,
+					status: 'unpublished',
+					openingTimes: {},
+				});
+				setStep(1);
+			}
+			router.push('/'); // Redirect to home page after create or update
 		} catch (error) {
 			console.error('Submission Error:', error);
 			setSubmitError(
@@ -168,14 +218,14 @@ const MultiStepForm = () => {
 			{step === 1 && (
 				<EventInfo
 					formData={formData}
-					setFormData={setFormData}
+					setFormData={setFormData} // Pass setFormData down
 					nextStep={nextStep}
 				/>
 			)}
 			{step === 2 && (
 				<LocationInfo
 					formData={formData}
-					setFormData={setFormData}
+					setFormData={setFormData} // Pass setFormData down
 					nextStep={nextStep}
 					prevStep={prevStep}
 				/>
@@ -183,7 +233,7 @@ const MultiStepForm = () => {
 			{step === 3 && ( // Adjust step number for OpeningTimes
 				<OpeningTimes
 					formData={formData}
-					setFormData={setFormData}
+					setFormData={setFormData} // Pass setFormData down
 					nextStep={nextStep}
 					prevStep={prevStep}
 				/>
