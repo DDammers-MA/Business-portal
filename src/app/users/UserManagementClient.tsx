@@ -3,11 +3,9 @@
 import { useState, useTransition, useEffect } from 'react';
 import styles from './user.module.scss';
 import { Modal } from '@/components/modal/modal';
-import { CombinedUser } from './page'; // Import the type from page.tsx
-// Import Server Actions
+import { CombinedUser } from './page';
 import { addUserAction, updateUserAction, deleteUserAction } from './actions';
 
-// Infer return types for better type safety (or define explicit types)
 type AddUserResult = Awaited<ReturnType<typeof addUserAction>>;
 type UpdateUserResult = Awaited<ReturnType<typeof updateUserAction>>;
 type DeleteUserResult = Awaited<ReturnType<typeof deleteUserAction>>;
@@ -21,19 +19,15 @@ export default function UserManagementClient({
 }: UserManagementClientProps) {
 	const [users, setUsers] = useState<CombinedUser[]>(initialUsers);
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	// Use Partial<CombinedUser> | null for currentUser to handle both editing and adding new
 	const [currentUser, setCurrentUser] = useState<Partial<CombinedUser> | null>(
 		null
 	);
 	const [searchTerm, setSearchTerm] = useState('');
 
-	// State for loading and errors
-	const [isPending, startTransition] = useTransition(); // For form submission/deletion loading
+	const [isPending, startTransition] = useTransition();
 	const [formError, setFormError] = useState<string | null>(null);
-	// Optional: state to track which user is being deleted for specific feedback
 	const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
 
-	// Filter users based on search term (case-insensitive)
 	const filteredUsers = users.filter(
 		(user) =>
 			(user.companyName?.toLowerCase() || '').includes(
@@ -41,12 +35,9 @@ export default function UserManagementClient({
 			) || (user.email?.toLowerCase() || '').includes(searchTerm.toLowerCase())
 	);
 
-	// --- Handlers calling Server Actions ---
-
 	const handleDeleteUser = (userId: string) => {
-		if (isPending) return; // Prevent multiple deletions at once
+		if (isPending) return;
 
-		// Confirm before deleting (optional but recommended)
 		if (
 			!window.confirm(
 				'Are you sure you want to delete this user? This action cannot be undone.'
@@ -55,22 +46,19 @@ export default function UserManagementClient({
 			return;
 		}
 
-		setDeletingUserId(userId); // Indicate which user is being deleted
-		setFormError(null); // Clear previous errors
+		setDeletingUserId(userId);
+		setFormError(null);
 
 		startTransition(async () => {
 			const result: DeleteUserResult = await deleteUserAction(userId);
 			if (result.success) {
-				// Remove user from local state on successful deletion
 				setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
-				// Optionally show a success message (e.g., using a toast library)
 				console.log(result.message);
 			} else {
-				// Show error message (could be displayed near the deleted row or globally)
 				setFormError(result.message);
 				console.error('Deletion failed:', result.message);
 			}
-			setDeletingUserId(null); // Clear deleting indicator
+			setDeletingUserId(null);
 		});
 	};
 
@@ -81,7 +69,6 @@ export default function UserManagementClient({
 		startTransition(async () => {
 			try {
 				if (currentUser && currentUser.id) {
-					// --- Edit User ---
 					const { companyName, phone, kvk } = userFormData;
 					const updateData = { companyName, phone, kvk };
 					const result: UpdateUserResult = await updateUserAction(
@@ -100,7 +87,6 @@ export default function UserManagementClient({
 						setFormError(result.message);
 					}
 				} else {
-					// --- Add User ---
 					if (!userFormData.email) {
 						setFormError('Email is required to add a new user.');
 						return;
@@ -110,11 +96,8 @@ export default function UserManagementClient({
 						companyName: userFormData.companyName,
 						phone: userFormData.phone,
 					};
-					// Call addUserAction specifically here
 					const result: AddUserResult = await addUserAction(addData);
-					// Now TypeScript knows result is AddUserResult
 					if (result.success && result.newUser) {
-						// Add new user to local state, casting to ensure type match
 						setUsers((prevUsers) => [
 							...prevUsers,
 							result.newUser as CombinedUser,
@@ -122,7 +105,6 @@ export default function UserManagementClient({
 						setIsModalOpen(false);
 						setCurrentUser(null);
 					} else {
-						// Handle failure case for addUserAction
 						setFormError(result.message || 'Failed to add user.');
 					}
 				}
@@ -144,23 +126,22 @@ export default function UserManagementClient({
 						className={styles.user__inputField}
 						value={searchTerm}
 						onChange={(e) => setSearchTerm(e.target.value)}
-						disabled={isPending} // Disable search while actions are pending
+						disabled={isPending}
 					/>
 				</div>
 				<button
 					className={styles.user__addUserButton}
 					onClick={() => {
-						setCurrentUser(null); // Clear current user for add mode
-						setFormError(null); // Clear errors when opening modal
+						setCurrentUser(null);
+						setFormError(null);
 						setIsModalOpen(true);
 					}}
-					disabled={isPending} // Disable button while actions are pending
+					disabled={isPending}
 				>
 					Add new user
 				</button>
 			</div>
 
-			{/* Display global errors (like delete error) here if needed */}
 			{formError && !isModalOpen && (
 				<p className={styles.errorBanner}>{formError}</p>
 			)}
@@ -179,9 +160,8 @@ export default function UserManagementClient({
 						<span className={styles.user__userName}>
 							{user.companyName || user.email || 'N/A'}
 						</span>
-						{/* Add spinner or disable buttons when deleting this specific user */}
 						{deletingUserId === user.id ? (
-							<span className={styles.spinner}></span> // Add a spinner style
+							<span className={styles.spinner}></span>
 						) : (
 							<>
 								<i
@@ -190,8 +170,8 @@ export default function UserManagementClient({
 									} ${isPending ? styles.disabledIcon : ''}`}
 									onClick={() => {
 										if (isPending) return;
-										setCurrentUser(user); // Set user for editing
-										setFormError(null); // Clear errors
+										setCurrentUser(user);
+										setFormError(null);
 										setIsModalOpen(true);
 									}}
 									title="Edit User"
@@ -201,7 +181,7 @@ export default function UserManagementClient({
 									className={`fa-solid fa-trash ${styles.user__deleteIcon} ${
 										isPending ? styles.disabledIcon : ''
 									}`}
-									onClick={() => handleDeleteUser(user.id)} // Pass user ID
+									onClick={() => handleDeleteUser(user.id)}
 									title="Delete User"
 									aria-disabled={isPending}
 								></i>
@@ -215,32 +195,30 @@ export default function UserManagementClient({
 			<Modal
 				isOpen={isModalOpen}
 				onClose={() => {
-					if (isPending) return; // Prevent closing while submitting
+					if (isPending) return;
 					setIsModalOpen(false);
-					setCurrentUser(null); // Reset current user on close
-					setFormError(null); // Clear errors on close
+					setCurrentUser(null);
+					setFormError(null);
 				}}
 			>
 				<UserForm
 					user={currentUser}
 					onSubmit={handleFormSubmit}
-					isLoading={isPending} // Pass loading state to form
-					error={formError} // Pass error state to form
-					clearError={() => setFormError(null)} // Allow form to clear error
+					isLoading={isPending}
+					error={formError}
+					clearError={() => setFormError(null)}
 				/>
 			</Modal>
 		</div>
 	);
 }
 
-// --- UserForm Component --- Props updated
-
 interface UserFormProps {
 	user: Partial<CombinedUser> | null;
 	onSubmit: (formData: Partial<CombinedUser>) => void;
-	isLoading: boolean; // Added prop
-	error: string | null; // Added prop
-	clearError: () => void; // Added prop
+	isLoading: boolean;
+	error: string | null;
+	clearError: () => void;
 }
 
 function UserForm({
@@ -252,25 +230,19 @@ function UserForm({
 }: UserFormProps) {
 	const [formData, setFormData] = useState<Partial<CombinedUser>>({});
 
-
-	// Effect to initialize/reset form data when user or modal state changes
 	useEffect(() => {
 		setFormData({
 			companyName: user?.companyName || '',
 			email: user?.email || '',
 			phone: user?.phone || '',
-			
 			kvk: user?.kvk || '',
-			// Only include fields relevant to the form
 		});
-		// Clear previous errors when the form is re-initialized
 		if (error) clearError();
-	}, [user, error, clearError]); // Added error and clearError to dependencies
+	}, [user, error, clearError]);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
 		setFormData((prev) => ({ ...prev, [name]: value }));
-		// Clear error when user starts typing
 		if (error) clearError();
 	};
 
@@ -288,7 +260,6 @@ function UserForm({
 				{isEditMode ? `Edit ${formData.companyName || 'User'}` : 'Add New User'}
 			</h3>
 
-			{/* Display Form Error */}
 			{error && <p className={styles.errorBannerModal}>{error}</p>}
 
 			<div>
@@ -297,10 +268,10 @@ function UserForm({
 					id="email"
 					type="email"
 					name="email"
-					value={formData.email || ''} 
+					value={formData.email || ''}
 					onChange={handleChange}
 					className={styles.inputField}
-					disabled={isLoading || isEditMode} 
+					disabled={isLoading || isEditMode}
 					required={!isEditMode}
 					readOnly={isEditMode}
 					aria-describedby={
@@ -330,26 +301,22 @@ function UserForm({
 			</div>
 
 			<div>
-	<label htmlFor="kvk">KVK Number:</label>
-	<input
-		id="kvk"
-		type="number"
-		name="kvk"
-		value={formData.kvk || ''}
-		onChange={handleChange}
-		className={styles.inputField}
-		disabled={isLoading}
-		aria-describedby={
-			error && error.toLowerCase().includes('kvk')
-				? 'form-error'
-				: undefined
-		}
-	/>
-</div>
-
-
-
-
+				<label htmlFor="kvk">KVK Number:</label>
+				<input
+					id="kvk"
+					type="number"
+					name="kvk"
+					value={formData.kvk || ''}
+					onChange={handleChange}
+					className={styles.inputField}
+					disabled={isLoading}
+					aria-describedby={
+						error && error.toLowerCase().includes('kvk')
+							? 'form-error'
+							: undefined
+					}
+				/>
+			</div>
 
 			<div>
 				<label htmlFor="phone">Phone Number:</label>
@@ -369,7 +336,6 @@ function UserForm({
 				/>
 			</div>
 
-			{/* Add id to error message for better accessibility */}
 			{error && (
 				<p id="form-error" className="sr-only">
 					Error: {error}

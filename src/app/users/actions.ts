@@ -60,30 +60,25 @@ export async function addUserAction(
 	try {
 		const auth = firebaseAdmin.auth();
 
-		// 1. Create user in Firebase Authentication
-		// Generate a temporary secure password (user should likely set their own later via reset)
-		const tempPassword = Math.random().toString(36).slice(-12); // Example: Consider a more robust method
+		const tempPassword = Math.random().toString(36).slice(-12);
 		const newUserRecord = await auth.createUser({
 			email: formData.email,
-			emailVerified: false, // Or true if you have a verification flow
+			emailVerified: false,
 			password: tempPassword,
-			displayName: formData.companyName || formData.email, // Use company name or fallback to email
-			// photoURL: optional,
+			displayName: formData.companyName || formData.email,
 			disabled: false,
 		});
 		console.log('User created in Auth, UID:', newUserRecord.uid);
 
-		// 2. Add user data to Firestore 'users' collection
 		const userData: FirestoreUserData = {
 			companyName: formData.companyName || '',
 			phone: formData.phone || '',
 			kvk: formData.kvk || '',
-			createdAt: admin.firestore.FieldValue.serverTimestamp(), // Use server timestamp correctly
+			createdAt: admin.firestore.FieldValue.serverTimestamp(),
 		};
 		await db.collection('users').doc(newUserRecord.uid).set(userData);
 		console.log('User data saved to Firestore for UID:', newUserRecord.uid);
 
-		// Revalidate the users page path to refresh the list
 		revalidatePath('/users');
 
 		const combinedUserData: CombinedUser = {
@@ -94,16 +89,15 @@ export async function addUserAction(
 			companyName: userData.companyName,
 			phone: userData.phone,
 			kvk: userData.kvk,
-			// createdAt: userData.createdAt, // This won't be available immediately after set with serverTimestamp
 		};
-
-		// You might want to trigger a password reset email here
-		// await auth.generatePasswordResetLink(newUserRecord.email);
-		// console.log("Password reset link generation potentially triggered for:", newUserRecord.email);
+		if (newUserRecord.email) {
+			await auth.generatePasswordResetLink(newUserRecord.email);
+		}
 
 		return {
 			success: true,
-			message: 'User added successfully. A temporary password was set.',
+			message:
+				'User added successfully. A temporary password was set. They will receive a email for resetting their password.',
 			newUser: combinedUserData,
 		};
 	} catch (error) {
@@ -111,12 +105,6 @@ export async function addUserAction(
 		return { success: false, message: formatFirebaseError(error) };
 	}
 }
-
-// --- Update User Action ---
-// Note: Updating Firebase Auth email/password is more complex and often requires user interaction/verification.
-// This action focuses on updating Firestore data for simplicity.
-
-// UserUpdateData type removed as UpdateData<FirestoreUserData> is used directly
 
 export async function updateUserAction(
 	userId: string,
@@ -129,10 +117,7 @@ export async function updateUserAction(
 
 	try {
 		const userRef = db.collection('users').doc(userId);
-		// Use UpdateData<FirestoreUserData> for type safety with update method
 		const updateData: UpdateData<FirestoreUserData> = {};
-
-		// Only include fields that are provided in the form data
 		if (formData.companyName !== undefined)
 			updateData.companyName = formData.companyName;
 		if (formData.phone !== undefined) updateData.phone = formData.phone;
@@ -145,12 +130,6 @@ export async function updateUserAction(
 
 		await userRef.update(updateData);
 		console.log('User data updated in Firestore for UID:', userId);
-
-		// Optionally, update displayName in Auth if companyName changed?
-		// if (updateData.companyName) {
-		//   await firebaseAdmin.auth().updateUser(userId, { displayName: updateData.companyName });
-		//   console.log("Updated displayName in Auth for UID:", userId);
-		// }
 
 		revalidatePath('/users');
 		return { success: true, message: 'User updated successfully.' };
