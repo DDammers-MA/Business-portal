@@ -102,7 +102,7 @@
 	&__div {
 		width: 100%;
 		position: relative;
-		padding-bottom: 1.5em;
+		padding-bottom: 1em;
 		top: 0;
 	}
 
@@ -319,6 +319,10 @@
 
 		height: 100%; 
 		max-height: 100%;
+
+		&__div{
+			padding-bottom: 1.75em;
+		}
 
 		&__divContainer{
 			display: block;
