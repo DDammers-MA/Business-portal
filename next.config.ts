@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
 		includePaths: [path.join(__dirname, 'styles')],
 		implementation: 'sass-embedded',
 	},
+	basePath: '/school/',
 };
 
 export default nextConfig;
