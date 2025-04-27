@@ -20,11 +20,9 @@ interface FormErrors {
 	end_time?: string;
 }
 
-
 interface TouchedFields {
 	[key: string]: boolean;
 }
-
 
 const LocationInfo: React.FC<LocationInfoProps> = ({
 	formData,
@@ -32,132 +30,135 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
 	nextStep,
 	prevStep,
 }) => {
-
 	const [errors, setErrors] = useState<FormErrors>({});
-		const [isNextDisabled, setIsNextDisabled] = useState(true);
-		// Add touched state
-		const [touched, setTouched] = useState<TouchedFields>({});
+	const [isNextDisabled, setIsNextDisabled] = useState(true);
+	// Add touched state
+	const [touched, setTouched] = useState<TouchedFields>({});
 
-	
 	const validateField = (
 		name: keyof FormData,
 		value: string
 	): string | undefined => {
-
 		switch (name) {
 			case 'place':
 				return value.trim().length < 5
 					? 'Place must be at least 5 characters long.'
 					: undefined;
 			case 'date':
-				return value.trim().length < 10
-					? 'Date must be selected'
-					: undefined;
+				return value.trim().length < 10 ? 'Date must be selected' : undefined;
 			case 'postal_code':
 				return value.trim().length < 5
-				? 'postalcode must be at least 5 characters long.'
-				: undefined;
+					? 'postalcode must be at least 5 characters long.'
+					: undefined;
 			case 'addr':
 				return value.trim().length < 5
-				? 'address must be at least 5 characters long.'
+					? 'address must be at least 5 characters long.'
 					: undefined;
-			
+
 			case 'start_time':
 				return value.trim().length < 5
-				? 'there must be a start time.'
+					? 'there must be a start time.'
 					: undefined;
 			case 'end_time':
-
 				return value.trim().length < 5
-				? 'there must be an end time.'
+					? 'there must be an end time.'
 					: undefined;
 
 			default:
 				return undefined;
 		}
-
 	};
 
-		useEffect(() => {
-			const currentErrors: FormErrors = {};
-			let hasErrors = false;
-	
-			const placeError = validateField('place', formData.place);
-			if (placeError) {
-				currentErrors.place = placeError;
-				hasErrors = true;
-			}
-	
-			const dateError = validateField('date', formData.date);
-			if (dateError) {
-				currentErrors.date = dateError;
-				hasErrors = true;
-			}
-	
-			const postal_codeError = validateField('postal_code', formData.postal_code);
-			if (postal_codeError) {
-				currentErrors.postal_code = postal_codeError;
-				hasErrors = true;
-			}
+	useEffect(() => {
+		const currentErrors: FormErrors = {};
+		let hasErrors = false;
 
-			const addrError = validateField('addr', formData.addr);
-			if (addrError) {
-				currentErrors.addr = addrError;
-				hasErrors = true;
-			}
+		const placeError = validateField('place', formData.place);
+		if (placeError) {
+			currentErrors.place = placeError;
+			hasErrors = true;
+		}
 
-			const start_timeError = validateField('start_time', formData.start_time);
-			if (start_timeError) {
-				currentErrors.start_time = start_timeError;
-				hasErrors = true;
-			}
+		const dateError = validateField('date', formData.date);
+		if (dateError) {
+			currentErrors.date = dateError;
+			hasErrors = true;
+		}
 
-			const end_timeError = validateField('end_time', formData.end_time);
-			if (end_timeError) {
-				currentErrors.end_time = end_timeError;
-				hasErrors = true;
-			}
+		const postal_codeError = validateField('postal_code', formData.postal_code);
+		if (postal_codeError) {
+			currentErrors.postal_code = postal_codeError;
+			hasErrors = true;
+		}
 
-			
-	
-			setErrors(currentErrors);
-			setIsNextDisabled(
-				hasErrors || !formData.place || !formData.date || !formData.postal_code || !formData.addr || !formData.start_time || !formData.end_time
-			);
-		}, [formData.place, formData.date, formData.postal_code, formData.addr, formData.start_time, formData.end_time]);
-	
-		const handleChange = (
-			e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-			field: keyof FormData
-		) => {
-			const { value } = e.target;
-			setFormData({ ...formData, [field]: value });
-	
-			// Validate on change to update errors state
-			const error = validateField(field, value);
-			setErrors((prevErrors) => ({ ...prevErrors, [field]: error }));
-		};
-	
-		// Add handleBlur function
-		const handleBlur = (
-			e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>,
-			field: keyof FormData
-		) => {
-			setTouched((prevTouched) => ({ ...prevTouched, [field]: true }));
-			// Optional: Trigger validation on blur as well if needed
-			// const { value } = e.target;
-			// const error = validateField(field, value);
-			// setErrors((prevErrors) => ({ ...prevErrors, [field]: error }));
-		};
-		
+		const addrError = validateField('addr', formData.addr);
+		if (addrError) {
+			currentErrors.addr = addrError;
+			hasErrors = true;
+		}
+
+		const start_timeError = validateField('start_time', formData.start_time);
+		if (start_timeError) {
+			currentErrors.start_time = start_timeError;
+			hasErrors = true;
+		}
+
+		const end_timeError = validateField('end_time', formData.end_time);
+		if (end_timeError) {
+			currentErrors.end_time = end_timeError;
+			hasErrors = true;
+		}
+
+		setErrors(currentErrors);
+		setIsNextDisabled(
+			hasErrors ||
+				!formData.place ||
+				!formData.date ||
+				!formData.postal_code ||
+				!formData.addr ||
+				!formData.start_time ||
+				!formData.end_time
+		);
+	}, [
+		formData.place,
+		formData.date,
+		formData.postal_code,
+		formData.addr,
+		formData.start_time,
+		formData.end_time,
+	]);
+
+	const handleChange = (
+		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+		field: keyof FormData
+	) => {
+		const { value } = e.target;
+		setFormData({ ...formData, [field]: value });
+
+		// Validate on change to update errors state
+		const error = validateField(field, value);
+		setErrors((prevErrors) => ({ ...prevErrors, [field]: error }));
+	};
+
+	// Add handleBlur function
+	const handleBlur = (
+		e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>,
+		field: keyof FormData
+	) => {
+		setTouched((prevTouched) => ({ ...prevTouched, [field]: true }));
+		// Optional: Trigger validation on blur as well if needed
+		// const { value } = e.target;
+		// const error = validateField(field, value);
+		// setErrors((prevErrors) => ({ ...prevErrors, [field]: error }));
+	};
+
 	return (
 		<div className={styles.form__Container}>
 			<div className={styles.form__textContainer}>
 				<h2>Location Information</h2>
 
 				<div className={styles.form__divContainer}>
-
-				<FormInput
+					<FormInput
 						label="Place"
 						type="text"
 						placeholder="Enter Place"
@@ -167,7 +168,6 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
 						className={styles['form__input--title']}
 						error={touched.place && errors.place ? errors.place : undefined}
 					/>
-				
 
 					<FormInput
 						label="Date"
@@ -189,11 +189,15 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
 						value={formData.postal_code}
 						onChange={(e) => handleChange(e, 'postal_code')}
 						onBlur={(e) => handleBlur(e, 'postal_code')}
-						error={touched.postal_code && errors.postal_code ? errors.postal_code : undefined}
+						error={
+							touched.postal_code && errors.postal_code
+								? errors.postal_code
+								: undefined
+						}
 						className={styles['form__input--title']}
 					/>
 
-<FormInput
+					<FormInput
 						label="Address"
 						type="text"
 						placeholder="Enter address"
@@ -203,8 +207,6 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
 						error={touched.addr && errors.addr ? errors.addr : undefined}
 						className={styles['form__input--title']}
 					/>
-
-			
 				</div>
 
 				<div className={styles.form__divContainer}>
@@ -215,7 +217,11 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
 						value={formData.start_time}
 						onChange={(e) => handleChange(e, 'start_time')}
 						onBlur={(e) => handleBlur(e, 'start_time')}
-						error={touched.start_time && errors.start_time ? errors.start_time : undefined}
+						error={
+							touched.start_time && errors.start_time
+								? errors.start_time
+								: undefined
+						}
 						className={styles['form__input--title']}
 					/>
 
@@ -226,7 +232,9 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
 						value={formData.end_time}
 						onChange={(e) => handleChange(e, 'end_time')}
 						onBlur={(e) => handleBlur(e, 'end_time')}
-						error={touched.end_time && errors.end_time ? errors.end_time : undefined}
+						error={
+							touched.end_time && errors.end_time ? errors.end_time : undefined
+						}
 						className={styles['form__input--title']}
 					/>
 				</div>
@@ -235,7 +243,11 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
 					<button className={styles.nextBtn} onClick={prevStep}>
 						Back
 					</button>
-					<button className={styles.nextBtn} onClick={nextStep} 	disabled={isNextDisabled}>
+					<button
+						className={styles.nextBtn}
+						onClick={nextStep}
+						disabled={isNextDisabled}
+					>
 						Next
 					</button>
 				</div>
@@ -253,6 +265,13 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
 					step={0}
 					isSubmitting={false}
 					submitError={null}
+					handleInputChange={(field, value) => {
+						if (typeof value === 'string') {
+							setFormData((prevData) => ({ ...prevData, [field]: value }));
+							const error = validateField(field, value);
+							setErrors((prevErrors) => ({ ...prevErrors, [field]: error }));
+						}
+					}}
 				/>
 			</div>
 		</div>

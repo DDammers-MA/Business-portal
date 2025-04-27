@@ -1,7 +1,7 @@
 // LayoutWrapper.tsx
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import Sidebar from '@/components/sidebar/sidebar';
 import styles from './layout.module.scss';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
@@ -16,12 +16,18 @@ const LayoutContent = ({ children }: { children: React.ReactNode }) => {
 		<>
 			<Sidebar isOpen={isOpen} setIsOpen={setIsOpen} isAdmin={isAdmin} />
 			<div
-		className={`${styles.pageWrapper} ${isOpen ? styles.pageWrapperShifted : ''}`}
+				className={`${styles.pageWrapper} ${
+					isOpen ? styles.pageWrapperShifted : ''
+				}`}
 			>
-				<main className={styles.main}>{children}</main>
+				{' '}
+				<Suspense
+					fallback={<div className={styles.loadingFallback}>Loading...</div>}
+				>
+					<main className={styles.main}>{children}</main>
+				</Suspense>
 				<Footer />
-				
-	</div>
+			</div>
 		</>
 	);
 };

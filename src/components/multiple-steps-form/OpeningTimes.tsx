@@ -4,13 +4,21 @@ import { FormData } from '@/types/FormData';
 import ReviewSubmit from './ReviewSubmit';
 
 interface OpeningTimesProps {
-    formData: FormData;
-    setFormData: React.Dispatch<React.SetStateAction<FormData>>;
-    nextStep: () => void;
-    prevStep: () => void;
+	formData: FormData;
+	setFormData: React.Dispatch<React.SetStateAction<FormData>>;
+	nextStep: () => void;
+	prevStep: () => void;
 }
 
-const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const daysOfWeek = [
+	'Monday',
+	'Tuesday',
+	'Wednesday',
+	'Thursday',
+	'Friday',
+	'Saturday',
+	'Sunday',
+];
 
 const OpeningTimes: React.FC<OpeningTimesProps> = ({
 	formData,
@@ -20,7 +28,11 @@ const OpeningTimes: React.FC<OpeningTimesProps> = ({
 }) => {
 	const [errors, setErrors] = useState<Record<string, string>>({});
 
-	const handleTimeChange = (day: string, type: 'start' | 'end', value: string) => {
+	const handleTimeChange = (
+		day: string,
+		type: 'start' | 'end',
+		value: string
+	) => {
 		setFormData((prev) => {
 			const prevTimes = prev.openingTimes[day] || { start: '', end: '' };
 			const updatedTime = {
@@ -36,16 +48,13 @@ const OpeningTimes: React.FC<OpeningTimesProps> = ({
 			};
 		});
 	};
-	
 
 	const handleDayToggle = (day: string) => {
 		setFormData((prev) => ({
 			...prev,
 			openingTimes: {
 				...prev.openingTimes,
-				[day]: prev.openingTimes[day]
-					? undefined
-					: { start: '', end: '' }, // Ensure strict type adherence
+				[day]: prev.openingTimes[day] ? undefined : { start: '', end: '' }, // Ensure strict type adherence
 			},
 		}));
 	};
@@ -73,7 +82,12 @@ const OpeningTimes: React.FC<OpeningTimesProps> = ({
 			<div className={styles.form__textContainer}>
 				<h2>Opening Times</h2>
 				{daysOfWeek.map((day) => (
-					<div key={day} className={`${styles.form__divContainer} ${!formData.openingTimes[day] ? styles['form__day--disabled'] : ''}`}>
+					<div
+						key={day}
+						className={`${styles.form__divContainer} ${
+							!formData.openingTimes[day] ? styles['form__day--disabled'] : ''
+						}`}
+					>
 						<div className={styles.form__dayToggle}>
 							<input
 								type="checkbox"
@@ -91,7 +105,9 @@ const OpeningTimes: React.FC<OpeningTimesProps> = ({
 								<input
 									type="time"
 									value={formData.openingTimes[day]?.start || ''}
-									onChange={(e) => handleTimeChange(day, 'start', e.target.value)}
+									onChange={(e) =>
+										handleTimeChange(day, 'start', e.target.value)
+									}
 									className={styles['form__input--time']}
 								/>
 								<span className={styles.form__timeSeparator}>to</span>
@@ -118,9 +134,9 @@ const OpeningTimes: React.FC<OpeningTimesProps> = ({
 						Next
 					</button>
 				</div>
-            </div>
-            
-            <div className={styles.form__previewContainer}>
+			</div>
+
+			<div className={styles.form__previewContainer}>
 				<ReviewSubmit
 					formData={formData}
 					prevStep={function (): void {
@@ -132,6 +148,11 @@ const OpeningTimes: React.FC<OpeningTimesProps> = ({
 					step={0}
 					isSubmitting={false}
 					submitError={null}
+					handleInputChange={(field, value) => {
+						if (typeof value === 'string') {
+							setFormData((prevData) => ({ ...prevData, [field]: value }));
+						}
+					}}
 				/>
 			</div>
 		</div>

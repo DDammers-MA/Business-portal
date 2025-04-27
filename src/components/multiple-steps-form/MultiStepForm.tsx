@@ -39,7 +39,7 @@ const MultiStepForm = ({ mode, initialData }: MultiStepFormProps) => {
 			place: '',
 			postal_code: '',
 			active: true,
-			status: 'unpublished',
+			status: 'inreview',
 			openingTimes: {},
 		};
 		return initialData ? { ...defaults, ...initialData } : defaults;
@@ -54,7 +54,7 @@ const MultiStepForm = ({ mode, initialData }: MultiStepFormProps) => {
 		if (initialData) {
 			const defaults: Partial<FormData> = {
 				active: true, // Ensure defaults are applied if missing in initialData
-				status: 'unpublished',
+				status: 'inreview',
 				openingTimes: {},
 			};
 			setFormData((prev) => ({
@@ -195,7 +195,7 @@ const MultiStepForm = ({ mode, initialData }: MultiStepFormProps) => {
 					place: '',
 					postal_code: '',
 					active: true,
-					status: 'unpublished',
+					status: 'inreview',
 					openingTimes: {},
 				});
 				setStep(1);

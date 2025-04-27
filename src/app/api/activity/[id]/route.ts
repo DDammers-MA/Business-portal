@@ -59,9 +59,9 @@ async function verifyToken(
 // GET handler to fetch a single activity
 export async function GET(
 	request: Request,
-	{ params }: { params: { id: string } }
+	{ params }: { params: Promise<{ id: string }> }
 ) {
-	const { id } = params;
+	const { id } = await params;
 
 	if (!id) {
 		return NextResponse.json(
@@ -115,9 +115,9 @@ export async function GET(
 // PUT handler to update an activity
 export async function PUT(
 	request: Request,
-	{ params }: { params: { id: string } }
+	{ params }: { params: Promise<{ id: string }> }
 ) {
-	const { id } = params;
+	const { id } = await params;
 
 	if (!id) {
 		return NextResponse.json(

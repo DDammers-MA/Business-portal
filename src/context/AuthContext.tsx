@@ -44,10 +44,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 					setUser(currentUser);
 					setIsAdmin(tokenResult.claims.admin === true);
 					setIdTokenResult(tokenResult);
-					console.log('tokenResult', tokenResult);
-					console.log('currentUser', currentUser);
-					console.log('isAdmin', isAdmin);
-					console.log('user', tokenResult.claims.admin === true);
+					console.log(
+						'Auth State Change - User:',
+						currentUser?.uid,
+						'IsAdmin:',
+						tokenResult.claims.admin === true
+					);
 				} catch (error) {
 					console.error('[AuthContext] Error getting ID token result:', error);
 					setUser(null);
@@ -55,14 +57,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 					setIdTokenResult(null);
 				}
 			} else {
+				console.log('Auth State Change - No User');
 				setUser(null);
 				setIsAdmin(false);
 				setIdTokenResult(null);
 			}
 			setLoading(false);
 		});
-		return () => unsubscribe();
-	}, []);
+
+		// Cleanup function to unsubscribe the listener when the component unmounts
+		return () => {
+			console.log('[AuthContext] Unsubscribing auth listener.');
+			unsubscribe();
+		};
+	}, []); // <-- Added empty dependency array
+
 	const value = useMemo(
 		() => ({
 			user,

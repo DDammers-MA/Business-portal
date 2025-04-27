@@ -222,6 +222,13 @@ const EventInfo: React.FC<EventInfoProps> = ({
 					step={0}
 					isSubmitting={false}
 					submitError={null}
+					handleInputChange={(field, value) => {
+						if (typeof value === 'string') {
+							setFormData((prevData) => ({ ...prevData, [field]: value }));
+							const error = validateField(field, value);
+							setErrors((prevErrors) => ({ ...prevErrors, [field]: error }));
+						}
+					}}
 				/>
 			</div>
 		</div>
