@@ -5,6 +5,7 @@ import styles from './user.module.scss';
 import { Modal } from '@/components/modal/modal';
 import { CombinedUser } from './page';
 import { addUserAction, updateUserAction, deleteUserAction } from './actions';
+import { useAuth } from '@/context/AuthContext';
 
 type AddUserResult = Awaited<ReturnType<typeof addUserAction>>;
 type UpdateUserResult = Awaited<ReturnType<typeof updateUserAction>>;
@@ -17,6 +18,7 @@ interface UserManagementClientProps {
 export default function UserManagementClient({
 	initialUsers,
 }: UserManagementClientProps) {
+	const { user: loggedInUser } = useAuth();
 	const [users, setUsers] = useState<CombinedUser[]>(initialUsers);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [currentUser, setCurrentUser] = useState<Partial<CombinedUser> | null>(
@@ -91,12 +93,17 @@ export default function UserManagementClient({
 						setFormError('Email is required to add a new user.');
 						return;
 					}
+					if (!loggedInUser) {
+						setFormError('Cannot add user: Logged in user not found.');
+						return;
+					}
 					const addData = {
 						email: userFormData.email,
 						companyName: userFormData.companyName,
 						phone: userFormData.phone,
+						kvk: userFormData.kvk,
 					};
-					const result: AddUserResult = await addUserAction(addData);
+					const result: AddUserResult = await addUserAction(addData, loggedInUser.uid);
 					if (result.success && result.newUser) {
 						setUsers((prevUsers) => [
 							...prevUsers,
