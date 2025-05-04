@@ -9,7 +9,7 @@ const FIRST_ADMIN_UID: string = 'vk9Nv90RgKXNqZ6MTym3WYwW6Lo2';
 // If you use a .env file (e.g., .env.local) to store your admin credentials,
 // uncomment the next two lines and run `npm install dotenv`
 import dotenv from 'dotenv';
-dotenv.config({ path: '.env.local' }); // Load from current working directory (project root)
+dotenv.config({ path: '.env' }); // Load from current working directory (project root)
 // -----------------------------------------------------------
 
 // --- Firebase Admin SDK Initialization ---

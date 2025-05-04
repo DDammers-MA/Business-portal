@@ -1,5 +1,6 @@
 export interface FormData {
 	id?: string;
+	creatorUid?: string;
 	type: string;
 	name: string;
 	addr: string;

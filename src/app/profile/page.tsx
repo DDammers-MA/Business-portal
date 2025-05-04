@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './profile.module.scss';
 
 import { db } from '../../../utils/firebase.browser';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useAuth } from '@/context/AuthContext';
 import {
 	getAuth,
@@ -75,17 +75,20 @@ const ProfilePage = () => {
 
 		try {
 			const profileRef = doc(db, 'users', user.uid);
-			await updateDoc(profileRef, {
+			await setDoc(profileRef, {
 				companyName: profile.companyName,
 				companyEmail: profile.companyEmail,
 				kvk: profile.kvkNumber,
 				phone: profile.phoneNumber,
-			});
+				creatorUid: user.uid
+			}, { merge: true });
 
 			setIsEditing(false);
-			console.log('Profiel succesvol bijgewerkt.');
+			console.log('Profiel succesvol bijgewerkt/aangemaakt.');
+			alert('Profiel succesvol bijgewerkt!');
 		} catch (err) {
-			console.error('Fout bij bijwerken profiel:', err);
+			console.error('Fout bij bijwerken/aanmaken profiel:', err);
+			setError('Fout bij bijwerken profiel: ' + err);
 		}
 	};
 

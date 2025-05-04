@@ -15,6 +15,7 @@ interface FirestoreUserData {
 	phone?: string;
 	kvk?: string;
 	createdAt?: admin.firestore.Timestamp | admin.firestore.FieldValue;
+	creatorUid?: string; // Add creatorUid field
 	// Add other fields from Firestore as needed
 }
 
@@ -50,11 +51,17 @@ function formatFirebaseError(error: unknown): string {
 
 // --- Add User Action ---
 export async function addUserAction(
-	formData: Pick<CombinedUser, 'email' | 'companyName' | 'phone' | 'kvk'>
+	formData: Pick<CombinedUser, 'email' | 'companyName' | 'phone' | 'kvk'>,
+	creatorUid: string // Add creatorUid parameter
 ): Promise<{ success: boolean; message: string; newUser?: CombinedUser }> {
-	console.log('Attempting to add user:', formData);
+	console.log('Attempting to add user:', formData, 'by creator:', creatorUid);
 	if (!formData.email) {
 		return { success: false, message: 'Email is required.' };
+	}
+	if (!creatorUid) {
+		// This check might be redundant if the client always provides it, but good for safety
+		console.error('Creator UID is missing');
+		return { success: false, message: 'Action failed: Creator information missing.' };
 	}
 
 	try {
@@ -71,6 +78,7 @@ export async function addUserAction(
 		console.log('User created in Auth, UID:', newUserRecord.uid);
 
 		const userData: FirestoreUserData = {
+			creatorUid: creatorUid, // Add creatorUid to the data object
 			companyName: formData.companyName || '',
 			phone: formData.phone || '',
 			kvk: formData.kvk || '',

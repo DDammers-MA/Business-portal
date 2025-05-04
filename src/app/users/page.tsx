@@ -8,6 +8,8 @@ interface FirestoreUserData {
 	companyName?: string;
 	phone?: string;
 	createdAt?: admin.firestore.Timestamp;
+	kvk?: string;
+	creatorUid?: string;
 }
 
 export type CombinedUser = {
