@@ -10,6 +10,7 @@ import styles from './form.module.scss';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage, auth } from '../../../utils/firebase.browser';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 const MultiStepForm = () => {
 	const router = useRouter();
@@ -128,7 +129,8 @@ const MultiStepForm = () => {
 
 			const result = await response.json();
 			console.log('API Response:', result);
-			alert('Form Submitted Successfully!');
+			toast.success('Activity created successfully!');
+		
 			setFormData({
 				type: '',
 				name: '',
@@ -153,6 +155,8 @@ const MultiStepForm = () => {
 			router.push('/');
 		} catch (error) {
 			console.error('Submission Error:', error);
+			toast.error('Failed to create activity. Please try again.');
+
 			setSubmitError(
 				error instanceof Error
 					? error.message

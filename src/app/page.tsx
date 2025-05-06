@@ -4,6 +4,7 @@ import Activiteiten from '@/components/Activiteiten/activiteiten';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
+
 export default function Home() {
 	const searchParams = useSearchParams();
 	const filterParam = searchParams.get('filter');
@@ -11,6 +12,9 @@ export default function Home() {
 
 	return (
 		<>
+			
+
+
 			<button className={styles.modal__button}>
 				<Link href="/create">Add new</Link>
 			</button>

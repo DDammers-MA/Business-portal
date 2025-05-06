@@ -6,6 +6,8 @@ import { Modal } from '@/components/modal/modal';
 import { CombinedUser } from './page'; // Import the type from page.tsx
 // Import Server Actions
 import { addUserAction, updateUserAction, deleteUserAction } from './actions';
+import { toast } from 'sonner';
+
 
 // Infer return types for better type safety (or define explicit types)
 type AddUserResult = Awaited<ReturnType<typeof addUserAction>>;
@@ -61,6 +63,7 @@ export default function UserManagementClient({
 		startTransition(async () => {
 			const result: DeleteUserResult = await deleteUserAction(userId);
 			if (result.success) {
+				toast.success('User successfully deleted!');
 				// Remove user from local state on successful deletion
 				setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
 				// Optionally show a success message (e.g., using a toast library)
@@ -69,6 +72,7 @@ export default function UserManagementClient({
 				// Show error message (could be displayed near the deleted row or globally)
 				setFormError(result.message);
 				console.error('Deletion failed:', result.message);
+				toast.error('Failed to delete user');
 			}
 			setDeletingUserId(null); // Clear deleting indicator
 		});

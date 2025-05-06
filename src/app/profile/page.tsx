@@ -7,6 +7,7 @@ import { db } from '../../../utils/firebase.browser';
 import { doc, getDoc, updateDoc  } from 'firebase/firestore';
 import { useAuth } from '@/context/AuthContext';
 import { getAuth, reauthenticateWithCredential, EmailAuthProvider, updatePassword } from 'firebase/auth';
+import { toast } from 'sonner';
 
 const ProfilePage = () => {
   const { user } = useAuth();
@@ -49,6 +50,8 @@ const ProfilePage = () => {
             phoneNumber: data.phone || '',
             password: '********', // Never expose the real password
           });
+
+         
         }
       } catch (err) {
         console.error('Error fetching profile:', err);
@@ -79,9 +82,10 @@ const ProfilePage = () => {
       });
   
       setIsEditing(false);
-      console.log('Profiel succesvol bijgewerkt.');
+      toast.success('User successfully updated!');
     } catch (err) {
       console.error('Fout bij bijwerken profiel:', err);
+      toast.error('something went wrong, please try again later!');
     }
   };
   
@@ -129,7 +133,7 @@ const ProfilePage = () => {
 
   <div className={styles.profileInfo}>
     <div className={styles.infoItem}>
-      <strong>Bedrijfsnaam:</strong>
+      <strong>company name:</strong>
       {isEditing ? (
         <input name="companyName" value={profile.companyName} onChange={handleInputChange} />
       ) : (
@@ -137,7 +141,7 @@ const ProfilePage = () => {
       )}
     </div>
     <div className={styles.infoItem}>
-      <strong>Bedrijfsemail:</strong>
+      <strong>company email:</strong>
       {isEditing ? (
         <input name="companyEmail" value={profile.companyEmail} onChange={handleInputChange} />
       ) : (
@@ -145,7 +149,7 @@ const ProfilePage = () => {
       )}
     </div>
     <div className={styles.infoItem}>
-      <strong>KvK-nummer:</strong>
+      <strong>KvK-number:</strong>
       {isEditing ? (
         <input name="kvkNumber" value={profile.kvkNumber} onChange={handleInputChange} />
       ) : (
@@ -153,7 +157,7 @@ const ProfilePage = () => {
       )}
     </div>
     <div className={styles.infoItem}>
-      <strong>Telefoonnummer:</strong>
+      <strong>phone number:</strong>
       {isEditing ? (
         <input name="phoneNumber" value={profile.phoneNumber} onChange={handleInputChange} />
       ) : (
@@ -170,15 +174,15 @@ const ProfilePage = () => {
     {isEditing ? (
       <>
         <button className={styles.saveButton} onClick={handleSaveChanges}>
-          Opslaan
+          Accept
         </button>
         <button className={styles.cancelButton} onClick={() => setIsEditing(false)}>
-          Annuleren
+        Cancel
         </button>
       </>
     ) : (
       <button className={styles.toggleButton} onClick={() => setIsEditing(true)}>
-        Profiel bewerken
+        Edit profile
       </button>
           )}
           
@@ -192,7 +196,7 @@ const ProfilePage = () => {
       className={styles.toggleButton}
       onClick={() => setShowPasswordForm(!showPasswordForm)}
     >
-      {showPasswordForm ? 'Annuleren' : 'Wachtwoord wijzigen'}
+      {showPasswordForm ? 'cancel' : 'Change password'}
           </button>
           
           </div>
@@ -200,10 +204,10 @@ const ProfilePage = () => {
 
   {showPasswordForm && (
     <div className={styles.passwordSection}>
-      <h2 className={styles.subtitle}>Wachtwoord wijzigen</h2>
+      <h2 className={styles.subtitle}>Changing password</h2>
       <form className={styles.passwordForm} onSubmit={handlePasswordChange}>
         <div className={styles.formGroup}>
-          <label htmlFor="currentPassword">Huidig wachtwoord</label>
+          <label htmlFor="currentPassword">Current password</label>
           <div className={styles.passwordInput}>
             <input
               type={showCurrentPassword ? 'text' : 'password'}
@@ -222,7 +226,7 @@ const ProfilePage = () => {
         </div>
 
         <div className={styles.formGroup}>
-          <label htmlFor="newPassword">Nieuw wachtwoord</label>
+          <label htmlFor="newPassword">New password</label>
           <div className={styles.passwordInput}>
             <input
               type={showNewPassword ? 'text' : 'password'}
@@ -241,7 +245,7 @@ const ProfilePage = () => {
         </div>
 
         <div className={styles.formGroup}>
-          <label htmlFor="confirmPassword">Bevestig nieuw wachtwoord</label>
+          <label htmlFor="confirmPassword">Confirm new password</label>
           <div className={styles.passwordInput}>
             <input
               type={showConfirmPassword ? 'text' : 'password'}
@@ -260,7 +264,7 @@ const ProfilePage = () => {
         </div>
 
         <button type="submit" className={styles.submitButton}>
-          Wachtwoord wijzigen
+          Change password
         </button>
       </form>
     </div>

@@ -5,6 +5,7 @@ import './globals.css';
 import Script from 'next/script';
 // import Footer from '@/components/footer/footer';
 import LayoutWrapper from '@/app/layoutWrapper'; // <- new client-side wrapper
+import { Toaster } from 'sonner';
 
 const geistSans = Geist({
 	variable: '--font-geist-sans',
@@ -38,6 +39,7 @@ export default function RootLayout({
 				/>
 			</head>
 			<body className={`${geistSans.variable} ${geistMono.variable}`}>
+			<Toaster richColors position="top-center" />
 				<LayoutWrapper>{children}</LayoutWrapper>
 	
 			</body>

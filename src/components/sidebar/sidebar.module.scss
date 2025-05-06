@@ -49,6 +49,17 @@
 		text-decoration: none;
 	}
 
+	&__activeLink {
+		text-decoration: none;
+		color: #fff;
+		background-color: white;
+		color: black;
+		padding: 0.5rem 1.5rem;
+		width: 100%;
+		border-radius: 0.5rem;
+	
+	  }
+
 	&__navItem {
 		list-style: none;
 		display: flex;
@@ -135,6 +146,8 @@
 		height: 5rem;
 	}
 }
+
+
 
 .toggleButton {
 	background: none;
