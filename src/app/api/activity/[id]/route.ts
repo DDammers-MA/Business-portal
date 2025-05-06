@@ -181,6 +181,9 @@ export async function PUT(
 			);
 		}
 
+		// Force status to inreview on any update
+		data.status = 'inreview';
+
 		// Perform the update
 		await docRef.update(data);
 

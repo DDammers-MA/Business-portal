@@ -91,7 +91,14 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 				console.log(filter);
 
 				// Apply filter if it's valid
-				if (filter && ['published', 'unpublished', 'draft'].includes(filter)) {
+				if (filter === 'draft') {
+					// If filter is 'draft', fetch both 'draft' and 'denied'
+					q = query(q, where('status', 'in', ['draft', 'denied']));
+				} else if (
+					filter &&
+					['published', 'inreview', 'denied'].includes(filter)
+				) {
+					// For other valid statuses, filter specifically
 					q = query(q, where('status', '==', filter.toLowerCase()));
 				}
 
