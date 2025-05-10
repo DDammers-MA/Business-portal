@@ -158,6 +158,7 @@ export default function UserManagementClient({
                     <tr>
                         <th>Gebruiker</th>
                         <th>Emailadres</th>
+                        <th>Telefoonnummer</th>
                         <th>Laatste login</th>
                         <th>Acties</th>
                     </tr>
@@ -172,6 +173,7 @@ export default function UserManagementClient({
                                 </span>
                             </td>
                             <td>{user.email || 'Geen e-mailadres'}</td>
+                            <td>{user.phone || 'Geen telefoonnummer'}</td>
                             <td>--</td> {/* Laatste login wordt later toegevoegd */}
                             <td className={styles.user__actions}>
                                 <i
