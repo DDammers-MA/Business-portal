@@ -20,6 +20,7 @@ export type CombinedUser = {
     companyName?: string;
     phone?: string;
     kvk?: string;
+    lastLoginAt?: string | null; // Toegevoegd veld voor laatste inlogtijd
 };
 
 export default async function UsersPage() {
@@ -62,6 +63,8 @@ export default async function UsersPage() {
                 photoURL: authUser.photoURL,
                 companyName: firestoreData.companyName,
                 phone: firestoreData.phone,
+                kvk: firestoreData.kvk,
+                lastLoginAt: authUser.metadata.lastSignInTime || null, // Haal de laatste inlogtijd op
             };
         });
     } catch (error) {

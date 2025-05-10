@@ -156,11 +156,11 @@ export default function UserManagementClient({
             <table className={styles.user__table}>
                 <thead>
                     <tr>
-                        <th>Gebruiker</th>
-                        <th>Emailadres</th>
-                        <th>Telefoonnummer</th>
-                        <th>Laatste login</th>
-                        <th>Acties</th>
+                        <th>User</th>
+                        <th>Email address</th>
+                        <th>Phone number</th>
+                        <th>Last login</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -174,7 +174,7 @@ export default function UserManagementClient({
                             </td>
                             <td>{user.email || 'Geen e-mailadres'}</td>
                             <td>{user.phone || 'Geen telefoonnummer'}</td>
-                            <td>--</td> {/* Laatste login wordt later toegevoegd */}
+                            <td>{user.lastLoginAt ? new Date(user.lastLoginAt).toLocaleString() : 'No login data'}</td>
                             <td className={styles.user__actions}>
                                 <i
                                     className={`fa-regular fa-pen-to-square ${styles.user__editIcon}`}
