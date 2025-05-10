@@ -1,138 +1,90 @@
 .user {
-	padding: 4rem;
-	height: 100%;
-	width: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+    padding: 4rem;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-	&__container {
-		max-width: 132rem;
-		width: 100%;
-		height: 70vh;
-		overflow-y: scroll;
-		border-radius: 0.8rem;
-		box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.1);
-		margin: 0 auto;
-		padding: 2rem;
-	}
+    &__container {
+        max-width: 132rem;
+        width: 100%;
+        overflow-x: auto;
+        border-radius: 0.8rem;
+        box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+        padding: 2rem;
+    }
 
-	&__header {
-		width: 100%;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		margin-bottom: 2rem;
-		gap: 1rem;
-	}
+    &__table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font-size: 1.4rem;
 
-	&__searchBar {
-		display: flex;
-		align-items: center;
-		background-color: #ffffff;
-		border: 2px solid #ccc;
-		border-radius: 20px;
-		padding: 5px 10px;
+        th {
+            background-color: #f4f4f4;
+            padding: 1rem;
+            font-weight: bold;
+            border-bottom: 0.2rem solid #ddd;
+        }
 
-		i {
-			margin-right: 10px;
-			font-size: 20px;
-			font-weight: bold;
-			color: #000;
-		}
-	}
+        td {
+            padding: 1rem;
+            border-bottom: 0.1rem solid #ddd;
+        }
 
-	&__inputField {
-		border: none;
-		outline: none;
-		width: 100%;
-		font-size: 1.6rem;
-		color: #333;
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+    }
 
-		&::placeholder {
-			color: #333;
-			font-weight: bold;
-		}
-	}
+    &__userCell {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
 
-	&__addUserButton {
-		background-color: #fc9047;
-		color: #ffffff;
-		border: none;
-		border-radius: 2rem;
-		padding: 0.5rem 2rem;
-		font-size: 1.6rem;
-		cursor: pointer;
-		height: 4rem;
+        .user__userIcon {
+            font-size: 2rem;
+            color: #333;
+        }
 
-		&:hover {
-			background-color: #e67a3c;
-		}
-	}
+        .user__userName {
+            font-weight: bold;
+            color: #333;
+        }
+    }
 
-	&__userList {
-	}
+    &__actions {
+        display: flex;
+        gap: 1rem;
 
-	&__userRow {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		background-color: #ffffff;
-		padding: 1rem;
-		position: relative;
-		height: 6rem;
+        i {
+            font-size: 1.6rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
 
-		&:nth-child(even) {
-			background-color: #ebebeb;
-		}
-	}
+            &:hover {
+                color: #555;
+            }
+        }
 
-	&__userIcon {
-		font-size: 3rem;
-		margin-right: 0.4rem;
-		color: #333;
-	}
+        .user__editIcon {
+            color: #007bff;
 
-	&__userName {
-		flex-grow: 1;
-		font-size: 1.6rem;
-		color: #333;
-		font-weight: bold;
-		margin-left: 1rem;
-	}
+            &:hover {
+                color: #0056b3;
+            }
+        }
 
-	&__actions {
-		display: flex;
-		gap: 1rem;
-		font-size: 1.5rem;
-		color: black;
-		cursor: pointer;
+        .user__deleteIcon {
+            color: #ff0000;
 
-		i {
-			transition: color 0.3s ease;
-		}
-	}
-
-	&__editIcon {
-		font-size: 1.4rem;
-		color: #000;
-		cursor: pointer;
-		padding-right: 1rem;
-
-		&:hover {
-			color: #333;
-		}
-	}
-
-	&__deleteIcon {
-		font-size: 1.4rem;
-		color: #ff0000;
-		cursor: pointer;
-
-		&:hover {
-			color: #cc0000;
-		}
-	}
+            &:hover {
+                color: #cc0000;
+            }
+        }
+    }
 }
 
 .modalOverlay {
