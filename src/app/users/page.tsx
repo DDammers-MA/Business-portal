@@ -64,7 +64,7 @@ export default async function UsersPage() {
                 companyName: firestoreData.companyName,
                 phone: firestoreData.phone,
                 kvk: firestoreData.kvk,
-                lastLoginAt: authUser.metadata.lastSignInTime || null, // Haal de laatste inlogtijd op
+                lastLoginAt: authUser.metadata.lastSignInTime || null, 
             };
         });
     } catch (error) {
