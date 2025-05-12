@@ -68,12 +68,12 @@
         }
     }
 
-  .user__tableContainer {
-    max-height: 40rem; 
-    overflow-y: scroll; 
-    border: 1px solid #ddd; 
-    border-radius: 0.8rem;
-}
+    .user__tableContainer {
+        max-height: 40rem;
+        overflow-y: scroll;
+        border: 1px solid #ddd;
+        border-radius: 0.8rem;
+    }
 
     &__table {
         width: 100%;
@@ -236,45 +236,54 @@
 
 @media screen and (max-width: 1120px) {
     .user__table {
-        display: block; 
+        display: block;
         width: 100%;
         overflow-x: auto;
     }
 
     .user__table thead {
-        display: none; 
+        display: none;
     }
 
     .user__table tbody {
-        display: block; 
+        display: block;
         width: 100%;
     }
 
     .user__table tr {
-        display: flex; 
-        flex-direction: column; 
+        display: flex;
+        flex-direction: column;
         margin-bottom: 1rem;
-        border: 1px solid #ddd; 
+        border: 1px solid #ddd;
         border-radius: 0.8rem;
         padding: 1rem;
     }
 
     .user__table td {
         display: flex;
-        justify-content: space-between; 
+        justify-content: space-between;
         padding: 0.5rem 0;
-        border: none; 
+        border: none;
     }
 
     .user__table td::before {
-        content: attr(data-label); 
+        content: attr(data-label);
         font-weight: bold;
         flex: 1;
         color: #333;
     }
 
     .user__actions {
-        justify-content: flex-start; 
+        justify-content: flex-start;
+    }
+}
+
+@media screen and (max-width: 470) {
+    .user {
+
+        &__searchBar {
+            width: 25rem;
+        }
     }
 }
 
