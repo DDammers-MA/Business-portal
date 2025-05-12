@@ -234,6 +234,50 @@
 }
 
 
+@media screen and (max-width: 1120px) {
+    .user__table {
+        display: block; 
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .user__table thead {
+        display: none; 
+    }
+
+    .user__table tbody {
+        display: block; 
+        width: 100%;
+    }
+
+    .user__table tr {
+        display: flex; 
+        flex-direction: column; 
+        margin-bottom: 1rem;
+        border: 1px solid #ddd; 
+        border-radius: 0.8rem;
+        padding: 1rem;
+    }
+
+    .user__table td {
+        display: flex;
+        justify-content: space-between; 
+        padding: 0.5rem 0;
+        border: none; 
+    }
+
+    .user__table td::before {
+        content: attr(data-label); 
+        font-weight: bold;
+        flex: 1;
+        color: #333;
+    }
+
+    .user__actions {
+        justify-content: flex-start; 
+    }
+}
+
 
 @media screen and (max-width: 685px) {
     .user__container {
