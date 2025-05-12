@@ -20,7 +20,7 @@ export type CombinedUser = {
     companyName?: string;
     phone?: string;
     kvk?: string;
-    lastLoginAt?: string | null; // Toegevoegd veld voor laatste inlogtijd
+    lastLoginAt?: string | null; 
 };
 
 export default async function UsersPage() {
