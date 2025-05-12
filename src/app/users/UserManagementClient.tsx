@@ -118,6 +118,7 @@ export default function UserManagementClient({
             } catch (error) {
                 console.error('Form submission error:', error);
                 setFormError('An unexpected error occurred during submission.');
+
             }
         });
     };
@@ -153,49 +154,51 @@ export default function UserManagementClient({
                 <p className={styles.errorBanner}>{formError}</p>
             )}
 
-            <table className={styles.user__table}>
-                <thead>
-                    <tr>
-                        <th>User</th>
-                        <th>Email address</th>
-                        <th>Phone number</th>
-                        <th>Last login</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-    {filteredUsers.map((user) => (
-        <tr key={user.id} className={styles.user__row}>
-            <td className={styles.user__userCell}>
-                <i className={`fa-solid fa-user ${styles.user__userIcon}`}></i>
-                <span className={styles.user__userName}>
-                    {user.companyName || user.displayName || user.email || 'Onbekend'}
-                </span>
-            </td>
-            <td>{user.email || 'Geen e-mailadres'}</td>
-            <td>{user.phone || 'Geen telefoonnummer'}</td>
-            <td>{user.lastLoginAt ? new Date(user.lastLoginAt).toLocaleString() : 'No login data'}</td>
-            <td className={styles.user__actions}>
-                <i
-                    className={`fa-regular fa-pen-to-square ${styles.user__editIcon}`}
-                    title="Wijzig gebruiker"
-                    onClick={() => {
-                        if (isPending) return;
-                        setCurrentUser(user);
-                        setFormError(null);
-                        setIsModalOpen(true);
-                    }}
-                ></i>
-                <i
-                    className={`fa-solid fa-trash ${styles.user__deleteIcon}`}
-                    title="Verwijder gebruiker"
-                    onClick={() => handleDeleteUser(user.id)}
-                ></i>
-            </td>
-        </tr>
-    ))}
-</tbody>
-            </table>
+            <div className={styles.user__tableContainer}>
+                <table className={styles.user__table}>
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Email address</th>
+                            <th>Phone number</th>
+                            <th>Last login</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filteredUsers.map((user) => (
+                            <tr key={user.id} className={styles.user__row}>
+                                <td className={styles.user__userCell}>
+                                    <i className={`fa-solid fa-user ${styles.user__userIcon}`}></i>
+                                    <span className={styles.user__userName}>
+                                        {user.companyName || user.displayName || user.email || 'Onbekend'}
+                                    </span>
+                                </td>
+                                <td>{user.email || 'Geen e-mailadres'}</td>
+                                <td>{user.phone || 'Geen telefoonnummer'}</td>
+                                <td>{user.lastLoginAt ? new Date(user.lastLoginAt).toLocaleString() : 'No login data'}</td>
+                                <td className={styles.user__actions}>
+                                    <i
+                                        className={`fa-regular fa-pen-to-square ${styles.user__editIcon}`}
+                                        title="Wijzig gebruiker"
+                                        onClick={() => {
+                                            if (isPending) return;
+                                            setCurrentUser(user);
+                                            setFormError(null);
+                                            setIsModalOpen(true);
+                                        }}
+                                    ></i>
+                                    <i
+                                        className={`fa-solid fa-trash ${styles.user__deleteIcon}`}
+                                        title="Verwijder gebruiker"
+                                        onClick={() => handleDeleteUser(user.id)}
+                                    ></i>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
 
             {filteredUsers.length === 0 && <p>No users found.</p>}
 

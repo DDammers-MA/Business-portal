@@ -68,6 +68,13 @@
         }
     }
 
+  .user__tableContainer {
+    max-height: 40rem; 
+    overflow-y: scroll; 
+    border: 1px solid #ddd; 
+    border-radius: 0.8rem;
+}
+
     &__table {
         width: 100%;
         border-collapse: collapse;
@@ -225,6 +232,8 @@
 .saveButton:hover {
     background-color: #e67a3c;
 }
+
+
 
 @media screen and (max-width: 685px) {
     .user__container {
