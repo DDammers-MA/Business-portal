@@ -59,17 +59,17 @@ const footer = () => {
 
                         <ul className={styles.footer__list}>
                         <div className={styles.footer__listContainer}>
-                        <label className={styles.footer__title} htmlFor="">socials</label>
+                        <label className={styles.footer__title} htmlFor="">Socials</label>
                         <li className={styles.footer__listItem}>
-                            <Link href="https://www.instagram.com/doedeal_nl?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw%3D%3D"><i className="fa-brands fa-instagram"></i> doedeal_nl
+                            <Link href="https://www.instagram.com/doedeal_nl?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw%3D%3D"><i className="fa-brands fa-instagram"></i> Instagram
                             </Link>
                         </li>
                         <li className={styles.footer__listItem}>
-                            <Link href="https://www.linkedin.com/company/doedeal/"><i className="fa-brands fa-linkedin"></i> doedeal
+                            <Link href="https://www.linkedin.com/company/doedeal/"><i className="fa-brands fa-linkedin"></i> LinkedIn
                             </Link>
                         </li>
                         <li className={styles.footer__listItem}>
-                            <Link href="https://www.facebook.com/people/DOEdeal/100088505853873/"><i className="fa-brands fa-facebook"></i> DOEdeal
+                            <Link href="https://www.facebook.com/people/DOEdeal/100088505853873/"><i className="fa-brands fa-facebook"></i> Facebook
                             </Link>
                         </li>
 

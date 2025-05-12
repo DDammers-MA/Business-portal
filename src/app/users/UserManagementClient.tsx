@@ -6,6 +6,7 @@ import { Modal } from '@/components/modal/modal';
 import { CombinedUser } from './page';
 import { addUserAction, updateUserAction, deleteUserAction } from './actions';
 import { useAuth } from '@/context/AuthContext';
+import { toast } from 'sonner';
 
 type AddUserResult = Awaited<ReturnType<typeof addUserAction>>;
 type UpdateUserResult = Awaited<ReturnType<typeof updateUserAction>>;
@@ -54,9 +55,11 @@ export default function UserManagementClient({
 		startTransition(async () => {
 			const result: DeleteUserResult = await deleteUserAction(userId);
 			if (result.success) {
+				toast.success('User deleted successfully!');
 				setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
 				console.log(result.message);
 			} else {
+				toast.error('Failed to delete user!')
 				setFormError(result.message);
 				console.error('Deletion failed:', result.message);
 			}
@@ -79,12 +82,15 @@ export default function UserManagementClient({
 					);
 					if (result.success) {
 						setUsers((prevUsers) =>
+							
 							prevUsers.map((u) =>
 								u.id === currentUser.id ? { ...u, ...updateData } : u
 							)
 						);
 						setIsModalOpen(false);
 						setCurrentUser(null);
+
+						
 					} else {
 						setFormError(result.message);
 					}
@@ -116,6 +122,7 @@ export default function UserManagementClient({
 					}
 				}
 			} catch (error) {
+				toast.error('Form submission error')
 				console.error('Form submission error:', error);
 				setFormError('An unexpected error occurred during submission.');
 			}

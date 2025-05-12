@@ -90,10 +90,10 @@ const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
 		<div className={styles.summaryCard}>
 			{/* Make only this part clickable for modal */}
 			<div
-				className={styles.summaryCardClickableArea}
+				className={styles.summaryCard__ClickableArea}
 				onClick={() => onCardClick(activity)}
 			>
-				<div className={styles.summaryCardImageContainer}>
+				<div className={styles.summaryCard__ImageContainer}>
 					<Image
 						src={imageUrl}
 						alt={activity.name || 'Activity image'}
@@ -107,11 +107,11 @@ const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
 						priority={false} // Consider setting priority for above-the-fold images if applicable
 					/>
 				</div>
-				<div className={styles.summaryCardContent}>
-					<h3 className={styles.summaryCardTitle} title={activity.name}>
+				<div className={styles.summaryCard__Content}>
+					<h3 className={styles.summaryCard__Title} title={activity.name}>
 						{activity.name}
 					</h3>
-					<p className={styles.summaryCardSubmitter}>
+					<p className={styles.summaryCard__Submitter}>
 						Submitted by:{' '}
 						{isSubmitterLoading ? (
 							<span className={styles.inlineSpinner}></span>
@@ -122,16 +122,16 @@ const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
 				</div>
 			</div>
 			{/* Action buttons always visible at the bottom */}
-			<div className={styles.summaryCardActions}>
+			<div className={styles.summaryCard__Actions}>
 				<button
-					className={`${styles.summaryCardButton} ${styles.summaryCardButtonDeny}`}
+					className={`${styles.summaryCard__Button} ${styles.summaryCard__ButtonDeny}`}
 					onClick={handleDenyClick}
 					disabled={isUpdating}
 				>
 					{isUpdating ? <span className={styles.inlineSpinner}></span> : 'Deny'}
 				</button>
 				<button
-					className={`${styles.summaryCardButton} ${styles.summaryCardButtonApprove}`}
+					className={`${styles.summaryCard__Button} ${styles.summaryCard__ButtonApprove}`}
 					onClick={handleApproveClick}
 					disabled={isUpdating}
 				>
@@ -342,10 +342,11 @@ export default function ApprovePage() {
 
 			{selectedActivity && (
 				<Modal isOpen={isModalOpen} onClose={handleCloseModal}>
-					<div className={styles.modalHeader}>Activity Details</div>
-					<div className={styles.modalBody}>
+					<div className={styles.modal}>
+					<div className={styles.modal__Header}>Activity Details</div>
+					<div className={styles.modal__Body}>
 						{/* Left side (Image) */}
-						<div className={styles.modalImageContainer}>
+						<div className={styles.modal__ImageContainer}>
 							{selectedActivity.image_url ? (
 								<Image
 									src={selectedActivity.image_url}
@@ -362,83 +363,82 @@ export default function ApprovePage() {
 							)}
 						</div>
 						{/* Right side (Details) */}
-						<div className={styles.modalDetailsSection}>
-							<div className={styles.modalSection}>
-								<h3 className={styles.modalActivityTitle}>
+						<div className={styles.modal__DetailsSection}>
+							<div className={styles.modal__Section}>
+								<h3 className={styles.modal__ActivityTitle}>
 									{selectedActivity.name}
-								</h3>
-								<p className={styles.modalText}>
+									</h3>
+									
+								<p className={styles.modal__Text}>
 									{selectedActivity.description}
 								</p>
 								{/* Add more detailed activity info here */}
-								<div className={styles.modalDetailItem}>
-									<strong>Status:</strong> {selectedActivity.status}
-								</div>
-								<div className={styles.modalDetailItem}>
-									<strong>Active:</strong>{' '}
+							
+								<div className={styles.modal__DetailItem}>
+									<strong>Published:</strong>{' '}
 									{selectedActivity.active ? 'Yes' : 'No'}
 								</div>
 								{/* Example: Add other fields */}
 								{selectedActivity.addr && (
-									<div className={styles.modalDetailItem}>
+									<div className={styles.modal__DetailItem}>
 										<strong>Address:</strong> {selectedActivity.addr}
 									</div>
 								)}
 								{selectedActivity.date && (
-									<div className={styles.modalDetailItem}>
+									<div className={styles.modal__DetailItem}>
 										<strong>Date:</strong> {selectedActivity.date}
 									</div>
 								)}
 								{/* ---- Newly Added Fields Start ---- */}
 								{selectedActivity.type && (
-									<div className={styles.modalDetailItem}>
+									<div className={styles.modal__DetailItem}>
 										<strong>Type:</strong> {selectedActivity.type}
 									</div>
 								)}
 								{selectedActivity.place && (
-									<div className={styles.modalDetailItem}>
+									<div className={styles.modal__DetailItem}>
 										<strong>Place:</strong> {selectedActivity.place}
 									</div>
 								)}
 								{selectedActivity.postal_code && (
-									<div className={styles.modalDetailItem}>
+									<div className={styles.modal__DetailItem}>
 										<strong>Postal Code:</strong> {selectedActivity.postal_code}
 									</div>
 								)}
 								{selectedActivity.start_time && (
-									<div className={styles.modalDetailItem}>
+									<div className={styles.modal__DetailItem}>
 										<strong>Start Time:</strong> {selectedActivity.start_time}
 									</div>
 								)}
 								{selectedActivity.end_time && (
-									<div className={styles.modalDetailItem}>
+									<div className={styles.modal__DetailItem}>
 										<strong>End Time:</strong> {selectedActivity.end_time}
 									</div>
 								)}
 								{selectedActivity.budget && (
-									<div className={styles.modalDetailItem}>
+									<div className={styles.modal__DetailItem}>
 										<strong>Budget:</strong> {selectedActivity.budget}
 									</div>
 								)}
 								{selectedActivity.phone && (
-									<div className={styles.modalDetailItem}>
+									<div className={styles.modal__DetailItem}>
 										<strong>Phone:</strong> {selectedActivity.phone}
 									</div>
 								)}
 								{selectedActivity.email && (
-									<div className={styles.modalDetailItem}>
+									<div className={styles.modal__DetailItem}>
 										<strong>Contact Email:</strong> {selectedActivity.email}
 									</div>
 								)}
 								{/* ---- Newly Added Fields End ---- */}
 							</div>
 
-							<div className={styles.modalSection}>
-								<h4 className={styles.modalSectionTitle}>Submitted By</h4>
+							<div className={styles.modal__Section}>
+								<h4 className={styles.modal__SectionTitle}>Submitted By</h4>
 								{modalUserLoading ? (
 									<div className={styles.spinner}></div>
 								) : creatorData ? (
-									<div className={styles.modalUserInfo}>
+									<div className={styles.modal__UserInfo}>
 										<p>
 											<strong>Name:</strong>{' '}
 											{creatorData.companyName ||
@@ -457,8 +457,8 @@ export default function ApprovePage() {
 							</div>
 						</div>
 					</div>
-					<div className={styles.modalActions}>
-						<button
+					<div className={styles.modal__Actions}>
+						{/* <button
 							className={`${styles.button} ${styles.buttonDeny}`}
 							onClick={() => handleModalStatusUpdate('denied')}
 							disabled={modalActionLoading}
@@ -470,7 +470,7 @@ export default function ApprovePage() {
 							)}
 						</button>
 						<button
-							className={`${styles.button} ${styles.buttonApprove}`}
+							className={`${styles.button} ${styles.button__Approve}`}
 							onClick={() => handleModalStatusUpdate('published')}
 							disabled={modalActionLoading}
 						>
@@ -479,8 +479,9 @@ export default function ApprovePage() {
 							) : (
 								'Approve'
 							)}
-						</button>
-					</div>
+						</button> */}
+						</div>
+						</div>
 				</Modal>
 			)}
 		</div>
