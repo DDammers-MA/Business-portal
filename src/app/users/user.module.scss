@@ -85,13 +85,17 @@
             background-color: #f4f4f4;
             padding: 1rem;
             font-weight: bold;
-            border-bottom: 0.2rem solid #ddd;
+            border-bottom: 0.2rem solid #FC9047;
         }
 
         td {
-            padding: 1rem;
-            border-bottom: 0.1rem solid #ddd;
+            padding: 1rem;  
+            border-bottom: 0.2rem solid #FC9047;
         }
+
+         td:last-child {
+        border-bottom: none;
+    }
 
         tr:hover {
             background-color: #f9f9f9;
