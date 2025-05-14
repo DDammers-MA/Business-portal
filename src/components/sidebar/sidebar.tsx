@@ -7,6 +7,7 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../../../utils/firebase.browser';
 import { useAuth } from '@/context/AuthContext';
 import styles from './sidebar.module.scss';
+import { usePathname } from 'next/navigation';
 
 type SidebarProps = {
 	isOpen: boolean;
@@ -156,9 +157,12 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 };
 
 const SidebarItem = ({ href, label }: { href: string; label: string }) => {
+
+	const pathname = usePathname();
+	const isActive = pathname === href;
 	return (
 		<li className={styles.sidebar__navItem}>
-			<Link href={href} className={styles.sidebar__navLink}>
+			<Link href={href}  className={isActive ? styles.sidebar__activeLink : styles.sidebar__navLink}>
 				{label}
 			</Link>
 		</li>
@@ -166,9 +170,12 @@ const SidebarItem = ({ href, label }: { href: string; label: string }) => {
 };
 
 const HeaderItem = ({ href, label }: { href: string; label: string }) => {
+	const pathname = usePathname();
+	const isActive = pathname === href;
+
 	return (
 		<li className={styles.header__navItem}>
-			<Link href={href} className={styles.header__navLink}>
+			<Link href={href}  className={isActive ? styles.sidebar__activeLink : styles.sidebar__navLink}>
 				{label}
 			</Link>
 		</li>

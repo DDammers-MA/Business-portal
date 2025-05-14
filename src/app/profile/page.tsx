@@ -6,6 +6,9 @@ import styles from './profile.module.scss';
 import { db } from '../../../utils/firebase.browser';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useAuth } from '@/context/AuthContext';
+import { toast } from 'sonner';
+
+
 import {
 	getAuth,
 	reauthenticateWithCredential,
@@ -84,11 +87,12 @@ const ProfilePage = () => {
 			}, { merge: true });
 
 			setIsEditing(false);
-			console.log('Profiel succesvol bijgewerkt/aangemaakt.');
-			alert('Profile updated successfully!');
+      console.log('Profiel succesvol bijgewerkt/aangemaakt.');
+      toast.success('User successfully updated!'); 
+
 		} catch (err) {
-			console.error('Fout bij bijwerken/aanmaken profiel:', err);
-			setError('Error updating profile: ' + err);
+			toast.error('Fout bij bijwerken/aanmaken profiel:');
+			setError('Fout bij bijwerken profiel: ' + err);
 		}
 	};
 
@@ -126,9 +130,11 @@ const ProfilePage = () => {
 			setNewPassword('');
 			setConfirmPassword('');
 
-			alert('Password changed successfully.');
-		} catch (err) {
-			setError('Error changing password: ' + err);
+      toast.success('Wachtwoord succesvol gewijzigd!');
+
+    } catch (err) {
+      toast.error('Fout bij het wijzigen van wachtwoord:');
+			setError('Fout bij het wijzigen van wachtwoord: ' + err);
 		}
 	};
 

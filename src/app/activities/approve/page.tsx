@@ -13,11 +13,12 @@ import {
 } from 'firebase/firestore';
 import { db } from '../../../../utils/firebase.browser'; // Adjust path as necessary
 import { useAuth } from '@/context/AuthContext';
-import { Modal } from '@/components/modal/modal'; // Adjust path as necessary
 import { FormData } from '@/types/FormData'; // Adjust path as necessary
 import styles from './approve.module.scss';
 import Image from 'next/image'; // Using next/image for optimized images
 import { getUserDetailsAction, UserDetails } from './actions';
+import { ActivityInfoModal } from './infoModal';
+import DenyModal from './denyModal';
 
 // --------------- Activity Summary Card Component ---------------
 interface ActivitySummaryCardProps {
@@ -86,14 +87,16 @@ const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
 		}
 	};
 
+	// Removed duplicate handleDenyWithReason function as it is unused
+
 	return (
 		<div className={styles.summaryCard}>
 			{/* Make only this part clickable for modal */}
 			<div
-				className={styles.summaryCardClickableArea}
+				className={styles.summaryCard__ClickableArea}
 				onClick={() => onCardClick(activity)}
 			>
-				<div className={styles.summaryCardImageContainer}>
+				<div className={styles.summaryCard__ImageContainer}>
 					<Image
 						src={imageUrl}
 						alt={activity.name || 'Activity image'}
@@ -107,11 +110,11 @@ const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
 						priority={false} // Consider setting priority for above-the-fold images if applicable
 					/>
 				</div>
-				<div className={styles.summaryCardContent}>
-					<h3 className={styles.summaryCardTitle} title={activity.name}>
+				<div className={styles.summaryCard__Content}>
+					<h3 className={styles.summaryCard__Title} title={activity.name}>
 						{activity.name}
 					</h3>
-					<p className={styles.summaryCardSubmitter}>
+					<p className={styles.summaryCard__Submitter}>
 						Submitted by:{' '}
 						{isSubmitterLoading ? (
 							<span className={styles.inlineSpinner}></span>
@@ -122,16 +125,16 @@ const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
 				</div>
 			</div>
 			{/* Action buttons always visible at the bottom */}
-			<div className={styles.summaryCardActions}>
+			<div className={styles.summaryCard__Actions}>
 				<button
-					className={`${styles.summaryCardButton} ${styles.summaryCardButtonDeny}`}
+					className={`${styles.summaryCard__Button} ${styles.summaryCard__ButtonDeny}`}
 					onClick={handleDenyClick}
 					disabled={isUpdating}
 				>
 					{isUpdating ? <span className={styles.inlineSpinner}></span> : 'Deny'}
 				</button>
 				<button
-					className={`${styles.summaryCardButton} ${styles.summaryCardButtonApprove}`}
+					className={`${styles.summaryCard__Button} ${styles.summaryCard__ButtonApprove}`}
 					onClick={handleApproveClick}
 					disabled={isUpdating}
 				>
@@ -158,6 +161,11 @@ export default function ApprovePage() {
 	const [selectedActivity, setSelectedActivity] = useState<FormData | null>(
 		null
 	);
+
+	const [isDenyModalOpen, setIsDenyModalOpen] = useState(false);
+const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
+
+
 	const [creatorData, setCreatorData] = useState<UserDetails | null>(null);
 	const [modalUserLoading, setModalUserLoading] = useState<boolean>(false); // Separate loading for modal user data
 	const [modalActionLoading, setModalActionLoading] = useState<boolean>(false); // Loading state for modal buttons
@@ -240,6 +248,32 @@ export default function ApprovePage() {
 		setModalActionLoading(false); // Reset modal button loading state
 	}, []);
 
+	const handleDenySubmit = async (reason: string) => {
+		if (!activityToDeny?.id) return;
+	
+		try {
+			// Save the reason somewhere if needed
+			// e.g., updateDoc(..., { status: 'denied', denyReason: reason })
+			await updateDoc(doc(db, 'activities', activityToDeny.id), {
+				status: 'denied',
+				denyReason: reason,
+			});
+	
+			// Remove from list
+			setActivitiesToApprove((prev) =>
+				prev.filter((activity) => activity.id !== activityToDeny.id)
+			);
+	
+			// Close modal
+			setIsDenyModalOpen(false);
+			setActivityToDeny(null);
+		} catch (error) {
+			console.error('Error denying activity with reason:', error);
+			alert('Failed to deny the activity. Please try again.');
+		}
+	};
+	
+
 	// Generic function to update status and local state
 	const updateActivityStatus = useCallback(
 		async (activityId: string, newStatus: 'published' | 'denied') => {
@@ -286,6 +320,14 @@ export default function ApprovePage() {
 	);
 
 	// Handler for direct card action buttons
+	const handleDenyWithReason = (activityId: string) => {
+		const activity = activitiesToApprove.find((a) => a.id === activityId);
+		if (activity) {
+			setActivityToDeny(activity);
+			setIsDenyModalOpen(true);
+		}
+	};
+
 	const handleDirectStatusUpdate = useCallback(
 		async (activityId: string, newStatus: 'published' | 'denied') => {
 			setDirectUpdateStates((prev) => ({ ...prev, [activityId]: true }));
@@ -333,7 +375,11 @@ export default function ApprovePage() {
 							activity={activity}
 							onCardClick={handleOpenModal}
 							onApprove={(id) => handleDirectStatusUpdate(id, 'published')}
-							onDeny={(id) => handleDirectStatusUpdate(id, 'denied')}
+							onDeny={async (activityId) => {
+								handleDenyWithReason(activityId);
+								return Promise.resolve();
+							}}
+
 							isUpdating={directUpdateStates[activity.id || ''] || false}
 						/>
 					))}
@@ -341,148 +387,30 @@ export default function ApprovePage() {
 			)}
 
 			{selectedActivity && (
-				<Modal isOpen={isModalOpen} onClose={handleCloseModal}>
-					<div className={styles.modalHeader}>Activity Details</div>
-					<div className={styles.modalBody}>
-						{/* Left side (Image) */}
-						<div className={styles.modalImageContainer}>
-							{selectedActivity.image_url ? (
-								<Image
-									src={selectedActivity.image_url}
-									alt={selectedActivity.name || 'Activity image'}
-									fill
-									style={{ objectFit: 'contain' }}
-									sizes="(max-width: 768px) 100vw, 50vw" // Adjust sizes for modal context
-									onError={(e) => {
-										(e.target as HTMLImageElement).style.display = 'none';
-									}}
-								/>
-							) : (
-								<div className={styles.message}>No Image Provided</div>
-							)}
-						</div>
-						{/* Right side (Details) */}
-						<div className={styles.modalDetailsSection}>
-							<div className={styles.modalSection}>
-								<h3 className={styles.modalActivityTitle}>
-									{selectedActivity.name}
-								</h3>
-								<p className={styles.modalText}>
-									{selectedActivity.description}
-								</p>
-								{/* Add more detailed activity info here */}
-								<div className={styles.modalDetailItem}>
-									<strong>Status:</strong> {selectedActivity.status}
-								</div>
-								<div className={styles.modalDetailItem}>
-									<strong>Active:</strong>{' '}
-									{selectedActivity.active ? 'Yes' : 'No'}
-								</div>
-								{/* Example: Add other fields */}
-								{selectedActivity.addr && (
-									<div className={styles.modalDetailItem}>
-										<strong>Address:</strong> {selectedActivity.addr}
-									</div>
-								)}
-								{selectedActivity.date && (
-									<div className={styles.modalDetailItem}>
-										<strong>Date:</strong> {selectedActivity.date}
-									</div>
-								)}
-								{/* ---- Newly Added Fields Start ---- */}
-								{selectedActivity.type && (
-									<div className={styles.modalDetailItem}>
-										<strong>Type:</strong> {selectedActivity.type}
-									</div>
-								)}
-								{selectedActivity.place && (
-									<div className={styles.modalDetailItem}>
-										<strong>Place:</strong> {selectedActivity.place}
-									</div>
-								)}
-								{selectedActivity.postal_code && (
-									<div className={styles.modalDetailItem}>
-										<strong>Postal Code:</strong> {selectedActivity.postal_code}
-									</div>
-								)}
-								{selectedActivity.start_time && (
-									<div className={styles.modalDetailItem}>
-										<strong>Start Time:</strong> {selectedActivity.start_time}
-									</div>
-								)}
-								{selectedActivity.end_time && (
-									<div className={styles.modalDetailItem}>
-										<strong>End Time:</strong> {selectedActivity.end_time}
-									</div>
-								)}
-								{selectedActivity.budget && (
-									<div className={styles.modalDetailItem}>
-										<strong>Budget:</strong> {selectedActivity.budget}
-									</div>
-								)}
-								{selectedActivity.phone && (
-									<div className={styles.modalDetailItem}>
-										<strong>Phone:</strong> {selectedActivity.phone}
-									</div>
-								)}
-								{selectedActivity.email && (
-									<div className={styles.modalDetailItem}>
-										<strong>Contact Email:</strong> {selectedActivity.email}
-									</div>
-								)}
-								{/* ---- Newly Added Fields End ---- */}
-							</div>
 
-							<div className={styles.modalSection}>
-								<h4 className={styles.modalSectionTitle}>Submitted By</h4>
-								{modalUserLoading ? (
-									<div className={styles.spinner}></div>
-								) : creatorData ? (
-									<div className={styles.modalUserInfo}>
-										<p>
-											<strong>Name:</strong>{' '}
-											{creatorData.companyName ||
-												creatorData.displayName ||
-												'N/A'}
-										</p>
-										<p>
-											<strong>Email:</strong> {creatorData.email || 'N/A'}
-										</p>
-									</div>
-								) : (
-									<p className={styles.modalText}>
-										Creator information not available.
-									</p>
-								)}
-							</div>
-						</div>
-					</div>
-					<div className={styles.modalActions}>
-						<button
-							className={`${styles.button} ${styles.buttonDeny}`}
-							onClick={() => handleModalStatusUpdate('denied')}
-							disabled={modalActionLoading}
-						>
-							{modalActionLoading ? (
-								<span className={styles.inlineSpinner}></span>
-							) : (
-								'Deny'
-							)}
-						</button>
-						<button
-							className={`${styles.button} ${styles.buttonApprove}`}
-							onClick={() => handleModalStatusUpdate('published')}
-							disabled={modalActionLoading}
-						>
-							{modalActionLoading ? (
-								<span className={styles.inlineSpinner}></span>
-							) : (
-								'Approve'
-							)}
-						</button>
-					</div>
-				</Modal>
+				<ActivityInfoModal
+			isOpen={isModalOpen}
+			onClose={handleCloseModal}
+			activity={selectedActivity}
+			creatorData={creatorData}
+			modalUserLoading={modalUserLoading}
+			modalActionLoading={modalActionLoading}
+			onStatusUpdate={handleModalStatusUpdate}
+		/>
+		
 			)}
+
+{activityToDeny && (
+    <DenyModal
+        isOpen={isDenyModalOpen}
+        onClose={() => {
+            setIsDenyModalOpen(false);
+            setActivityToDeny(null);
+        }}
+        onSubmit={handleDenySubmit}
+    />
+)}
+
 		</div>
 	);
 }
