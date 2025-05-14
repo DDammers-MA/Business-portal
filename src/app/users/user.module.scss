@@ -89,13 +89,13 @@
         }
 
         td {
-            padding: 1rem;  
+            padding: 1rem;
             border-bottom: 0.2rem solid #FC9047;
         }
 
-         td:last-child {
-        border-bottom: none;
-    }
+        td:last-child {
+            border-bottom: none;
+        }
 
         tr:hover {
             background-color: #f9f9f9;
@@ -121,6 +121,8 @@
     &__actions {
         display: flex;
         gap: 1rem;
+        justify-content: flex-end;
+        text-align: right;
 
         i {
             font-size: 1.6rem;
