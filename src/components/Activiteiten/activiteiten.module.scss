@@ -34,17 +34,28 @@
 	position: relative;
 
 	&__description {
-	  font-size: 1.4rem;
-    color: black;
-    margin-bottom: 5rem;
-    max-height: 6rem; 
-    overflow-y: auto; 
-    padding-right: 0.5rem; 
-    text-align: left; 
-    scrollbar-width: thin; 
-    scrollbar-color: #ccc transparent; 
+		font-size: 1.4rem;
+		color: black;
+		margin-bottom: 5rem;
+		max-height: 6rem;
+		overflow-y: auto;
+		padding-right: 0.5rem;
+		text-align: left;
+		scrollbar-width: thin;
+		scrollbar-color: #ccc transparent;
 
+		&::-webkit-scrollbar {
+			width: 8px;
+		}
 
+		&::-webkit-scrollbar-thumb {
+			background-color: #ccc;
+			border-radius: 4px;
+		}
+
+		&::-webkit-scrollbar-track {
+			background: transparent;
+		}
 	}
 
 	&:hover {
@@ -204,6 +215,7 @@
 	0% {
 		transform: rotate(0deg);
 	}
+
 	100% {
 		transform: rotate(360deg);
 	}
