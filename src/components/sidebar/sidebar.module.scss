@@ -47,6 +47,11 @@
 	&__navLink {
 		color: white;
 		text-decoration: none;
+
+		
+		a{
+			color: red;
+		}
 	}
 
 	&__navItem {
@@ -55,6 +60,7 @@
 		align-items: center;
 		justify-content: space-between;
 		gap: 2rem;
+
 	}
 
 	&__title {
@@ -122,8 +128,23 @@
 		gap: 3rem;
 	}
 
+	&__activeLink {
+		color: #000; // Active text color (example: black)
+		font-weight: bold;
+		background-color: #fff; // Highlight background
+		border-radius: 0.5rem;
+		padding: 0.5rem 1rem;
+		text-decoration: none;
+	}
+
 	&__navItem {
 		display: inline-block;
+
+		a{
+			color: white;
+			text-decoration: none;
+		}
+
 	}
 
 	&__navLink {
@@ -239,4 +260,14 @@
 			}
 		}
 	}
+}
+.sidebar__activeLink,
+.header__activeLink {
+	color: #000 !important; // Active text color (example: black)
+
+	background-color: #fff; // Highlight background
+	border-radius: 0.5rem;
+	padding: 0.5rem 1rem;
+	text-decoration: none;
+
 }

@@ -7,6 +7,7 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../../../utils/firebase.browser';
 import { useAuth } from '@/context/AuthContext';
 import styles from './sidebar.module.scss';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 type SidebarProps = {
 	isOpen: boolean;
@@ -166,13 +167,31 @@ const SidebarItem = ({ href, label }: { href: string; label: string }) => {
 };
 
 const HeaderItem = ({ href, label }: { href: string; label: string }) => {
+	const pathname = usePathname();
+	const searchParams = useSearchParams();
+
+	// Extract filter from the link and from the current URL
+	const url = new URL(href, 'http://localhost'); // Use base to parse query string
+	const targetFilter = url.searchParams.get('filter');
+	const currentFilter = searchParams.get('filter');
+
+	// Make it active if pathname matches and filter matches
+	const isActive =
+		pathname === url.pathname && targetFilter === currentFilter;
+
 	return (
 		<li className={styles.header__navItem}>
-			<Link href={href} className={styles.header__navLink}>
+			<Link
+				href={href}
+				className={
+					isActive
+						? styles.sidebar__activeLink
+						: styles.sidebar__navLink
+				}
+			>
 				{label}
 			</Link>
 		</li>
 	);
 };
-
 export default Sidebar;
