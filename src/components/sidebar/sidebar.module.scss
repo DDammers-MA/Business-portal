@@ -126,6 +126,7 @@
 		align-items: center;
 		justify-content: space-between;
 		gap: 3rem;
+		position: relative;
 	}
 
 	&__navItem {
@@ -171,9 +172,9 @@
 }
 
 /* New Profile Dropdown Styles */
-.profileDropdownContainer {
-	position: relative; /* Needed for absolute positioning of the dropdown */
-}
+// .profileDropdownContainer {
+// 	position: relative; /* Needed for absolute positioning of the dropdown */
+// }
 
 .profileButton {
 	background: none;
@@ -185,6 +186,7 @@
 	display: flex; /* Align icon nicely */
 	align-items: center;
 	justify-content: center;
+	position: relative;
 }
 
 .profileDropdown {
@@ -222,11 +224,13 @@
 }
 
 @media screen and (max-width: 750px) {
+
 	.header {
 		&__navItem {
 			display: none;
 		}
 	}
+
 
 	.sidebar {
 		left: -100vw; /* Hidden by default */

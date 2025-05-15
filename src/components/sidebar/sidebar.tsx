@@ -8,7 +8,6 @@ import { auth } from '../../../utils/firebase.browser';
 import { useAuth } from '@/context/AuthContext';
 import styles from './sidebar.module.scss';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { on } from 'events';
 
 type SidebarProps = {
 	isOpen: boolean;
@@ -84,15 +83,13 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 						<div className={styles.header__right}>
 							{isLoggedIn && (
 								<ul className={styles.header__navList}>
-									<li
-										className={`${styles.header__navItem} ${styles.profileDropdownContainer}`}
-									>
 										<button
 											className={styles.profileButton}
 											onClick={() => setIsProfileOpen(!isProfileOpen)}
 										>
 											<i className="fas fa-user-circle"></i>
 										</button>
+								
 										{isProfileOpen && (
 											<div className={styles.profileDropdown}>
 												<Link
@@ -104,7 +101,7 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 												<button onClick={handleLogout}>Logout</button>
 											</div>
 										)}
-									</li>
+							
 								</ul>
 							)}
 						</div>
