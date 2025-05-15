@@ -8,11 +8,13 @@ import { auth } from '../../../utils/firebase.browser';
 import { useAuth } from '@/context/AuthContext';
 import styles from './sidebar.module.scss';
 import { usePathname, useSearchParams } from 'next/navigation';
+import { on } from 'events';
 
 type SidebarProps = {
 	isOpen: boolean;
 	setIsOpen: (open: boolean) => void;
 	isAdmin: boolean;
+
 };
 
 const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
@@ -37,6 +39,8 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 			console.error('Error logging out:', error);
 		}
 	};
+
+	
 
 	return (
 		<>
@@ -130,12 +134,13 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 						<ul className={styles.sidebar__navList}>
 							<h2 className={styles.sidebar__title}>Admin</h2>
 
-							<SidebarItem href="/users" label="Users" />
+							<SidebarItem onClick={() => setIsOpen(false)} href="/users" label="Users" />
 							<SidebarItem
+								onClick={() => setIsOpen(false)}
 								href="/activities/approve"
 								label="Unapproved activities"
 							/>
-							<SidebarItem href="/statistics" label="Statistics" />
+							<SidebarItem onClick={() => setIsOpen(false)} href="/statistics" label="Statistics" />
 						</ul>
 
 						<ul
@@ -143,11 +148,11 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 						>
 							<h2 className={styles.sidebar__title}>Navigation</h2>
 
-							<SidebarItem href="/" label="Home" />
-							<SidebarItem href="/" label="Activities" />
-							<SidebarItem href="/" label="Published" />
-							<SidebarItem href="/" label="Unpublished" />
-							<SidebarItem href="/" label="Drafts" />
+							<SidebarItem onClick={() => setIsOpen(false)} href="/" label="Home" />
+							<SidebarItem onClick={() => setIsOpen(false)} href="/" label="Activities" />
+							<SidebarItem onClick={() => setIsOpen(false)} href="/" label="Published" />
+							<SidebarItem onClick={() => setIsOpen(false)} href="/" label="Unpublished" />
+							<SidebarItem onClick={() => setIsOpen(false)} href="/" label="Drafts" />
 						</ul>
 					</nav>
 				</div>
@@ -156,9 +161,9 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 	);
 };
 
-const SidebarItem = ({ href, label }: { href: string; label: string }) => {
+const SidebarItem = ({ href, label, onClick, }: { href: string; label: string; onClick?: () => void; }) => {
 	return (
-		<li className={styles.sidebar__navItem}>
+		<li className={styles.sidebar__navItem} onClick={onClick}>
 			<Link href={href} className={styles.sidebar__navLink}>
 				{label}
 			</Link>
