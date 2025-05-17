@@ -47,6 +47,11 @@
 	&__navLink {
 		color: white;
 		text-decoration: none;
+
+		
+		a{
+			color: red;
+		}
 	}
 
 	&__navItem {
@@ -55,6 +60,7 @@
 		align-items: center;
 		justify-content: space-between;
 		gap: 2rem;
+
 	}
 
 	&__title {
@@ -120,10 +126,17 @@
 		align-items: center;
 		justify-content: space-between;
 		gap: 3rem;
+		position: relative;
 	}
 
 	&__navItem {
 		display: inline-block;
+
+		a{
+			color: white;
+			text-decoration: none;
+		}
+
 	}
 
 	&__navLink {
@@ -159,9 +172,9 @@
 }
 
 /* New Profile Dropdown Styles */
-.profileDropdownContainer {
-	position: relative; /* Needed for absolute positioning of the dropdown */
-}
+// .profileDropdownContainer {
+// 	position: relative; /* Needed for absolute positioning of the dropdown */
+// }
 
 .profileButton {
 	background: none;
@@ -173,6 +186,7 @@
 	display: flex; /* Align icon nicely */
 	align-items: center;
 	justify-content: center;
+	position: relative;
 }
 
 .profileDropdown {
@@ -210,11 +224,13 @@
 }
 
 @media screen and (max-width: 750px) {
+
 	.header {
 		&__navItem {
 			display: none;
 		}
 	}
+
 
 	.sidebar {
 		left: -100vw; /* Hidden by default */
@@ -222,7 +238,7 @@
 
 		&--open {
 			left: 0;
-			width: 100px;
+			width: 100%;
 		}
 
 		&__navList {
@@ -239,4 +255,14 @@
 			}
 		}
 	}
+}
+.sidebar__activeLink,
+.header__activeLink {
+	color: #000 !important; // Active text color (example: black)
+
+	background-color: #fff; // Highlight background
+	border-radius: 0.5rem;
+	padding: 0.5rem 1rem;
+	text-decoration: none;
+
 }
