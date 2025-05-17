@@ -90,8 +90,13 @@
 
         td {
             padding: 1rem;
-            border-bottom: 0.2rem solid #FC9047;
+   
         }
+
+        tr:nth-child(even) td {
+    background-color: #f4f4f4; /* Light gray background for even rows */
+}
+        
 
         td:last-child {
             border-bottom: none;
@@ -121,7 +126,7 @@
     &__actions {
         display: flex;
         gap: 1rem;
-        justify-content: flex-end;
+        justify-content: flex-start;
         text-align: right;
 
         i {
