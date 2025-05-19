@@ -88,6 +88,7 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 						<div className={styles.header__right}>
 							{isLoggedIn && (
 								<ul className={styles.header__navList}>
+								<li className={`${styles.profileDropdownContainer}`}>
 										<button
 											className={styles.profileButton}
 											onClick={() => setIsProfileOpen(!isProfileOpen)}
@@ -106,7 +107,7 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 												<button onClick={handleLogout}>Logout</button>
 											</div>
 										)}
-							
+							</li>
 								</ul>
 							)}
 						</div>
