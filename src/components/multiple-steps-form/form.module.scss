@@ -9,6 +9,7 @@
 	max-height: 80vh;
 	padding: 2rem;
 	border-radius: 2rem;
+	max-width: 132rem;
 
 	&__Container {
 		display: flex;
@@ -17,6 +18,7 @@
 		width: 100%;
 		gap: 1rem;
 		height: 100%;
+		
 	}
 
 	&__textContainer {
