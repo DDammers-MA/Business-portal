@@ -11,22 +11,22 @@ import {
 	DocumentData,
 	Query,
 } from 'firebase/firestore';
-import { db } from '../../../../utils/firebase.browser'; // Adjust path as necessary
+import { db } from '../../../../utils/firebase.browser';
 import { useAuth } from '@/context/AuthContext';
-import { FormData } from '@/types/FormData'; // Adjust path as necessary
+import { Modal } from '@/components/modal/modal';
+import { FormData } from '@/types/FormData';
 import styles from './approve.module.scss';
-import Image from 'next/image'; // Using next/image for optimized images
+import Image from 'next/image';
 import { getUserDetailsAction, UserDetails } from './actions';
 import { ActivityInfoModal } from './infoModal';
 import DenyModal from './denyModal';
 
-// --------------- Activity Summary Card Component ---------------
 interface ActivitySummaryCardProps {
 	activity: FormData;
-	onCardClick: (activity: FormData) => void; // Renamed from onClick
+	onCardClick: (activity: FormData) => void;
 	onApprove: (activityId: string) => Promise<void>;
 	onDeny: (activityId: string) => Promise<void>;
-	isUpdating: boolean; // Loading state for this specific card's actions
+	isUpdating: boolean;
 }
 
 const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
@@ -36,11 +36,9 @@ const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
 	onDeny,
 	isUpdating,
 }) => {
-	const defaultImage = '/images/default.png'; // Define a default image
+	const defaultImage = '/images/default.png';
 	const imageUrl = activity.image_url || defaultImage;
-	const [submitterName, setSubmitterName] = useState<string | null>(
-		'Loading...'
-	);
+	const [submitterName, setSubmitterName] = useState<string | null>('Loading...');
 	const [isSubmitterLoading, setIsSubmitterLoading] = useState<boolean>(true);
 
 	useEffect(() => {
@@ -70,18 +68,18 @@ const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
 		getSubmitter();
 		return () => {
 			isMounted = false;
-		}; // Cleanup function
+		};
 	}, [activity.creatorUid]);
 
 	const handleApproveClick = (e: React.MouseEvent) => {
-		e.stopPropagation(); // Prevent triggering modal open
+		e.stopPropagation();
 		if (!isUpdating && activity.id) {
 			onApprove(activity.id);
 		}
 	};
 
 	const handleDenyClick = (e: React.MouseEvent) => {
-		e.stopPropagation(); // Prevent triggering modal open
+		e.stopPropagation();
 		if (!isUpdating && activity.id) {
 			onDeny(activity.id);
 		}
@@ -91,7 +89,10 @@ const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
 
 	return (
 		<div className={styles.summaryCard}>
-			{/* Make only this part clickable for modal */}
+			<span className={`${styles.statusBadge} ${styles.inReview}`}>
+				In Review
+			</span>
+
 			<div
 				className={styles.summaryCard__ClickableArea}
 				onClick={() => onCardClick(activity)}
@@ -100,21 +101,36 @@ const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
 					<Image
 						src={imageUrl}
 						alt={activity.name || 'Activity image'}
-						fill // Use fill to cover the container
-						style={{ objectFit: 'cover' }} // Ensure image covers the area
-						sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // Optimize image sizes
+						fill
+						style={{ objectFit: 'cover' }}
+						sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 						onError={(e) => {
-							// Optional: Handle image loading errors, e.g., show default
 							(e.target as HTMLImageElement).src = defaultImage;
 						}}
-						priority={false} // Consider setting priority for above-the-fold images if applicable
+						priority={false}
 					/>
 				</div>
 				<div className={styles.summaryCard__Content}>
 					<h3 className={styles.summaryCard__Title} title={activity.name}>
 						{activity.name}
 					</h3>
-					<p className={styles.summaryCard__Submitter}>
+					
+					<div className={styles.locationDateContainer}>
+						{activity.place && activity.addr && (
+							<div className={styles.locationInfo}>
+								<i className="fas fa-map-marker-alt"></i>
+								<span>{`${activity.place} | ${activity.addr}`}</span>
+							</div>
+						)}
+						{activity.date && (
+							<div className={styles.dateInfo}>
+								<i className="far fa-calendar-alt"></i>
+								<span>{activity.date}</span>
+							</div>
+						)}
+					</div>
+
+					<p className={styles.summaryCardSubmitter}>
 						Submitted by:{' '}
 						{isSubmitterLoading ? (
 							<span className={styles.inlineSpinner}></span>
@@ -149,9 +165,8 @@ const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
 	);
 };
 
-// --------------- Approve Page Component ---------------
 export default function ApprovePage() {
-	const { /* user, */ isAdmin, loading: authLoading } = useAuth(); // Removed unused 'user'
+	const { isAdmin, loading: authLoading } = useAuth();
 	const [activitiesToApprove, setActivitiesToApprove] = useState<FormData[]>(
 		[]
 	);
@@ -167,13 +182,15 @@ const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
 
 
 	const [creatorData, setCreatorData] = useState<UserDetails | null>(null);
-	const [modalUserLoading, setModalUserLoading] = useState<boolean>(false); // Separate loading for modal user data
-	const [modalActionLoading, setModalActionLoading] = useState<boolean>(false); // Loading state for modal buttons
+	const [modalUserLoading, setModalUserLoading] = useState<boolean>(false);
+	const [modalActionLoading, setModalActionLoading] = useState<boolean>(false);
 	const [directUpdateStates, setDirectUpdateStates] = useState<
 		Record<string, boolean>
-	>({}); // Loading state for card buttons
+	>({});
 
-	// Fetch activities needing approval
+	// Fullscreen image modal state
+	const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
+
 	useEffect(() => {
 		if (authLoading) {
 			setLoading(true);
@@ -215,7 +232,6 @@ const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
 		fetchActivities();
 	}, [isAdmin, authLoading]);
 
-	// Handle opening the modal and fetching user details for it
 	const handleOpenModal = useCallback(async (activity: FormData) => {
 		setSelectedActivity(activity);
 		setIsModalOpen(true);
@@ -230,7 +246,7 @@ const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
 					'Failed to fetch creator details for modal:',
 					result.message
 				);
-				setCreatorData(null); // Ensure it's null on failure
+				setCreatorData(null);
 			}
 			setModalUserLoading(false);
 		} else {
@@ -240,12 +256,11 @@ const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
 		}
 	}, []);
 
-	// Handle closing the modal
 	const handleCloseModal = useCallback(() => {
 		setIsModalOpen(false);
 		setSelectedActivity(null);
 		setCreatorData(null);
-		setModalActionLoading(false); // Reset modal button loading state
+		setModalActionLoading(false);
 	}, []);
 
 	const handleDenySubmit = async (reason: string) => {
@@ -274,7 +289,32 @@ const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
 	};
 	
 
-	// Generic function to update status and local state
+	const handleDenySubmit = async (reason: string) => {
+		if (!activityToDeny?.id) return;
+	
+		try {
+			// Save the reason somewhere if needed
+			// e.g., updateDoc(..., { status: 'denied', denyReason: reason })
+			await updateDoc(doc(db, 'activities', activityToDeny.id), {
+				status: 'denied',
+				denyReason: reason,
+			});
+	
+			// Remove from list
+			setActivitiesToApprove((prev) =>
+				prev.filter((activity) => activity.id !== activityToDeny.id)
+			);
+	
+			// Close modal
+			setIsDenyModalOpen(false);
+			setActivityToDeny(null);
+		} catch (error) {
+			console.error('Error denying activity with reason:', error);
+			alert('Failed to deny the activity. Please try again.');
+		}
+	};
+	
+
 	const updateActivityStatus = useCallback(
 		async (activityId: string, newStatus: 'published' | 'denied') => {
 			const activityRef = doc(db, 'activities', activityId);
@@ -283,7 +323,6 @@ const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
 				setActivitiesToApprove((prev) =>
 					prev.filter((activity) => activity.id !== activityId)
 				);
-				// Optionally show a success message/toast
 			} catch (err) {
 				console.error(`Error updating status to ${newStatus}:`, err);
 				alert(
@@ -291,22 +330,20 @@ const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
 						newStatus === 'published' ? 'approve' : 'deny'
 					} activity.`
 				);
-				throw err; // Re-throw error to handle loading state in callers
+				throw err;
 			}
 		},
 		[]
 	);
 
-	// Handler for modal action buttons
 	const handleModalStatusUpdate = useCallback(
 		async (newStatus: 'published' | 'denied') => {
 			if (!selectedActivity?.id || modalActionLoading) return;
 			setModalActionLoading(true);
 			try {
 				await updateActivityStatus(selectedActivity.id, newStatus);
-				handleCloseModal(); // Close modal on success
-			} catch /* (err) */ {
-				// Error already handled/alerted in updateActivityStatus
+				handleCloseModal();
+			} catch {
 			} finally {
 				setModalActionLoading(false);
 			}
@@ -333,17 +370,20 @@ const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
 			setDirectUpdateStates((prev) => ({ ...prev, [activityId]: true }));
 			try {
 				await updateActivityStatus(activityId, newStatus);
-				// Item is removed from list by updateActivityStatus
-			} catch /* (err) */ {
-				// Error already handled/alerted in updateActivityStatus
-			} finally {
-				// No need to set false here, as the component will unmount/re-render without this item
+			} catch {
 			}
 		},
 		[updateActivityStatus]
 	);
 
-	// Render Logic
+	const handleImageClick = (imageUrl: string) => {
+		setFullscreenImage(imageUrl);
+	};
+
+	const handleCloseFullscreen = () => {
+		setFullscreenImage(null);
+	};
+
 	if (authLoading || loading) {
 		return <div className={styles.spinner}></div>;
 	}
@@ -353,7 +393,6 @@ const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
 	}
 
 	if (!isAdmin) {
-		// This case is technically handled by the error state above, but reinforces the check
 		return (
 			<div className={`${styles.message} ${styles.error}`}>Access Denied.</div>
 		);
