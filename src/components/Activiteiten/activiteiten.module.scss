@@ -172,6 +172,10 @@ position: relative;
 }
 
 @media Screen and (max-width: 750px) {
+
+		.event__list {
+		grid-template-columns: 1fr;
+	}
 	.event {
 		padding: 20px;
 		width: 100%;
