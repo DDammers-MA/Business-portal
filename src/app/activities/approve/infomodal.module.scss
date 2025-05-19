@@ -67,7 +67,7 @@
 
 
 &__SectionTitle {
-	font-size: 1.15rem; /* Increased size */
+	font-size: 2rem; /* Increased size */
 	
 	margin-bottom: 1rem; /* Increased margin */
 	color: #495057;
@@ -76,7 +76,7 @@
 }
 
 &__ActivityTitle {
-	font-size: 1.6rem; /* Larger title */
+	font-size: 2rem; /* Larger title */
 
 	color: #343a40;
 	margin-bottom: 0.75rem; /* Adjusted margin */
@@ -84,7 +84,7 @@
 }
 
 &__Text {
-	font-size: 1rem;
+	font-size: 1.5rem;
 	color: #495057;
 	white-space: pre-wrap;
 	line-height: 1.7; /* Slightly increased line height */
@@ -93,7 +93,7 @@
 
 &__DetailItem {
 	margin-bottom: 0.75rem; /* Increased spacing */
-	font-size: 1rem; /* Standardized font size */
+	font-size: 1.5rem; /* Standardized font size */
 	color: #495057;
 }
 &__DetailItem strong {
@@ -103,7 +103,7 @@
 }
 
 &__UserInfo {
-	font-size: 1rem; /* Standardized font size */
+	font-size: 1.5rem; /* Standardized font size */
 	color: #495057;
 
 	&p {

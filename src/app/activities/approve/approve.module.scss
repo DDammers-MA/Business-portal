@@ -8,6 +8,7 @@
 }
 
 .title {
+	
 	text-align: center;
 	margin-bottom: 2.5rem; /* Increased margin */
 	color: #343a40; /* Darker title */
@@ -38,7 +39,7 @@ position: relative;
     &__ClickableArea {
         &:hover {
             cursor: pointer;
-            transform: scale(1.05);
+            
         }
     }
 
@@ -58,7 +59,7 @@ position: relative;
     }
 
     &__Title {
-        font-size: 1.5rem; /* Increased font size */
+        font-size: 2rem; /* Increased font size */
 
         margin: 0 0 0.75rem 0; /* Added bottom margin */
         color: #343a40;
@@ -191,12 +192,21 @@ position: relative;
 	}
 }
 
+.summaryCardSubmitter{
+	       font-size: 2rem; /* Increased font size */
+
+        margin: 1rem 0 0 0; /* Added bottom margin */
+        
+        white-space: nowrap;
+        overflow: hidden;
+}
+
 .locationDateContainer {
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;
 	font-size: 1.5rem;
-	color: #6c757d;
+
 }
 
 .locationInfo {
