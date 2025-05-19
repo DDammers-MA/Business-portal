@@ -15,7 +15,9 @@ type SidebarProps = {
 	isOpen: boolean;
 	setIsOpen: (open: boolean) => void;
 	isAdmin: boolean;
-  onClick?: () => void;
+	onClick?: () => void;
+    href: string;
+  label: string;
 
 };
 
@@ -86,6 +88,7 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 						<div className={styles.header__right}>
 							{isLoggedIn && (
 								<ul className={styles.header__navList}>
+								<li className={`${styles.profileDropdownContainer}`}>
 										<button
 											className={styles.profileButton}
 											onClick={() => setIsProfileOpen(!isProfileOpen)}
@@ -104,7 +107,7 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 												<button onClick={handleLogout}>Logout</button>
 											</div>
 										)}
-							
+							</li>
 								</ul>
 							)}
 						</div>
@@ -161,7 +164,7 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 	);
 };
 
-const SidebarItem = ({ href, label, onClick }: SidebarItemProps) => {
+const SidebarItem = ({ href, label, onClick }: any) => {
   const pathname = usePathname();
   const isActive = pathname === href;
 
@@ -175,6 +178,7 @@ const SidebarItem = ({ href, label, onClick }: SidebarItemProps) => {
       </Link>
     </li>
   );
+}
 
 const HeaderItem = ({ href, label }: { href: string; label: string }) => {
 	const pathname = usePathname();

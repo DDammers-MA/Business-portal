@@ -12,7 +12,7 @@
 
 	&--open {
 		left: 0;
-	
+
 	}
 
 	&__container {
@@ -48,8 +48,8 @@
 		color: white;
 		text-decoration: none;
 
-		
-		a{
+
+		a {
 			color: red;
 		}
 	}
@@ -63,7 +63,7 @@
 
 	}
 
-		&__activeLink {
+	&__activeLink {
 		text-decoration: none;
 		color: #fff;
 		background-color: white;
@@ -76,8 +76,8 @@
 		align-items: center;
 		justify-content: center;
 		transition: all 0.2s ease-in-out;
-	
-	  }
+
+	}
 
 	&__title {
 		color: white;
@@ -102,7 +102,7 @@
 		width: calc(100% - 25rem);
 		transition: left 0.2s ease;
 
-	
+
 	}
 
 	&__container {
@@ -125,15 +125,15 @@
 		justify-content: flex-start;
 		align-items: center;
 	}
-	
+
 	&__center {
-	
+
 		height: 100%;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 	}
-	
+
 	&__right {
 		display: flex;
 		justify-content: flex-end;
@@ -151,20 +151,18 @@
 	}
 
 	&__navItem {
-  display: flex;              // keep flex behaviour ✔
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  position: relative;         // keeps anchor-relative context (if desired)
-
-  a {                         // anchor styling from develop ✔
-    color: white;
-    text-decoration: none;
-  }
-}
-
-
+		display: flex; // keep flex behaviour ✔
+		align-items: center;
+		justify-content: center;
+		height: 100%;
+ 
+		a {
+			// anchor styling from develop ✔
+			color: white;
+			text-decoration: none;
+		}
 	}
+
 
 	&__navLink {
 		text-decoration: none;
@@ -200,54 +198,68 @@
 }
 
 /* New Profile Dropdown Styles */
-// .profileDropdownContainer {
-// 	position: relative; /* Needed for absolute positioning of the dropdown */
-// }
+.profileDropdownContainer {
+	position: relative; /* Needed for absolute positioning of the dropdown */
+}
 
 .profileButton {
-	background: none;
+background: none;
 	border: none;
 	color: white;
 	cursor: pointer;
-	font-size: 2.8rem; /* Adjust size as needed */
-	padding: 0; /* Remove default padding */
-	display: flex; /* Align icon nicely */
+	font-size: 2.8rem;
+	/* Adjust size as needed */
+	padding: 0;
+	/* Remove default padding */
+	display: flex;
+	/* Align icon nicely */
 	align-items: center;
 	justify-content: center;
-	position: relative;
+
 }
 
 .profileDropdown {
 	position: absolute;
-	top: 100%; /* Position below the button */
+	top: 100%;
+	/* Position below the button */
 	right: 0;
-	background-color: white; /* White background for contrast */
+	background-color: white;
+	/* White background for contrast */
 	border-radius: 8px;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-	padding: 0.8rem 0; /* Padding top/bottom */
-	min-width: 150px; /* Minimum width */
-	z-index: 1000; /* Ensure it's above other content */
+	padding: 0.8rem 0;
+	/* Padding top/bottom */
+	min-width: 150px;
+
+	z-index: 1000;
+	
 	display: flex;
 	flex-direction: column;
-	gap: 0.5rem; /* Spacing between items */
+	gap: 0.5rem;
+	/* Spacing between items */
 
 	a,
 	button {
 		background: none;
 		border: none;
-		color: #333; /* Darker text color */
-		padding: 0.8rem 1.5rem; /* Padding inside items */
+		color: #333;
+		/* Darker text color */
+		padding: 0.8rem 1.5rem;
+		/* Padding inside items */
 		text-align: left;
 		cursor: pointer;
-		display: block; /* Make items take full width */
+		display: block;
+		/* Make items take full width */
 		width: 100%;
 		font-size: 1rem;
-		text-decoration: none; /* Remove underline from link */
+		text-decoration: none;
+		/* Remove underline from link */
 	}
 
 	a:hover,
 	button:hover {
-		background-color: #f0f0f0; /* Light grey background on hover */
+		background-color: #f0f0f0;
+		/* Light grey background on hover */
 	}
 }
 
@@ -261,8 +273,10 @@
 
 
 	.sidebar {
-		left: -100vw; /* Hidden by default */
-		width: 100vw; /* Full screen width */
+		left: -100vw;
+		/* Hidden by default */
+		width: 100vw;
+		/* Full screen width */
 
 		&--open {
 			left: 0;
@@ -284,6 +298,7 @@
 		}
 	}
 }
+
 .sidebar__activeLink,
 .header__activeLink {
 	color: #000 !important; // Active text color (example: black)
