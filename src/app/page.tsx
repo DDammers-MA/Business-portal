@@ -12,7 +12,7 @@ export default function Home() {
 	return (
 		<>
 			<button className={styles.modal__button}>
-				<Link href="/create">Add new</Link>
+				<Link href="/create"> <i className="fa-solid fa-plus"></i> Add new</Link>
 			</button>
 
 			<main className={styles.page__main}>

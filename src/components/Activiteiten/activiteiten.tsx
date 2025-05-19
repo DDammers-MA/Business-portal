@@ -325,9 +325,13 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 					style={{ display: imageLoading ? 'none' : 'block' }}
 				/>
 			</div>
+			
+			<div className={styles.project__content}>
 
 			<h2 className={styles.project__title}>{title}</h2>
 			<p className={styles.project__description}>{description}</p>
+			</div>
+
 
 			<div className={styles.project__footer}>
 			<div className={styles.project__actions} onClick={(e) => e.stopPropagation()}>

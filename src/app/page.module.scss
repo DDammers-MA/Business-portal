@@ -11,9 +11,13 @@
         padding: 1rem 3rem ; 
         background: #FC9047;
         color: white;
-        border-radius: 300rem;
+        border-radius: 8px;
         border: none;
         z-index: 99999;
+
+        i{
+            font-size: 2rem;
+        }
         
         a{
             color: white;
