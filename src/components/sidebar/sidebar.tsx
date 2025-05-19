@@ -161,7 +161,7 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 	);
 };
 
-const SidebarItem = ({ href, label, onClick }: SidebarItemProps) => {
+const SidebarItem = ({ href, label, onClick }: any) => {
   const pathname = usePathname();
   const isActive = pathname === href;
 
@@ -175,6 +175,7 @@ const SidebarItem = ({ href, label, onClick }: SidebarItemProps) => {
       </Link>
     </li>
   );
+}
 
 const HeaderItem = ({ href, label }: { href: string; label: string }) => {
 	const pathname = usePathname();

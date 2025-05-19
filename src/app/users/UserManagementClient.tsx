@@ -213,10 +213,6 @@ export default function UserManagementClient({
 	};
 
 
-            }
-        });
-    };
-
     return (
         <div className={styles.user__container}>
             <div className={styles.user__header}>

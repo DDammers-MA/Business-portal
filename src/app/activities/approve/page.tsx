@@ -267,34 +267,6 @@ const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
 		if (!activityToDeny?.id) return;
 	
 		try {
-			// Save the reason somewhere if needed
-			// e.g., updateDoc(..., { status: 'denied', denyReason: reason })
-			await updateDoc(doc(db, 'activities', activityToDeny.id), {
-				status: 'denied',
-				denyReason: reason,
-			});
-	
-			// Remove from list
-			setActivitiesToApprove((prev) =>
-				prev.filter((activity) => activity.id !== activityToDeny.id)
-			);
-	
-			// Close modal
-			setIsDenyModalOpen(false);
-			setActivityToDeny(null);
-		} catch (error) {
-			console.error('Error denying activity with reason:', error);
-			alert('Failed to deny the activity. Please try again.');
-		}
-	};
-	
-
-	const handleDenySubmit = async (reason: string) => {
-		if (!activityToDeny?.id) return;
-	
-		try {
-			// Save the reason somewhere if needed
-			// e.g., updateDoc(..., { status: 'denied', denyReason: reason })
 			await updateDoc(doc(db, 'activities', activityToDeny.id), {
 				status: 'denied',
 				denyReason: reason,
