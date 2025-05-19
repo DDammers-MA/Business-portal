@@ -7,12 +7,15 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../../../utils/firebase.browser';
 import { useAuth } from '@/context/AuthContext';
 import styles from './sidebar.module.scss';
+
 import { usePathname, useSearchParams } from 'next/navigation';
+
 
 type SidebarProps = {
 	isOpen: boolean;
 	setIsOpen: (open: boolean) => void;
 	isAdmin: boolean;
+  onClick?: () => void;
 
 };
 
@@ -158,18 +161,24 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 	);
 };
 
-const SidebarItem = ({ href, label, onClick, }: { href: string; label: string; onClick?: () => void; }) => {
-	return (
-		<li className={styles.sidebar__navItem} onClick={onClick}>
-			<Link href={href} className={styles.sidebar__navLink}>
-				{label}
-			</Link>
-		</li>
-	);
-};
+const SidebarItem = ({ href, label, onClick }: SidebarItemProps) => {
+  const pathname = usePathname();
+  const isActive = pathname === href;
+
+  return (
+    <li className={styles.sidebar__navItem} onClick={onClick}>
+      <Link
+        href={href}
+        className={isActive ? styles.sidebar__activeLink : styles.sidebar__navLink}
+      >
+        {label}
+      </Link>
+    </li>
+  );
 
 const HeaderItem = ({ href, label }: { href: string; label: string }) => {
 	const pathname = usePathname();
+
 	const searchParams = useSearchParams();
 
 	// Extract filter from the link and from the current URL
@@ -191,6 +200,7 @@ const HeaderItem = ({ href, label }: { href: string; label: string }) => {
 						: styles.sidebar__navLink
 				}
 			>
+
 				{label}
 			</Link>
 		</li>

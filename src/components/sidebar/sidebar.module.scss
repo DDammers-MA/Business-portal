@@ -63,6 +63,22 @@
 
 	}
 
+		&__activeLink {
+		text-decoration: none;
+		color: #fff;
+		background-color: white;
+		color: black;
+		padding: 0.5rem 1.5rem;
+		width: 100%;
+		border-radius: 0.5rem;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: all 0.2s ease-in-out;
+	
+	  }
+
 	&__title {
 		color: white;
 	}
@@ -78,6 +94,8 @@
 	padding: 1rem 4rem;
 	min-height: 7.5rem;
 	width: 100%;
+	height: 0;
+
 
 	&--shifted {
 		margin-left: 25rem;
@@ -90,6 +108,7 @@
 	&__container {
 		max-width: 132rem;
 		width: 100%;
+		height: 100%;
 	}
 
 	&__nav {
@@ -97,7 +116,7 @@
 		gap: 1rem;
 		align-items: center;
 		justify-content: space-between;
-
+		height: 100%;
 		width: 100%;
 	}
 
@@ -108,6 +127,8 @@
 	}
 	
 	&__center {
+	
+		height: 100%;
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -126,22 +147,29 @@
 		align-items: center;
 		justify-content: space-between;
 		gap: 3rem;
-		position: relative;
+		height: 100%;
 	}
 
 	&__navItem {
-		display: inline-block;
+  display: flex;              // keep flex behaviour ✔
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  position: relative;         // keeps anchor-relative context (if desired)
 
-		a{
-			color: white;
-			text-decoration: none;
-		}
+  a {                         // anchor styling from develop ✔
+    color: white;
+    text-decoration: none;
+  }
+}
+
 
 	}
 
 	&__navLink {
 		text-decoration: none;
 		color: white;
+		height: 100%;
 	}
 
 	&__logo {

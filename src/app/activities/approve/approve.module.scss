@@ -11,7 +11,7 @@
 	text-align: center;
 	margin-bottom: 2.5rem; /* Increased margin */
 	color: #343a40; /* Darker title */
-	font-weight: 600;
+
 }
 
 .grid {
@@ -25,164 +25,102 @@
 
 /* Styles for the summary card */
 .summaryCard {
-	border: 1px solid #e9ecef; /* Lighter border */
-	border-radius: 8px;
-	overflow: hidden;
-	/* Removed direct cursor pointer, apply to clickable area */
-	transition: box-shadow 0.3s ease, transform 0.2s ease;
-	background-color: #fff;
-	display: flex;
-	flex-direction: column;
-	height: 100%;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+    border: 1px solid #e9ecef; /* Lighter border */
+    border-radius: 8px;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+
+    &__ClickableArea {
+        &:hover {
+            cursor: pointer;
+            transform: scale(1.05);
+        }
+    }
+
+    &__ImageContainer {
+        width: 100%;
+        height: 200px; /* Increased height */
+        overflow: hidden;
+        position: relative;
+        background-color: #f0f0f0;
+    }
+
+    &__Content {
+        padding: 1.5rem 1.75rem; /* Adjusted padding */
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__Title {
+        font-size: 1.5rem; /* Increased font size */
+
+        margin: 0 0 0.75rem 0; /* Added bottom margin */
+        color: #343a40;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &__Submitter {
+        font-size: 1.2rem; /* Increased font size */
+        color: #6c757d; /* Gray color */
+        margin-bottom: 1rem;
+        min-height: 1.2em; /* Reserve space even when loading */
+    }
+
+    &__Actions {
+        margin-top: auto; /* Push actions to the bottom */
+        padding-top: 1rem;
+        border-top: 1px solid #e9ecef; /* Lighter separator */
+        display: flex;
+        justify-content: space-between; /* Space out buttons */
+        gap: 1rem; /* Increased gap */
+    }
+
+    &__Button {
+        padding: 0.6rem 1rem; /* Larger buttons */
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1.2rem; /* Increased font size */
+    
+        transition: background-color 0.2s ease, opacity 0.2s ease;
+        flex-grow: 1; /* Make buttons fill space */
+        text-align: center;
+
+        &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    }
+
+    &__ButtonApprove {
+        background-color: #28a745;
+        color: white;
+
+        &:hover:not(:disabled) {
+            background-color: #218838;
+        }
+    }
+
+    &__ButtonDeny {
+        background-color: #dc3545;
+        color: white;
+
+        &:hover:not(:disabled) {
+            background-color: #c82333;
+        }
+    }
 }
 
-/* Add hover effect only to the clickable area */
-.summaryCardClickableArea:hover {
-	cursor: pointer;
-}
 
-/* Slight lift effect on card hover (optional) */
-/* .summaryCard:hover {
-	transform: translateY(-3px);
-	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
-} */
 
-.summaryCardImageContainer {
-	width: 100%;
-	height: 180px; /* Increased height */
-	overflow: hidden;
-	position: relative;
-	background-color: #f0f0f0;
-}
-
-.summaryCardImage {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-	display: block;
-	transition: transform 0.3s ease; /* Add zoom effect on hover */
-}
-
-.summaryCardClickableArea:hover .summaryCardImage {
-	transform: scale(1.05); /* Zoom image slightly */
-}
-
-.summaryCardContent {
-	padding: 1rem 1.25rem; /* Adjusted padding */
-	flex-grow: 1;
-	display: flex;
-	flex-direction: column;
-}
-
-.summaryCardTitle {
-	font-size: 1.15rem; /* Slightly larger */
-	font-weight: 600; /* Bolder */
-	margin: 0 0 0.5rem 0; /* Added bottom margin */
-	color: #343a40;
-	/* Title truncation */
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-
-.summaryCardSubmitter {
-	font-size: 0.85rem;
-	color: #6c757d; /* Gray color */
-	margin-bottom: 1rem;
-	min-height: 1.2em; /* Reserve space even when loading */
-}
-
-.summaryCardActions {
-	margin-top: auto; /* Push actions to the bottom */
-	padding-top: 1rem;
-	border-top: 1px solid #e9ecef; /* Lighter separator */
-	display: flex;
-	justify-content: space-between; /* Space out buttons */
-	gap: 0.75rem;
-}
-
-.summaryCardButton {
-	padding: 0.4rem 0.8rem; /* Smaller buttons */
-	border: none;
-	border-radius: 4px;
-	cursor: pointer;
-	font-size: 0.85rem; /* Smaller font */
-	font-weight: 500;
-	transition: background-color 0.2s ease, opacity 0.2s ease;
-	flex-grow: 1; /* Make buttons fill space */
-	text-align: center;
-}
-
-.summaryCardButtonApprove {
-	background-color: #28a745;
-	color: white;
-}
-.summaryCardButtonApprove:hover:not(:disabled) {
-	background-color: #218838;
-}
-
-.summaryCardButtonDeny {
-	background-color: #dc3545;
-	color: white;
-}
-.summaryCardButtonDeny:hover:not(:disabled) {
-	background-color: #c82333;
-}
-
-.summaryCardButton:disabled {
-	opacity: 0.6;
-	cursor: not-allowed;
-}
-
-/* Styles for Modal Content */
-.modalContent {
-	padding: 0;
-	max-width: 800px; /* Keep max width */
-	background-color: #fff; /* Ensure modal background is white */
-	border-radius: 8px; /* Match card radius */
-	overflow: hidden; /* Ensure content respects border radius */
-}
-
-.modalHeader {
-	padding: 1.25rem 1.75rem; /* Increased padding */
-	border-bottom: 1px solid #dee2e6;
-	font-size: 1.3rem; /* Slightly larger */
-	font-weight: 600;
-	color: #343a40; /* Darker color */
-	background-color: #f8f9fa; /* Light header background */
-}
-
-.modalBody {
-	padding: 1.75rem; /* Increased padding */
-	display: grid;
-	/* Adjust grid columns - give details slightly more space potentially */
-	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-	/* Or force two columns on wider screens: grid-template-columns: 2fr 3fr; */
-	gap: 2.5rem; /* Increased gap */
-	max-height: 70vh; /* Limit body height and enable scrolling */
-	overflow-y: auto; /* Allow vertical scrolling if content overflows */
-}
-
-.modalImageContainer {
-	width: 100%;
-	/* max-height: 400px; Let image dictate height with object-fit: contain */
-	min-height: 200px; /* Ensure some height even if image fails */
-	display: flex; /* Center placeholder text */
-	align-items: center; /* Center placeholder text */
-	justify-content: center; /* Center placeholder text */
-	overflow: hidden;
-	border-radius: 6px;
-	background-color: #e9ecef; /* Slightly darker placeholder background */
-	position: relative; /* Needed for Next/Image fill */
-}
-
-/* Style for placeholder message when image fails or is missing */
-.modalImageContainer .message {
-	color: #6c757d;
-	font-size: 1rem;
-	padding: 1rem;
-}
 
 .modalImage {
 	width: 100%;
@@ -193,81 +131,11 @@
 	border-radius: 4px; /* Slight radius on image itself */
 }
 
-.modalDetailsSection {
-	/* No specific styles needed now, controlled by grid */
-}
 
-.modalSection {
-	margin-bottom: 2rem; /* Increased spacing between sections */
-}
-.modalSection:last-child {
-	margin-bottom: 0; /* Remove margin from last section */
-}
-
-.modalSectionTitle {
-	font-size: 1.15rem; /* Increased size */
-	font-weight: 600;
-	margin-bottom: 1rem; /* Increased margin */
-	color: #495057;
-	border-bottom: 1px solid #e9ecef;
-	padding-bottom: 0.6rem; /* Increased padding */
-}
-
-.modalActivityTitle {
-	font-size: 1.6rem; /* Larger title */
-	font-weight: 600;
-	color: #343a40;
-	margin-bottom: 0.75rem; /* Adjusted margin */
-	line-height: 1.3;
-}
-
-.modalText {
-	font-size: 1rem;
-	color: #495057;
-	white-space: pre-wrap;
-	line-height: 1.7; /* Slightly increased line height */
-	margin-bottom: 0.75rem; /* Adjusted margin */
-}
-
-.modalDetailItem {
-	margin-bottom: 0.75rem; /* Increased spacing */
-	font-size: 1rem; /* Standardized font size */
-	color: #495057;
-}
-.modalDetailItem strong {
-	color: #343a40; /* Darker label */
-	margin-right: 0.6em;
-	font-weight: 600;
-}
-
-.modalUserInfo {
-	font-size: 1rem; /* Standardized font size */
-	color: #495057;
-}
-.modalUserInfo p {
-	margin: 0.5rem 0; /* Increased margin */
-}
-.modalUserInfo p strong {
-	color: #343a40;
-	margin-right: 0.6em;
-	font-weight: 600;
-}
-
-.modalActions {
-	display: flex;
-	justify-content: flex-end;
-	gap: 1rem;
-	padding: 1.25rem 1.75rem; /* Match header padding */
-	border-top: 1px solid #dee2e6;
-	background-color: #f8f9fa;
-}
 
 /* Modal buttons - inherit base styles but can override if needed */
 /* Example: Slightly larger buttons in modal */
-.modalActions .button {
-	padding: 0.7rem 1.4rem;
-	font-size: 1rem;
-}
+.modalActions 
 
 /* Use base button styles defined earlier */
 .button {
@@ -276,30 +144,34 @@
 	border-radius: 5px;
 	cursor: pointer;
 	font-size: 1rem;
-	font-weight: 500; /* Adjusted weight */
+
 	transition: background-color 0.2s ease, opacity 0.2s ease;
+
+	&:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+
+	&__Approve {
+		background-color: #28a745;
+		color: white;
+	
+		&:hover:not(:disabled) {
+			background-color: #218838;
+		}
+	}
+	
+	
+	&__Deny {
+		background-color: #dc3545;
+		color: white;
+	
+		&:hover:not(:disabled) {
+			background-color: #c82333;
+		}
+	}
 }
 
-.buttonApprove {
-	background-color: #28a745;
-	color: white;
-}
-.buttonApprove:hover:not(:disabled) {
-	background-color: #218838;
-}
-
-.buttonDeny {
-	background-color: #dc3545;
-	color: white;
-}
-.buttonDeny:hover:not(:disabled) {
-	background-color: #c82333;
-}
-
-.button:disabled {
-	opacity: 0.6;
-	cursor: not-allowed;
-}
 
 /* Utility Styles */
 .spinner {
@@ -343,5 +215,5 @@
 
 .error {
 	color: #dc3545;
-	font-weight: 500;
+
 }

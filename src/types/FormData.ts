@@ -1,4 +1,5 @@
 export interface FormData {
+	title: ReactNode;
 	id?: string;
 	creatorUid?: string;
 	type: string;

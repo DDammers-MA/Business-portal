@@ -6,6 +6,9 @@ import styles from './profile.module.scss';
 import { db } from '../../../utils/firebase.browser';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useAuth } from '@/context/AuthContext';
+import { toast } from 'sonner';
+
+
 import {
 	getAuth,
 	reauthenticateWithCredential,
@@ -84,10 +87,11 @@ const ProfilePage = () => {
 			}, { merge: true });
 
 			setIsEditing(false);
-			console.log('Profiel succesvol bijgewerkt/aangemaakt.');
-			alert('Profiel succesvol bijgewerkt!');
+      console.log('Profiel succesvol bijgewerkt/aangemaakt.');
+      toast.success('User successfully updated!'); 
+
 		} catch (err) {
-			console.error('Fout bij bijwerken/aanmaken profiel:', err);
+			toast.error('Fout bij bijwerken/aanmaken profiel:');
 			setError('Fout bij bijwerken profiel: ' + err);
 		}
 	};
@@ -96,18 +100,18 @@ const ProfilePage = () => {
 		e.preventDefault();
 
 		if (newPassword !== confirmPassword) {
-			setError('De nieuwe wachtwoorden komen niet overeen.');
+			setError('The new passwords do not match.');
 			return;
-		}
+		}	
 
 		if (newPassword.length < 6) {
-			setError('Het wachtwoord moet minimaal 6 tekens lang zijn.');
+			setError('The password must be at least 6 characters long.');
 			return;
 		}
 
 		try {
 			if (!user) {
-				setError('Er is geen gebruiker ingelogd.');
+				setError('There is no user logged in.');
 				return;
 			}
 
@@ -120,27 +124,29 @@ const ProfilePage = () => {
 
 			// If reauthentication is successful, update password
 			await updatePassword(auth.currentUser!, newPassword);
-			console.log('Wachtwoord succesvol gewijzigd.');
+			console.log('Password changed successfully.');
 			setError(null);
 			setCurrentPassword('');
 			setNewPassword('');
 			setConfirmPassword('');
 
-			alert('Wachtwoord successvol gewijzigd.');
-		} catch (err) {
+      toast.success('Wachtwoord succesvol gewijzigd!');
+
+    } catch (err) {
+      toast.error('Fout bij het wijzigen van wachtwoord:');
 			setError('Fout bij het wijzigen van wachtwoord: ' + err);
 		}
 	};
 
 	return (
 		<div className={styles.profileContainer}>
-			<h1 className={styles.title}>Mijn Profiel</h1>
+			<h1 className={styles.title}>My Profile</h1>
 
 			{error && <p className={styles.error}>{error}</p>}
 
 			<div className={styles.profileInfo}>
 				<div className={styles.infoItem}>
-					<strong>Bedrijfsnaam:</strong>
+					<strong>Company name:</strong>
 					{isEditing ? (
 						<input
 							name="companyName"
@@ -152,7 +158,7 @@ const ProfilePage = () => {
 					)}
 				</div>
 				<div className={styles.infoItem}>
-					<strong>Bedrijfsemail:</strong>
+					<strong>Company email:</strong>
 					{isEditing ? (
 						<input
 							name="companyEmail"
@@ -164,7 +170,7 @@ const ProfilePage = () => {
 					)}
 				</div>
 				<div className={styles.infoItem}>
-					<strong>KvK-nummer:</strong>
+					<strong>Unique entrepreneur ID:</strong>
 					{isEditing ? (
 						<input
 							name="kvkNumber"
@@ -176,7 +182,7 @@ const ProfilePage = () => {
 					)}
 				</div>
 				<div className={styles.infoItem}>
-					<strong>Telefoonnummer:</strong>
+					<strong>Phone number:</strong>
 					{isEditing ? (
 						<input
 							name="phoneNumber"
@@ -194,13 +200,13 @@ const ProfilePage = () => {
 					{isEditing ? (
 						<>
 							<button className={styles.saveButton} onClick={handleSaveChanges}>
-								Opslaan
+								Save
 							</button>
 							<button
 								className={styles.cancelButton}
 								onClick={() => setIsEditing(false)}
 							>
-								Annuleren
+								Cancel
 							</button>
 						</>
 					) : (
@@ -208,7 +214,7 @@ const ProfilePage = () => {
 							className={styles.toggleButton}
 							onClick={() => setIsEditing(true)}
 						>
-							Profiel bewerken
+							Edit profile
 						</button>
 					)}
 				</div>
@@ -218,17 +224,17 @@ const ProfilePage = () => {
 						className={styles.toggleButton}
 						onClick={() => setShowPasswordForm(!showPasswordForm)}
 					>
-						{showPasswordForm ? 'Annuleren' : 'Wachtwoord wijzigen'}
+						{showPasswordForm ? 'Cancel' : 'Change password'}
 					</button>
 				</div>
 			</div>
 
 			{showPasswordForm && (
 				<div className={styles.passwordSection}>
-					<h2 className={styles.subtitle}>Wachtwoord wijzigen</h2>
+					<h2 className={styles.subtitle}>Change password</h2>
 					<form className={styles.passwordForm} onSubmit={handlePasswordChange}>
 						<div className={styles.formGroup}>
-							<label htmlFor="currentPassword">Huidig wachtwoord</label>
+							<label htmlFor="currentPassword">Current password</label>
 							<div className={styles.passwordInput}>
 								<input
 									type={showCurrentPassword ? 'text' : 'password'}
@@ -247,7 +253,7 @@ const ProfilePage = () => {
 						</div>
 
 						<div className={styles.formGroup}>
-							<label htmlFor="newPassword">Nieuw wachtwoord</label>
+							<label htmlFor="newPassword">New password</label>
 							<div className={styles.passwordInput}>
 								<input
 									type={showNewPassword ? 'text' : 'password'}
@@ -266,7 +272,7 @@ const ProfilePage = () => {
 						</div>
 
 						<div className={styles.formGroup}>
-							<label htmlFor="confirmPassword">Bevestig nieuw wachtwoord</label>
+							<label htmlFor="confirmPassword">Confirm new password</label>
 							<div className={styles.passwordInput}>
 								<input
 									type={showConfirmPassword ? 'text' : 'password'}
@@ -285,7 +291,7 @@ const ProfilePage = () => {
 						</div>
 
 						<button type="submit" className={styles.submitButton}>
-							Wachtwoord wijzigen
+							Change password
 						</button>
 					</form>
 				</div>

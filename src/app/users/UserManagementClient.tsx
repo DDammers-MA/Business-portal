@@ -6,6 +6,7 @@ import { Modal } from '@/components/modal/modal';
 import { CombinedUser } from './page';
 import { addUserAction, updateUserAction, deleteUserAction } from './actions';
 import { useAuth } from '@/context/AuthContext';
+import { toast } from 'sonner';
 
 type AddUserResult = Awaited<ReturnType<typeof addUserAction>>;
 type UpdateUserResult = Awaited<ReturnType<typeof updateUserAction>>;
@@ -51,73 +52,84 @@ export default function UserManagementClient({
         setDeletingUserId(userId);
         setFormError(null);
 
-        startTransition(async () => {
-            const result: DeleteUserResult = await deleteUserAction(userId);
-            if (result.success) {
-                setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
-                console.log(result.message);
-            } else {
-                setFormError(result.message);
-                console.error('Deletion failed:', result.message);
-            }
-            setDeletingUserId(null);
-        });
-    };
+		startTransition(async () => {
+			const result: DeleteUserResult = await deleteUserAction(userId);
+			if (result.success) {
+				toast.success('User deleted successfully!');
+				setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+				console.log(result.message);
+			} else {
+				toast.error('Failed to delete user!')
+				setFormError(result.message);
+				console.error('Deletion failed:', result.message);
+			}
+			setDeletingUserId(null);
+		});
+	};
+
 
     const handleFormSubmit = (userFormData: Partial<CombinedUser>) => {
         if (isPending) return;
         setFormError(null);
 
-        startTransition(async () => {
-            try {
-                if (currentUser && currentUser.id) {
-                    const { companyName, phone, kvk } = userFormData;
-                    const updateData = { companyName, phone, kvk };
-                    const result: UpdateUserResult = await updateUserAction(
-                        currentUser.id,
-                        updateData
-                    );
-                    if (result.success) {
-                        setUsers((prevUsers) =>
-                            prevUsers.map((u) =>
-                                u.id === currentUser.id ? { ...u, ...updateData } : u
-                            )
-                        );
-                        setIsModalOpen(false);
-                        setCurrentUser(null);
-                    } else {
-                        setFormError(result.message);
-                    }
-                } else {
-                    if (!userFormData.email) {
-                        setFormError('Email is required to add a new user.');
-                        return;
-                    }
-                    if (!loggedInUser) {
-                        setFormError('Cannot add user: Logged in user not found.');
-                        return;
-                    }
-                    const addData = {
-                        email: userFormData.email,
-                        companyName: userFormData.companyName,
-                        phone: userFormData.phone,
-                        kvk: userFormData.kvk,
-                    };
-                    const result: AddUserResult = await addUserAction(addData, loggedInUser.uid);
-                    if (result.success && result.newUser) {
-                        setUsers((prevUsers) => [
-                            ...prevUsers,
-                            result.newUser as CombinedUser,
-                        ]);
-                        setIsModalOpen(false);
-                        setCurrentUser(null);
-                    } else {
-                        setFormError(result.message || 'Failed to add user.');
-                    }
-                }
-            } catch (error) {
-                console.error('Form submission error:', error);
-                setFormError('An unexpected error occurred during submission.');
+		startTransition(async () => {
+			try {
+				if (currentUser && currentUser.id) {
+					const { companyName, phone, kvk } = userFormData;
+					const updateData = { companyName, phone, kvk };
+					const result: UpdateUserResult = await updateUserAction(
+						currentUser.id,
+						updateData
+					);
+					if (result.success) {
+						setUsers((prevUsers) =>
+							
+							prevUsers.map((u) =>
+								u.id === currentUser.id ? { ...u, ...updateData } : u
+							)
+						);
+						setIsModalOpen(false);
+						setCurrentUser(null);
+
+						
+					} else {
+						setFormError(result.message);
+					}
+				} else {
+					if (!userFormData.email) {
+						setFormError('Email is required to add a new user.');
+						return;
+					}
+					if (!loggedInUser) {
+						setFormError('Cannot add user: Logged in user not found.');
+						return;
+					}
+					const addData = {
+						email: userFormData.email,
+						companyName: userFormData.companyName,
+						phone: userFormData.phone,
+						kvk: userFormData.kvk,
+					};
+					const result: AddUserResult = await addUserAction(addData, loggedInUser.uid);
+					if (result.success && result.newUser) {
+						setUsers((prevUsers) => [
+							...prevUsers,
+							result.newUser as CombinedUser,
+						]);
+						setIsModalOpen(false);
+						setCurrentUser(null);
+					} else {
+						setFormError(result.message || 'Failed to add user.');
+					}
+				}
+			} catch (error) {
+				toast.error('Form submission error')
+				console.error('Form submission error:', error);
+				setFormError('An unexpected error occurred during submission.');
+			}
+		});
+	};
+
 
             }
         });

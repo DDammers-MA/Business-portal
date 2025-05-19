@@ -104,7 +104,7 @@ export default function EditActivityPage() {
 	return (
 		<div className={styles.page}>
 			<div className={styles.container}>
-				<h1>Edit Activity</h1>
+				<h1>Edit Activity: {initialData.name}</h1>
 				<MultiStepForm
 					mode="edit"
 					initialData={{ ...initialData, id: id }} // Pass fetched data and ID

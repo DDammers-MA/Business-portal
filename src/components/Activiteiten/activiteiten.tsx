@@ -21,6 +21,7 @@ import {
 import { useAuth } from '@/context/AuthContext';
 
 import { FormData } from '@/types/FormData';
+import { ActivityInfoModal } from '@/app/activities/approve/infoModal';
 
 // Define configuration for status badges
 const STATUS_CONFIG = {
@@ -58,12 +59,27 @@ interface ActiviteitenProps {
 
 // Update component signature to accept props
 const Activiteiten = ({ filter }: ActiviteitenProps) => {
+
+	const [isModalOpen, setIsModalOpen] = useState(false);
+const [selectedActivity, setSelectedActivity] = useState<FormData | null>(null);
 	// State for activities, loading, and errors
 	const [activiteiten, setActiviteiten] = useState<FormData[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
 	// Get authentication state
 	const { user, isAdmin, loading: authLoading } = useAuth();
+
+	const handleOpenInfoModal = (activity: FormData) => {
+		setSelectedActivity(activity);
+		setIsModalOpen(true);
+	};
+	
+	const handleCloseInfoModal = () => {
+		setSelectedActivity(null);
+		setIsModalOpen(false);
+	};
+
+
 
 	// Fetch data on mount and when filter changes
 	useEffect(() => {
@@ -170,22 +186,32 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 
 							return (
 								<ActiviteitCard
-									key={activiteit.id}
-									id={activiteit.id || ''} // Pass ID
-									image={activiteit.image_url || '/images/default.png'} // Handle potentially missing image
-									title={activiteit.name}
-									description={activiteit.description}
-									badgeConfig={badgeConfig} // Pass the config object
-									active={activiteit.active ?? false} // Pass correct prop, default to false if undefined
-									onDelete={() =>
-										handleDelete(activiteit.id || '', activiteit.name)
-									}
-								/>
+  key={activiteit.id}
+  id={activiteit.id || ''}
+  image={activiteit.image_url || '/images/default.png'}
+  title={activiteit.name}
+  description={activiteit.description}
+  badgeConfig={badgeConfig}
+  active={activiteit.active ?? false}
+  onDelete={() => handleDelete(activiteit.id || '', activiteit.name)}
+  onInfoClick={() => handleOpenInfoModal(activiteit)}  
+/>
 							);
 						})
 					)}
 				</div>
 			</div>
+			{selectedActivity && (
+            <ActivityInfoModal
+                isOpen={isModalOpen}
+                onClose={handleCloseInfoModal}
+                activity={selectedActivity}
+                creatorData={null} // Pass creator data if available
+                modalUserLoading={false} // Adjust loading state if needed
+                modalActionLoading={false} // Adjust loading state if needed
+                onStatusUpdate={() => {}} // Add status update logic if needed
+            />
+        )}
 		</div>
 	);
 };
@@ -202,6 +228,7 @@ interface ActiviteitCardProps {
 	}; // Add badge config prop
 	active: boolean; // Renamed from online
 	onDelete: () => void;
+	onInfoClick: () => void;  
 }
 
 const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
@@ -212,7 +239,9 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 	badgeConfig, // Receive badgeConfig
 	active, // Receive corrected prop
 	onDelete,
+	onInfoClick
 }) => {
+	
 	const defaultImage = '/images/default.png';
 	const [isToggled, setIsToggled] = useState(active);
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -221,6 +250,9 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 		!!image && image !== defaultImage
 	);
 	const [imageError, setImageError] = useState(false);
+
+
+	
 
 	// Reset loading state if image prop changes
 	useEffect(() => {
@@ -254,6 +286,7 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 
 	return (
 		<div
+		onClick={onInfoClick}
 			className={`${styles.project} ${
 				!isToggled ? styles.project__toggled : '' // Apply toggled style when NOT toggled
 			}`}
@@ -293,33 +326,36 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 			<p className={styles.project__description}>{description}</p>
 
 			<div className={styles.project__footer}>
-				<div className={styles.project__actions}>
-					<i
-						className="fa-solid fa-trash"
-						style={{ color: '#f00f0f', cursor: 'pointer' }}
-						onClick={onDelete}
-					></i>
-					{/* Wrap edit icon with Link */}
-					<Link href={`/activity/edit/${id}`} passHref legacyBehavior>
-						<a style={{ color: 'inherit', textDecoration: 'none' }}>
-							{' '}
-							{/* Optional: maintain styling */}
-							<i
-								className="fa-regular fa-pen-to-square"
-								style={{ cursor: 'pointer' }}
-							></i>
-						</a>
-					</Link>
-				</div>
-				<div
-					className={`${styles.toggle} ${!isToggled ? styles.toggle__on : ''} ${
-						// Apply 'on' style when NOT toggled
-						isUpdating ? styles.toggle__disabled : ''
-					}`}
-					onClick={handleToggle}
-				>
-					<div className={styles.toggle__circle}></div>
-				</div>
+			<div className={styles.project__actions} onClick={(e) => e.stopPropagation()}>
+  <i
+    className="fa-solid fa-trash"
+    style={{ color: '#f00f0f', cursor: 'pointer' }}
+    onClick={onDelete}
+  ></i>
+
+  <Link href={`/activity/edit/${id}`} legacyBehavior>
+    <a
+      style={{ color: 'inherit', textDecoration: 'none' }}
+      onClick={(e) => e.stopPropagation()} // prevent card click
+    >
+      <i
+        className="fa-regular fa-pen-to-square"
+        style={{ cursor: 'pointer' }}
+      ></i>
+    </a>
+  </Link>
+</div>
+<div
+  className={`${styles.toggle} ${!isToggled ? styles.toggle__on : ''} ${
+    isUpdating ? styles.toggle__disabled : ''
+  }`}
+  onClick={(e) => {
+    e.stopPropagation(); // prevent modal
+    handleToggle();
+  }}
+>
+  <div className={styles.toggle__circle}></div>
+</div>
 			</div>
 		</div>
 	);
