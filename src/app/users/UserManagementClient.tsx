@@ -337,6 +337,7 @@ export default function UserManagementClient({
                     isLoading={isPending}
                     error={formError}
                     clearError={() => setFormError(null)}
+                    setError={(error: string) => setFormError(error)}
                 />
             </Modal>
         </div>
@@ -345,10 +346,11 @@ export default function UserManagementClient({
 
 interface UserFormProps {
     user: Partial<CombinedUser> | null;
-    onSubmit: (formData: Partial<CombinedUser>) => void;
+    onSubmit: (formData: Partial<CombinedUser> & { password?: string }) => void;
     isLoading: boolean;
     error: string | null;
     clearError: () => void;
+    setError: (error: string) => void;
 }
 
 function UserForm({
@@ -357,8 +359,14 @@ function UserForm({
     isLoading,
     error,
     clearError,
+    setError,
 }: UserFormProps) {
     const [formData, setFormData] = useState<Partial<CombinedUser>>({});
+    const [passwordMode, setPasswordMode] = useState<'email' | 'manual'>('email');
+    const [password, setPassword] = useState('');
+    const [repeatPassword, setRepeatPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [showRepeatPassword, setShowRepeatPassword] = useState(false);
 
     useEffect(() => {
         setFormData({
@@ -370,6 +378,28 @@ function UserForm({
         if (error) clearError();
     }, [user, error, clearError]);
 
+    const validatePassword = (password: string): string | null => {
+        if (password.length < 12) {
+            return 'Password must be at least 12 characters long.';
+        }
+        if (password.length > 4096) {
+            return 'Password must be less than 4096 characters long.';
+        }
+        if (!/[A-Z]/.test(password)) {
+            return 'Password must include at least one uppercase letter.';
+        }
+        if (!/[a-z]/.test(password)) {
+            return 'Password must include at least one lowercase letter.';
+        }
+        if (!/[0-9]/.test(password)) {
+            return 'Password must include at least one numeric character.';
+        }
+        if (!/[^A-Za-z0-9]/.test(password)) {
+            return 'Password must include at least one special character.';
+        }
+        return null;
+    };
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
@@ -379,7 +409,28 @@ function UserForm({
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (isLoading) return;
-        onSubmit(formData);
+
+        if (passwordMode === 'manual') {
+            if (!password || !repeatPassword) {
+                clearError();
+                setError('Please fill in both password fields.');
+                return;
+            }
+            if (password !== repeatPassword) {
+                clearError();
+                setError('Passwords do not match.');
+                return;
+            }
+            const passwordError = validatePassword(password);
+            if (passwordError) {
+                clearError();
+                setError(passwordError);
+                return;
+            }
+            onSubmit({ ...formData, password });
+        } else {
+            onSubmit(formData);
+        }
     };
 
     const isEditMode = !!user?.id;
@@ -445,6 +496,97 @@ function UserForm({
                     disabled={isLoading}
                 />
             </div>
+
+            {!isEditMode && (
+                <>
+                    <div className={styles.passwordModeContainer}>
+                        <label>Password Creation:</label>
+                        <div className={styles.radioGroup}>
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="passwordMode"
+                                    value="email"
+                                    checked={passwordMode === 'email'}
+                                    onChange={() => setPasswordMode('email')}
+                                    disabled={isLoading}
+                                />
+                                Send password reset email
+                            </label>
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="passwordMode"
+                                    value="manual"
+                                    checked={passwordMode === 'manual'}
+                                    onChange={() => setPasswordMode('manual')}
+                                    disabled={isLoading}
+                                />
+                                Set password manually
+                            </label>
+                        </div>
+                    </div>
+
+                    {passwordMode === 'manual' && (
+                        <>
+                            <div className={styles.passwordInputContainer}>
+                                <label htmlFor="password">Password:</label>
+                                <div className={styles.passwordField}>
+                                    <input
+                                        id="password"
+                                        type={showPassword ? 'text' : 'password'}
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        className={styles.inputField}
+                                        disabled={isLoading}
+                                    />
+                                    <button
+                                        type="button"
+                                        className={styles.showPasswordButton}
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        disabled={isLoading}
+                                    >
+                                        {showPassword ? 'Hide' : 'Show'}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className={styles.passwordInputContainer}>
+                                <label htmlFor="repeatPassword">Repeat Password:</label>
+                                <div className={styles.passwordField}>
+                                    <input
+                                        id="repeatPassword"
+                                        type={showRepeatPassword ? 'text' : 'password'}
+                                        value={repeatPassword}
+                                        onChange={(e) => setRepeatPassword(e.target.value)}
+                                        className={styles.inputField}
+                                        disabled={isLoading}
+                                    />
+                                    <button
+                                        type="button"
+                                        className={styles.showPasswordButton}
+                                        onClick={() => setShowRepeatPassword(!showRepeatPassword)}
+                                        disabled={isLoading}
+                                    >
+                                        {showRepeatPassword ? 'Hide' : 'Show'}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className={styles.passwordRequirements}>
+                                <p>Password must:</p>
+                                <ul>
+                                    <li>Be at least 12 characters long</li>
+                                    <li>Include at least one uppercase letter</li>
+                                    <li>Include at least one lowercase letter</li>
+                                    <li>Include at least one number</li>
+                                    <li>Include at least one special character</li>
+                                </ul>
+                            </div>
+                        </>
+                    )}
+                </>
+            )}
 
             <button className={styles.saveButton} type="submit" disabled={isLoading}>
                 {isLoading ? (
