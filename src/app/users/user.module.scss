@@ -80,7 +80,7 @@
         border-collapse: collapse;
         text-align: left;
         font-size: 1.4rem;
-
+        
         th {
             background-color: #f4f4f4;
             padding: 1rem;
@@ -90,8 +90,13 @@
 
         td {
             padding: 2rem;
-            border-bottom: 0.2rem solid #FC9047;
+
         }
+
+        tr:nth-child(even) td {
+            background-color: #f4f4f4;
+        }
+
 
         td:last-child {
             border-bottom: none;
@@ -121,7 +126,7 @@
     &__actions {
         display: flex;
         gap: 1rem;
-        justify-content: flex-end;
+        justify-content: flex-start;
         text-align: right;
 
         i {

@@ -33,37 +33,6 @@
 	width: 320px;
 	position: relative;
 
-	&__description {
-		font-size: 1.4rem;
-		color: black;
-		margin-bottom: 5rem;
-		max-height: 6rem;
-		overflow-y: auto;
-		padding-right: 0.5rem;
-		text-align: left;
-		scrollbar-width: thin;
-		scrollbar-color: #ccc transparent;
-
-		&::-webkit-scrollbar {
-			width: 8px;
-		}
-
-		&::-webkit-scrollbar-thumb {
-			background-color: #ccc;
-			border-radius: 4px;
-		}
-
-		&::-webkit-scrollbar-track {
-			background: transparent;
-		}
-	}
-
-	&:hover {
-		transform: translateY(-5px);
-		box-shadow: 0 0.6rem 0.1rem rgba(0, 0, 0, 0.15);
-		cursor: pointer;
-	}
-
 	&__toggled {
 		background-color: rgba(128, 128, 128, 0.4);
 		opacity: 0.7;
@@ -97,7 +66,7 @@
 
 	&__title {
 		font-size: 2.5rem;
-		margin-bottom: 2rem;
+		margin: 1r    em 0rem;
 		color: black;
 	}
 
@@ -122,6 +91,10 @@
 
 		i {
 			transition: color 0.3s ease;
+			
+			&:hover{
+				transform: scale(1.5);
+			}
 		}
 	}
 
