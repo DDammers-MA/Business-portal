@@ -13,7 +13,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../../../../utils/firebase.browser';
 import { useAuth } from '@/context/AuthContext';
-import { Modal } from '@/components/modal/modal';
+
 import { FormData } from '@/types/FormData';
 import styles from './approve.module.scss';
 import Image from 'next/image';
@@ -189,7 +189,7 @@ const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
 	>({});
 
 	// Fullscreen image modal state
-	const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
+	// const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
 
 	useEffect(() => {
 		if (authLoading) {
@@ -348,13 +348,13 @@ const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
 		[updateActivityStatus]
 	);
 
-	const handleImageClick = (imageUrl: string) => {
-		setFullscreenImage(imageUrl);
-	};
+	// const handleImageClick = (imageUrl: string) => {
+	// 	setFullscreenImage(imageUrl);
+	// };
 
-	const handleCloseFullscreen = () => {
-		setFullscreenImage(null);
-	};
+	// const handleCloseFullscreen = () => {
+	// 	setFullscreenImage(null);
+	// };
 
 	if (authLoading || loading) {
 		return <div className={styles.spinner}></div>;
