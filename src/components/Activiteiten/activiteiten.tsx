@@ -22,6 +22,7 @@ import { useAuth } from '@/context/AuthContext';
 
 import { FormData } from '@/types/FormData';
 import { ActivityInfoModal } from '@/app/activities/approve/infoModal';
+import { toast } from 'sonner';
 
 // Define configuration for status badges
 const STATUS_CONFIG = {
@@ -159,8 +160,11 @@ const [selectedActivity, setSelectedActivity] = useState<FormData | null>(null);
 			await deleteDoc(doc(db, 'activities', id));
 			setActiviteiten((prevActiviteiten) =>
 				prevActiviteiten.filter((activiteit) => activiteit.id !== id)
+			
 			);
+				toast.success('Activity deleted successfully!')
 		} catch (err) {
+			toast.error('Failed to delete activity.')
 			console.error('Error deleting activity:', err);
 		}
 	};

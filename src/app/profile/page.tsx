@@ -2,19 +2,17 @@
 
 import React, { useState, useEffect } from 'react';
 import styles from './profile.module.scss';
-
 import { db } from '../../../utils/firebase.browser';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
-
-
 import {
 	getAuth,
 	reauthenticateWithCredential,
 	EmailAuthProvider,
 	updatePassword,
 } from 'firebase/auth';
+import PasswordChangeModal from './PasswordChangeModal';
 
 const ProfilePage = () => {
 	const { user } = useAuth();
@@ -28,16 +26,9 @@ const ProfilePage = () => {
 		password: '',
 	});
 
-	const [currentPassword, setCurrentPassword] = useState('');
-	const [newPassword, setNewPassword] = useState('');
-	const [confirmPassword, setConfirmPassword] = useState('');
-	const [error, setError] = useState<string | null>(null);
-
-	const [showPasswordForm, setShowPasswordForm] = useState(false);
 	const [isEditing, setIsEditing] = useState(false);
-	const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-	const [showNewPassword, setShowNewPassword] = useState(false);
-	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+	const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
 		const fetchUserProfile = async () => {
@@ -59,6 +50,7 @@ const ProfilePage = () => {
 				}
 			} catch (err) {
 				console.error('Error fetching profile:', err);
+				toast.error('Failed to fetch profile');
 			}
 		};
 
@@ -87,107 +79,88 @@ const ProfilePage = () => {
 			}, { merge: true });
 
 			setIsEditing(false);
-      console.log('Profiel succesvol bijgewerkt/aangemaakt.');
-      toast.success('User successfully updated!'); 
-
+			toast.success('Profile updated successfully');
 		} catch (err) {
-			toast.error('Fout bij bijwerken/aanmaken profiel:');
-			setError('Fout bij bijwerken profiel: ' + err);
+			toast.error('Failed to update profile');
+			setError('Failed to update profile: ' + err);
 		}
 	};
 
-	const handlePasswordChange = async (e: React.FormEvent) => {
-		e.preventDefault();
-
-		if (newPassword !== confirmPassword) {
-			setError('The new passwords do not match.');
-			return;
-		}	
-
-		if (newPassword.length < 6) {
-			setError('The password must be at least 6 characters long.');
-			return;
+	const handlePasswordChange = async (currentPassword: string, newPassword: string) => {
+		if (!user) {
+			throw new Error('No user logged in');
 		}
 
-		try {
-			if (!user) {
-				setError('There is no user logged in.');
-				return;
-			}
-
-			// Reauthenticate the user
-			const credential = EmailAuthProvider.credential(
-				user.email || '',
-				currentPassword
-			);
-			await reauthenticateWithCredential(auth.currentUser!, credential);
-
-			// If reauthentication is successful, update password
-			await updatePassword(auth.currentUser!, newPassword);
-			console.log('Password changed successfully.');
-			setError(null);
-			setCurrentPassword('');
-			setNewPassword('');
-			setConfirmPassword('');
-
-      toast.success('Wachtwoord succesvol gewijzigd!');
-
-    } catch (err) {
-      toast.error('Fout bij het wijzigen van wachtwoord:');
-			setError('Fout bij het wijzigen van wachtwoord: ' + err);
-		}
+		const credential = EmailAuthProvider.credential(
+			user.email || '',
+			currentPassword
+		);
+		await reauthenticateWithCredential(auth.currentUser!, credential);
+		await updatePassword(auth.currentUser!, newPassword);
 	};
 
 	return (
 		<div className={styles.profileContainer}>
-			<h1 className={styles.title}>My Profile</h1>
+			<h1 className={styles.title}>
+				<i className="fas fa-user-circle"></i>
+				My Profile
+			</h1>
 
-			{error && <p className={styles.error}>{error}</p>}
+			{error && (
+				<div className={styles.error}>
+					<i className="fas fa-exclamation-circle"></i>
+					{error}
+				</div>
+			)}
 
 			<div className={styles.profileInfo}>
 				<div className={styles.infoItem}>
-					<strong>Company name:</strong>
+					<strong><i className="fas fa-building"></i> Company name</strong>
 					{isEditing ? (
 						<input
 							name="companyName"
 							value={profile.companyName}
 							onChange={handleInputChange}
+							placeholder="Enter company name"
 						/>
 					) : (
 						<span>{profile.companyName}</span>
 					)}
 				</div>
 				<div className={styles.infoItem}>
-					<strong>Company email:</strong>
+					<strong><i className="fas fa-envelope"></i> Company email</strong>
 					{isEditing ? (
 						<input
 							name="companyEmail"
 							value={profile.companyEmail}
 							onChange={handleInputChange}
+							placeholder="Enter company email"
 						/>
 					) : (
 						<span>{profile.companyEmail}</span>
 					)}
 				</div>
 				<div className={styles.infoItem}>
-					<strong>Unique entrepreneur ID:</strong>
+					<strong><i className="fas fa-id-card"></i> Unique entrepreneur ID</strong>
 					{isEditing ? (
 						<input
 							name="kvkNumber"
 							value={profile.kvkNumber}
 							onChange={handleInputChange}
+							placeholder="Enter KVK number"
 						/>
 					) : (
 						<span>{profile.kvkNumber}</span>
 					)}
 				</div>
 				<div className={styles.infoItem}>
-					<strong>Phone number:</strong>
+					<strong><i className="fas fa-phone"></i> Phone number</strong>
 					{isEditing ? (
 						<input
 							name="phoneNumber"
 							value={profile.phoneNumber}
 							onChange={handleInputChange}
+							placeholder="Enter phone number"
 						/>
 					) : (
 						<span>{profile.phoneNumber}</span>
@@ -200,12 +173,14 @@ const ProfilePage = () => {
 					{isEditing ? (
 						<>
 							<button className={styles.saveButton} onClick={handleSaveChanges}>
+								<i className="fas fa-save"></i>
 								Save
 							</button>
 							<button
 								className={styles.cancelButton}
 								onClick={() => setIsEditing(false)}
 							>
+								<i className="fas fa-times"></i>
 								Cancel
 							</button>
 						</>
@@ -214,88 +189,26 @@ const ProfilePage = () => {
 							className={styles.toggleButton}
 							onClick={() => setIsEditing(true)}
 						>
+							<i className="fas fa-edit"></i>
 							Edit profile
 						</button>
 					)}
 				</div>
 
-				<div>
-					<button
-						className={styles.toggleButton}
-						onClick={() => setShowPasswordForm(!showPasswordForm)}
-					>
-						{showPasswordForm ? 'Cancel' : 'Change password'}
-					</button>
-				</div>
+				<button
+					className={styles.toggleButton}
+					onClick={() => setIsPasswordModalOpen(true)}
+				>
+					<i className="fas fa-key"></i>
+					Change password
+				</button>
 			</div>
 
-			{showPasswordForm && (
-				<div className={styles.passwordSection}>
-					<h2 className={styles.subtitle}>Change password</h2>
-					<form className={styles.passwordForm} onSubmit={handlePasswordChange}>
-						<div className={styles.formGroup}>
-							<label htmlFor="currentPassword">Current password</label>
-							<div className={styles.passwordInput}>
-								<input
-									type={showCurrentPassword ? 'text' : 'password'}
-									id="currentPassword"
-									value={currentPassword}
-									onChange={(e) => setCurrentPassword(e.target.value)}
-									required
-								/>
-								<span
-									className={styles.showText}
-									onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-								>
-									{showCurrentPassword ? 'Hide' : 'Show'}
-								</span>
-							</div>
-						</div>
-
-						<div className={styles.formGroup}>
-							<label htmlFor="newPassword">New password</label>
-							<div className={styles.passwordInput}>
-								<input
-									type={showNewPassword ? 'text' : 'password'}
-									id="newPassword"
-									value={newPassword}
-									onChange={(e) => setNewPassword(e.target.value)}
-									required
-								/>
-								<span
-									className={styles.showText}
-									onClick={() => setShowNewPassword(!showNewPassword)}
-								>
-									{showNewPassword ? 'Hide' : 'Show'}
-								</span>
-							</div>
-						</div>
-
-						<div className={styles.formGroup}>
-							<label htmlFor="confirmPassword">Confirm new password</label>
-							<div className={styles.passwordInput}>
-								<input
-									type={showConfirmPassword ? 'text' : 'password'}
-									id="confirmPassword"
-									value={confirmPassword}
-									onChange={(e) => setConfirmPassword(e.target.value)}
-									required
-								/>
-								<span
-									className={styles.showText}
-									onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-								>
-									{showConfirmPassword ? 'Hide' : 'Show'}
-								</span>
-							</div>
-						</div>
-
-						<button type="submit" className={styles.submitButton}>
-							Change password
-						</button>
-					</form>
-				</div>
-			)}
+			<PasswordChangeModal
+				isOpen={isPasswordModalOpen}
+				onClose={() => setIsPasswordModalOpen(false)}
+				onSubmit={handlePasswordChange}
+			/>
 		</div>
 	);
 };

@@ -155,8 +155,7 @@
 		align-items: center;
 		justify-content: center;
 		height: 100%;
-		position: relative; // keeps anchor-relative context (if desired)
-
+ 
 		a {
 			// anchor styling from develop ✔
 			color: white;
@@ -199,12 +198,12 @@
 }
 
 /* New Profile Dropdown Styles */
-// .profileDropdownContainer {
-// 	position: relative; /* Needed for absolute positioning of the dropdown */
-// }
+.profileDropdownContainer {
+	position: relative; /* Needed for absolute positioning of the dropdown */
+}
 
 .profileButton {
-	background: none;
+background: none;
 	border: none;
 	color: white;
 	cursor: pointer;
@@ -216,7 +215,7 @@
 	/* Align icon nicely */
 	align-items: center;
 	justify-content: center;
-	position: relative;
+
 }
 
 .profileDropdown {
@@ -231,9 +230,9 @@
 	padding: 0.8rem 0;
 	/* Padding top/bottom */
 	min-width: 150px;
-	/* Minimum width */
+
 	z-index: 1000;
-	/* Ensure it's above other content */
+	
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;

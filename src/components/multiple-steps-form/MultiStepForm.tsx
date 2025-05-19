@@ -10,6 +10,7 @@ import styles from './form.module.scss';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage, auth } from '../../../utils/firebase.browser';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 // Define Props interface
 interface MultiStepFormProps {
@@ -23,6 +24,7 @@ const MultiStepForm = ({ mode, initialData }: MultiStepFormProps) => {
 	// Initialize state with initialData if provided, else default
 	const [formData, setFormData] = useState<FormData>(() => {
 		const defaults: FormData = {
+			  title: '',    
 			type: '',
 			name: '',
 			addr: '',
@@ -82,7 +84,7 @@ const MultiStepForm = ({ mode, initialData }: MultiStepFormProps) => {
 			setIsSubmitting(false);
 			return;
 		}
-
+	
 		setIsSubmitting(true);
 		setSubmitError(null);
 
@@ -175,10 +177,11 @@ const MultiStepForm = ({ mode, initialData }: MultiStepFormProps) => {
 
 			const result = await response.json();
 			console.log('API Response:', result);
-			alert(`Form Submitted Successfully for ${mode}!`);
+			toast.success(`Activitie Submitted Successfully!`)
 			// Reset form only in create mode, redirect in both
 			if (mode === 'create') {
 				setFormData({
+					title: '',  
 					type: '',
 					name: '',
 					addr: '',
@@ -202,6 +205,7 @@ const MultiStepForm = ({ mode, initialData }: MultiStepFormProps) => {
 			}
 			router.push('/'); // Redirect to home page after create or update
 		} catch (error) {
+			toast.error('Error submitting form. Please try again.');
 			console.error('Submission Error:', error);
 			setSubmitError(
 				error instanceof Error
