@@ -15,7 +15,9 @@ type SidebarProps = {
 	isOpen: boolean;
 	setIsOpen: (open: boolean) => void;
 	isAdmin: boolean;
-  onClick?: () => void;
+	onClick?: () => void;
+    href: string;
+  label: string;
 
 };
 
