@@ -1,12 +1,21 @@
 'use client';
 
-import { useState, useTransition, useEffect } from 'react';
+import { useState, useTransition, useEffect, useMemo } from 'react';
 import styles from './user.module.scss';
 import { Modal } from '@/components/modal/modal';
 import { CombinedUser } from './page';
 import { addUserAction, updateUserAction, deleteUserAction } from './actions';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
+import {
+    useReactTable,
+    getCoreRowModel,
+    getSortedRowModel,
+    getPaginationRowModel,
+    flexRender,
+    createColumnHelper,
+    SortingState,
+} from '@tanstack/react-table';
 
 type AddUserResult = Awaited<ReturnType<typeof addUserAction>>;
 type UpdateUserResult = Awaited<ReturnType<typeof updateUserAction>>;
@@ -22,21 +31,94 @@ export default function UserManagementClient({
     const { user: loggedInUser } = useAuth();
     const [users, setUsers] = useState<CombinedUser[]>(initialUsers);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [currentUser, setCurrentUser] = useState<Partial<CombinedUser> | null>(
-        null
-    );
+    const [currentUser, setCurrentUser] = useState<Partial<CombinedUser> | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [sorting, setSorting] = useState<SortingState>([]);
 
     const [isPending, startTransition] = useTransition();
     const [formError, setFormError] = useState<string | null>(null);
     const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
 
-    const filteredUsers = users.filter(
-        (user) =>
-            (user.displayName?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-            (user.email?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-            (user.companyName?.toLowerCase() || '').includes(searchTerm.toLowerCase())
+    const columnHelper = createColumnHelper<CombinedUser>();
+
+    const columns = useMemo(
+        () => [
+            columnHelper.accessor((row) => row.companyName || row.displayName || row.email || 'Onbekend', {
+                id: 'user',
+                header: 'User',
+                cell: (info) => (
+                    <div className={styles.user__userCell}>
+                        <i className={`fa-solid fa-user ${styles.user__userIcon}`}></i>
+                        <span className={styles.user__userName}>{info.getValue()}</span>
+                    </div>
+                ),
+            }),
+            columnHelper.accessor('email', {
+                header: 'Email address',
+                cell: (info) => info.getValue() || 'Geen e-mailadres',
+            }),
+            columnHelper.accessor('phone', {
+                header: 'Phone number',
+                cell: (info) => info.getValue() || 'Geen telefoonnummer',
+            }),
+            columnHelper.accessor('lastLoginAt', {
+                header: 'Last login',
+                cell: (info) => info.getValue() ? new Date(info.getValue()!).toLocaleString() : 'No login data',
+            }),
+            columnHelper.accessor('id', {
+                id: 'actions',
+                header: 'Actions',
+                cell: (info) => (
+                    <div className={styles.user__actions}>
+                        <i
+                            className={`fa-regular fa-pen-to-square ${styles.user__editIcon}`}
+                            title="Wijzig gebruiker"
+                            onClick={() => {
+                                if (isPending) return;
+                                setCurrentUser(info.row.original);
+                                setFormError(null);
+                                setIsModalOpen(true);
+                            }}
+                        ></i>
+                        <i
+                            className={`fa-solid fa-trash ${styles.user__deleteIcon}`}
+                            title="Verwijder gebruiker"
+                            onClick={() => handleDeleteUser(info.getValue())}
+                        ></i>
+                    </div>
+                ),
+            }),
+        ],
+        [isPending]
     );
+
+    const filteredData = useMemo(
+        () =>
+            users.filter(
+                (user) =>
+                    (user.displayName?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+                    (user.email?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+                    (user.companyName?.toLowerCase() || '').includes(searchTerm.toLowerCase())
+            ),
+        [users, searchTerm]
+    );
+
+    const table = useReactTable({
+        data: filteredData,
+        columns,
+        state: {
+            sorting,
+        },
+        onSortingChange: setSorting,
+        getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        initialState: {
+            pagination: {
+                pageSize: 10,
+            },
+        },
+    });
 
     const handleDeleteUser = (userId: string) => {
         if (isPending) return;
@@ -169,52 +251,80 @@ export default function UserManagementClient({
             <div className={styles.user__tableContainer}>
                 <table className={styles.user__table}>
                     <thead>
-                        <tr>
-                            <th>User</th>
-                            <th>Email address</th>
-                            <th>Phone number</th>
-                            <th>Last login</th>
-                            <th>Actions</th>
-                        </tr>
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <tr key={headerGroup.id}>
+                                {headerGroup.headers.map((header) => (
+                                    <th
+                                        key={header.id}
+                                        onClick={header.column.getToggleSortingHandler()}
+                                        className={styles.user__sortableHeader}
+                                    >
+                                        {flexRender(
+                                            header.column.columnDef.header,
+                                            header.getContext()
+                                        )}
+                                        {{
+                                            asc: ' 🔼',
+                                            desc: ' 🔽',
+                                        }[header.column.getIsSorted() as string] ?? null}
+                                    </th>
+                                ))}
+                            </tr>
+                        ))}
                     </thead>
                     <tbody>
-                        {filteredUsers.map((user) => (
-                            <tr key={user.id} className={styles.user__row}>
-                                <td data-label="User" className={styles.user__userCell}>
-                                    <i className={`fa-solid fa-user ${styles.user__userIcon}`}></i>
-                                    <span className={styles.user__userName}>
-                                        {user.companyName || user.displayName || user.email || 'Onbekend'}
-                                    </span>
-                                </td>
-                                <td data-label="Email">{user.email || 'Geen e-mailadres'}</td>
-                                <td data-label="Phone">{user.phone || 'Geen telefoonnummer'}</td>
-                                <td data-label="Last Login">
-                                    {user.lastLoginAt ? new Date(user.lastLoginAt).toLocaleString() : 'No login data'}
-                                </td>
-                                <td data-label="Actions" className={styles.user__actions}>
-                                    <i
-                                        className={`fa-regular fa-pen-to-square ${styles.user__editIcon}`}
-                                        title="Wijzig gebruiker"
-                                        onClick={() => {
-                                            if (isPending) return;
-                                            setCurrentUser(user);
-                                            setFormError(null);
-                                            setIsModalOpen(true);
-                                        }}
-                                    ></i>
-                                    <i
-                                        className={`fa-solid fa-trash ${styles.user__deleteIcon}`}
-                                        title="Verwijder gebruiker"
-                                        onClick={() => handleDeleteUser(user.id)}
-                                    ></i>
-                                </td>
+                        {table.getRowModel().rows.map((row) => (
+                            <tr key={row.id} className={styles.user__row}>
+                                {row.getVisibleCells().map((cell) => (
+                                    <td key={cell.id}>
+                                        {flexRender(
+                                            cell.column.columnDef.cell,
+                                            cell.getContext()
+                                        )}
+                                    </td>
+                                ))}
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
 
-            {filteredUsers.length === 0 && <p>No users found.</p>}
+            {filteredData.length === 0 && <p>No users found.</p>}
+
+            <div className={styles.user__pagination}>
+                <button
+                    onClick={() => table.setPageIndex(0)}
+                    disabled={!table.getCanPreviousPage()}
+                    className={styles.user__paginationButton}
+                >
+                    {'<<'}
+                </button>
+                <button
+                    onClick={() => table.previousPage()}
+                    disabled={!table.getCanPreviousPage()}
+                    className={styles.user__paginationButton}
+                >
+                    {'<'}
+                </button>
+                <span className={styles.user__paginationInfo}>
+                    Page {table.getState().pagination.pageIndex + 1} of{' '}
+                    {table.getPageCount()}
+                </span>
+                <button
+                    onClick={() => table.nextPage()}
+                    disabled={!table.getCanNextPage()}
+                    className={styles.user__paginationButton}
+                >
+                    {'>'}
+                </button>
+                <button
+                    onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                    disabled={!table.getCanNextPage()}
+                    className={styles.user__paginationButton}
+                >
+                    {'>>'}
+                </button>
+            </div>
 
             <Modal
                 isOpen={isModalOpen}
