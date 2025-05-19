@@ -15,7 +15,9 @@ type SidebarProps = {
 	isOpen: boolean;
 	setIsOpen: (open: boolean) => void;
 	isAdmin: boolean;
-  onClick?: () => void;
+	onClick?: () => void;
+    href: string;
+  label: string;
 
 };
 
@@ -161,7 +163,7 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 	);
 };
 
-const SidebarItem = ({ href, label, onClick }: SidebarItemProps) => {
+const SidebarItem = ({ href, label, onClick, }: { href: string; label: string; onClick?: () => void; }) => {
   const pathname = usePathname();
   const isActive = pathname === href;
 
@@ -174,7 +176,8 @@ const SidebarItem = ({ href, label, onClick }: SidebarItemProps) => {
         {label}
       </Link>
     </li>
-  );
+	);
+}
 
 const HeaderItem = ({ href, label }: { href: string; label: string }) => {
 	const pathname = usePathname();
