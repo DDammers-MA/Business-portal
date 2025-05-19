@@ -13,44 +13,44 @@ type UpdateUserResult = Awaited<ReturnType<typeof updateUserAction>>;
 type DeleteUserResult = Awaited<ReturnType<typeof deleteUserAction>>;
 
 interface UserManagementClientProps {
-	initialUsers: CombinedUser[];
+    initialUsers: CombinedUser[];
 }
 
 export default function UserManagementClient({
-	initialUsers,
+    initialUsers,
 }: UserManagementClientProps) {
-	const { user: loggedInUser } = useAuth();
-	const [users, setUsers] = useState<CombinedUser[]>(initialUsers);
-	const [isModalOpen, setIsModalOpen] = useState(false);
-	const [currentUser, setCurrentUser] = useState<Partial<CombinedUser> | null>(
-		null
-	);
-	const [searchTerm, setSearchTerm] = useState('');
+    const { user: loggedInUser } = useAuth();
+    const [users, setUsers] = useState<CombinedUser[]>(initialUsers);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [currentUser, setCurrentUser] = useState<Partial<CombinedUser> | null>(
+        null
+    );
+    const [searchTerm, setSearchTerm] = useState('');
 
-	const [isPending, startTransition] = useTransition();
-	const [formError, setFormError] = useState<string | null>(null);
-	const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
+    const [isPending, startTransition] = useTransition();
+    const [formError, setFormError] = useState<string | null>(null);
+    const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
 
-	const filteredUsers = users.filter(
-		(user) =>
-			(user.companyName?.toLowerCase() || '').includes(
-				searchTerm.toLowerCase()
-			) || (user.email?.toLowerCase() || '').includes(searchTerm.toLowerCase())
-	);
+    const filteredUsers = users.filter(
+        (user) =>
+            (user.displayName?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+            (user.email?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+            (user.companyName?.toLowerCase() || '').includes(searchTerm.toLowerCase())
+    );
 
-	const handleDeleteUser = (userId: string) => {
-		if (isPending) return;
+    const handleDeleteUser = (userId: string) => {
+        if (isPending) return;
 
-		if (
-			!window.confirm(
-				'Are you sure you want to delete this user? This action cannot be undone.'
-			)
-		) {
-			return;
-		}
+        if (
+            !window.confirm(
+                'Are you sure you want to delete this user? This action cannot be undone.'
+            )
+        ) {
+            return;
+        }
 
-		setDeletingUserId(userId);
-		setFormError(null);
+        setDeletingUserId(userId);
+        setFormError(null);
 
 		startTransition(async () => {
 			const result: DeleteUserResult = await deleteUserAction(userId);
@@ -67,9 +67,10 @@ export default function UserManagementClient({
 		});
 	};
 
-	const handleFormSubmit = (userFormData: Partial<CombinedUser>) => {
-		if (isPending) return;
-		setFormError(null);
+
+    const handleFormSubmit = (userFormData: Partial<CombinedUser>) => {
+        if (isPending) return;
+        setFormError(null);
 
 		startTransition(async () => {
 			try {
@@ -129,242 +130,225 @@ export default function UserManagementClient({
 		});
 	};
 
-	return (
-		<div className={styles.user__container}>
-			<div className={styles.user__header}>
-				<div className={styles.user__searchBar}>
-					<i className="fa-solid fa-magnifying-glass"></i>
-					<input
-						type="text"
-						placeholder="Search users by name or email"
-						className={styles.user__inputField}
-						value={searchTerm}
-						onChange={(e) => setSearchTerm(e.target.value)}
-						disabled={isPending}
-					/>
-				</div>
-				<button
-					className={styles.user__addUserButton}
-					onClick={() => {
-						setCurrentUser(null);
-						setFormError(null);
-						setIsModalOpen(true);
-					}}
-					disabled={isPending}
-				>
-					Add new user
-				</button>
-			</div>
 
-			{formError && !isModalOpen && (
-				<p className={styles.errorBanner}>{formError}</p>
-			)}
+            }
+        });
+    };
 
-			<div className={styles.user__userList}>
-				{filteredUsers.map((user) => (
-					<div
-						key={user.id}
-						className={`${styles.user__userRow} ${
-							deletingUserId === user.id ? styles.deleting : ''
-						}`}
-					>
-						<i
-							className={`fa-regular fa-circle-user ${styles.user__userIcon}`}
-						></i>
-						<span className={styles.user__userName}>
-							{user.companyName || user.email || 'N/A'}
-						</span>
-						{deletingUserId === user.id ? (
-							<span className={styles.spinner}></span>
-						) : (
-							<>
-								<i
-									className={`fa-regular fa-pen-to-square ${
-										styles.user__editIcon
-									} ${isPending ? styles.disabledIcon : ''}`}
-									onClick={() => {
-										if (isPending) return;
-										setCurrentUser(user);
-										setFormError(null);
-										setIsModalOpen(true);
-									}}
-									title="Edit User"
-									aria-disabled={isPending}
-								></i>
-								<i
-									className={`fa-solid fa-trash ${styles.user__deleteIcon} ${
-										isPending ? styles.disabledIcon : ''
-									}`}
-									onClick={() => handleDeleteUser(user.id)}
-									title="Delete User"
-									aria-disabled={isPending}
-								></i>
-							</>
-						)}
-					</div>
-				))}
-				{filteredUsers.length === 0 && <p>No users found.</p>}
-			</div>
+    return (
+        <div className={styles.user__container}>
+            <div className={styles.user__header}>
+                <div className={styles.user__searchBar}>
+                    <i className="fa-solid fa-magnifying-glass"></i>
+                    <input
+                        type="text"
+                        placeholder="Search users by name or email"
+                        className={styles.user__inputField}
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        disabled={isPending}
+                    />
+                </div>
+                <button
+                    className={styles.user__addUserButton}
+                    onClick={() => {
+                        setCurrentUser(null);
+                        setFormError(null);
+                        setIsModalOpen(true);
+                    }}
+                    disabled={isPending}
+                >
+                    Add new user
+                </button>
+            </div>
 
-			<Modal
-				isOpen={isModalOpen}
-				onClose={() => {
-					if (isPending) return;
-					setIsModalOpen(false);
-					setCurrentUser(null);
-					setFormError(null);
-				}}
-			>
-				<UserForm
-					user={currentUser}
-					onSubmit={handleFormSubmit}
-					isLoading={isPending}
-					error={formError}
-					clearError={() => setFormError(null)}
-				/>
-			</Modal>
-		</div>
-	);
+            {formError && !isModalOpen && (
+                <p className={styles.errorBanner}>{formError}</p>
+            )}
+
+            <div className={styles.user__tableContainer}>
+                <table className={styles.user__table}>
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Email address</th>
+                            <th>Phone number</th>
+                            <th>Last login</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filteredUsers.map((user) => (
+                            <tr key={user.id} className={styles.user__row}>
+                                <td data-label="User" className={styles.user__userCell}>
+                                    <i className={`fa-solid fa-user ${styles.user__userIcon}`}></i>
+                                    <span className={styles.user__userName}>
+                                        {user.companyName || user.displayName || user.email || 'Onbekend'}
+                                    </span>
+                                </td>
+                                <td data-label="Email">{user.email || 'Geen e-mailadres'}</td>
+                                <td data-label="Phone">{user.phone || 'Geen telefoonnummer'}</td>
+                                <td data-label="Last Login">
+                                    {user.lastLoginAt ? new Date(user.lastLoginAt).toLocaleString() : 'No login data'}
+                                </td>
+                                <td data-label="Actions" className={styles.user__actions}>
+                                    <i
+                                        className={`fa-regular fa-pen-to-square ${styles.user__editIcon}`}
+                                        title="Wijzig gebruiker"
+                                        onClick={() => {
+                                            if (isPending) return;
+                                            setCurrentUser(user);
+                                            setFormError(null);
+                                            setIsModalOpen(true);
+                                        }}
+                                    ></i>
+                                    <i
+                                        className={`fa-solid fa-trash ${styles.user__deleteIcon}`}
+                                        title="Verwijder gebruiker"
+                                        onClick={() => handleDeleteUser(user.id)}
+                                    ></i>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+
+            {filteredUsers.length === 0 && <p>No users found.</p>}
+
+            <Modal
+                isOpen={isModalOpen}
+                onClose={() => {
+                    if (isPending) return;
+                    setIsModalOpen(false);
+                    setCurrentUser(null);
+                    setFormError(null);
+                }}
+            >
+                <UserForm
+                    user={currentUser}
+                    onSubmit={handleFormSubmit}
+                    isLoading={isPending}
+                    error={formError}
+                    clearError={() => setFormError(null)}
+                />
+            </Modal>
+        </div>
+    );
 }
 
 interface UserFormProps {
-	user: Partial<CombinedUser> | null;
-	onSubmit: (formData: Partial<CombinedUser>) => void;
-	isLoading: boolean;
-	error: string | null;
-	clearError: () => void;
+    user: Partial<CombinedUser> | null;
+    onSubmit: (formData: Partial<CombinedUser>) => void;
+    isLoading: boolean;
+    error: string | null;
+    clearError: () => void;
 }
 
 function UserForm({
-	user,
-	onSubmit,
-	isLoading,
-	error,
-	clearError,
+    user,
+    onSubmit,
+    isLoading,
+    error,
+    clearError,
 }: UserFormProps) {
-	const [formData, setFormData] = useState<Partial<CombinedUser>>({});
+    const [formData, setFormData] = useState<Partial<CombinedUser>>({});
 
-	useEffect(() => {
-		setFormData({
-			companyName: user?.companyName || '',
-			email: user?.email || '',
-			phone: user?.phone || '',
-			kvk: user?.kvk || '',
-		});
-		if (error) clearError();
-	}, [user, error, clearError]);
+    useEffect(() => {
+        setFormData({
+            companyName: user?.companyName || '',
+            email: user?.email || '',
+            phone: user?.phone || '',
+            kvk: user?.kvk || '',
+        });
+        if (error) clearError();
+    }, [user, error, clearError]);
 
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const { name, value } = e.target;
-		setFormData((prev) => ({ ...prev, [name]: value }));
-		if (error) clearError();
-	};
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+        if (error) clearError();
+    };
 
-	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		if (isLoading) return;
-		onSubmit(formData);
-	};
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (isLoading) return;
+        onSubmit(formData);
+    };
 
-	const isEditMode = !!user?.id;
+    const isEditMode = !!user?.id;
 
-	return (
-		<form className={styles.modalForm} onSubmit={handleSubmit}>
-			<h3>
-				{isEditMode ? `Edit ${formData.companyName || 'User'}` : 'Add New User'}
-			</h3>
+    return (
+        <form className={styles.modalForm} onSubmit={handleSubmit}>
+            <h3>
+                {isEditMode ? `Edit ${formData.companyName || 'User'}` : 'Add New User'}
+            </h3>
 
-			{error && <p className={styles.errorBannerModal}>{error}</p>}
+            {error && <p className={styles.errorBannerModal}>{error}</p>}
 
-			<div>
-				<label htmlFor="email">Email:</label>
-				<input
-					id="email"
-					type="email"
-					name="email"
-					value={formData.email || ''}
-					onChange={handleChange}
-					className={styles.inputField}
-					disabled={isLoading || isEditMode}
-					required={!isEditMode}
-					readOnly={isEditMode}
-					aria-describedby={
-						error && error.toLowerCase().includes('email')
-							? 'form-error'
-							: undefined
-					}
-				/>
-			</div>
+            <div>
+                <label htmlFor="email">Email:</label>
+                <input
+                    id="email"
+                    type="email"
+                    name="email"
+                    value={formData.email || ''}
+                    onChange={handleChange}
+                    className={styles.inputField}
+                    disabled={isLoading || isEditMode}
+                    required={!isEditMode}
+                    readOnly={isEditMode}
+                />
+            </div>
 
-			<div>
-				<label htmlFor="companyName">Company Name:</label>
-				<input
-					id="companyName"
-					type="text"
-					name="companyName"
-					value={formData.companyName || ''}
-					onChange={handleChange}
-					className={styles.inputField}
-					disabled={isLoading}
-					aria-describedby={
-						error && error.toLowerCase().includes('company')
-							? 'form-error'
-							: undefined
-					}
-				/>
-			</div>
+            <div>
+                <label htmlFor="companyName">Company Name:</label>
+                <input
+                    id="companyName"
+                    type="text"
+                    name="companyName"
+                    value={formData.companyName || ''}
+                    onChange={handleChange}
+                    className={styles.inputField}
+                    disabled={isLoading}
+                />
+            </div>
 
-			<div>
-				<label htmlFor="kvk">KVK Number:</label>
-				<input
-					id="kvk"
-					type="number"
-					name="kvk"
-					value={formData.kvk || ''}
-					onChange={handleChange}
-					className={styles.inputField}
-					disabled={isLoading}
-					aria-describedby={
-						error && error.toLowerCase().includes('kvk')
-							? 'form-error'
-							: undefined
-					}
-				/>
-			</div>
+            <div>
+                <label htmlFor="kvk">KVK Number:</label>
+                <input
+                    id="kvk"
+                    type="number"
+                    name="kvk"
+                    value={formData.kvk || ''}
+                    onChange={handleChange}
+                    className={styles.inputField}
+                    disabled={isLoading}
+                />
+            </div>
 
-			<div>
-				<label htmlFor="phone">Phone Number:</label>
-				<input
-					id="phone"
-					type="tel"
-					name="phone"
-					value={formData.phone || ''}
-					onChange={handleChange}
-					className={styles.inputField}
-					disabled={isLoading}
-					aria-describedby={
-						error && error.toLowerCase().includes('phone')
-							? 'form-error'
-							: undefined
-					}
-				/>
-			</div>
+            <div>
+                <label htmlFor="phone">Phone Number:</label>
+                <input
+                    id="phone"
+                    type="tel"
+                    name="phone"
+                    value={formData.phone || ''}
+                    onChange={handleChange}
+                    className={styles.inputField}
+                    disabled={isLoading}
+                />
+            </div>
 
-			{error && (
-				<p id="form-error" className="sr-only">
-					Error: {error}
-				</p>
-			)}
-
-			<button className={styles.saveButton} type="submit" disabled={isLoading}>
-				{isLoading ? (
-					<span className={styles.spinner}></span>
-				) : isEditMode ? (
-					'Save Changes'
-				) : (
-					'Add User'
-				)}
-			</button>
-		</form>
-	);
+            <button className={styles.saveButton} type="submit" disabled={isLoading}>
+                {isLoading ? (
+                    <span className={styles.spinner}></span>
+                ) : isEditMode ? (
+                    'Save Changes'
+                ) : (
+                    'Add User'
+                )}
+            </button>
+        </form>
+    );
 }

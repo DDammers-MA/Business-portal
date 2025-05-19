@@ -7,12 +7,16 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../../../utils/firebase.browser';
 import { useAuth } from '@/context/AuthContext';
 import styles from './sidebar.module.scss';
-import { usePathname } from 'next/navigation';
+
+import { usePathname, useSearchParams } from 'next/navigation';
+
 
 type SidebarProps = {
 	isOpen: boolean;
 	setIsOpen: (open: boolean) => void;
 	isAdmin: boolean;
+  onClick?: () => void;
+
 };
 
 const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
@@ -37,6 +41,8 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 			console.error('Error logging out:', error);
 		}
 	};
+
+	
 
 	return (
 		<>
@@ -80,15 +86,13 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 						<div className={styles.header__right}>
 							{isLoggedIn && (
 								<ul className={styles.header__navList}>
-									<li
-										className={`${styles.header__navItem} ${styles.profileDropdownContainer}`}
-									>
 										<button
 											className={styles.profileButton}
 											onClick={() => setIsProfileOpen(!isProfileOpen)}
 										>
 											<i className="fas fa-user-circle"></i>
 										</button>
+								
 										{isProfileOpen && (
 											<div className={styles.profileDropdown}>
 												<Link
@@ -100,7 +104,7 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 												<button onClick={handleLogout}>Logout</button>
 											</div>
 										)}
-									</li>
+							
 								</ul>
 							)}
 						</div>
@@ -130,12 +134,13 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 						<ul className={styles.sidebar__navList}>
 							<h2 className={styles.sidebar__title}>Admin</h2>
 
-							<SidebarItem href="/users" label="Users" />
+							<SidebarItem onClick={() => setIsOpen(false)} href="/users" label="Users" />
 							<SidebarItem
+								onClick={() => setIsOpen(false)}
 								href="/activities/approve"
 								label="Unapproved activities"
 							/>
-							<SidebarItem href="/statistics" label="Statistics" />
+							<SidebarItem onClick={() => setIsOpen(false)} href="/statistics" label="Statistics" />
 						</ul>
 
 						<ul
@@ -143,11 +148,11 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 						>
 							<h2 className={styles.sidebar__title}>Navigation</h2>
 
-							<SidebarItem href="/" label="Home" />
-							<SidebarItem href="/" label="Activities" />
-							<SidebarItem href="/" label="Published" />
-							<SidebarItem href="/" label="Unpublished" />
-							<SidebarItem href="/" label="Drafts" />
+							<SidebarItem onClick={() => setIsOpen(false)} href="/" label="Home" />
+							<SidebarItem onClick={() => setIsOpen(false)} href="/" label="Activities" />
+							<SidebarItem onClick={() => setIsOpen(false)} href="/" label="Published" />
+							<SidebarItem onClick={() => setIsOpen(false)} href="/" label="Unpublished" />
+							<SidebarItem onClick={() => setIsOpen(false)} href="/" label="Drafts" />
 						</ul>
 					</nav>
 				</div>
@@ -156,30 +161,49 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 	);
 };
 
-const SidebarItem = ({ href, label }: { href: string; label: string }) => {
+const SidebarItem = ({ href, label, onClick }: SidebarItemProps) => {
+  const pathname = usePathname();
+  const isActive = pathname === href;
 
-	const pathname = usePathname();
-	const isActive = pathname === href;
-	return (
-		<li className={styles.sidebar__navItem}>
-			<Link href={href}  className={isActive ? styles.sidebar__activeLink : styles.sidebar__navLink}>
-				{label}
-			</Link>
-		</li>
-	);
-};
+  return (
+    <li className={styles.sidebar__navItem} onClick={onClick}>
+      <Link
+        href={href}
+        className={isActive ? styles.sidebar__activeLink : styles.sidebar__navLink}
+      >
+        {label}
+      </Link>
+    </li>
+  );
 
 const HeaderItem = ({ href, label }: { href: string; label: string }) => {
 	const pathname = usePathname();
-	const isActive = pathname === href;
+
+	const searchParams = useSearchParams();
+
+	// Extract filter from the link and from the current URL
+	const url = new URL(href, 'http://localhost'); // Use base to parse query string
+	const targetFilter = url.searchParams.get('filter');
+	const currentFilter = searchParams.get('filter');
+
+	// Make it active if pathname matches and filter matches
+	const isActive =
+		pathname === url.pathname && targetFilter === currentFilter;
 
 	return (
 		<li className={styles.header__navItem}>
-			<Link href={href}  className={isActive ? styles.sidebar__activeLink : styles.sidebar__navLink}>
+			<Link
+				href={href}
+				className={
+					isActive
+						? styles.sidebar__activeLink
+						: styles.sidebar__navLink
+				}
+			>
+
 				{label}
 			</Link>
 		</li>
 	);
 };
-
 export default Sidebar;
