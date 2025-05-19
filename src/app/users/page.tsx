@@ -4,6 +4,8 @@ import admin from 'firebase-admin';
 import UserManagementClient from './UserManagementClient';
 import styles from './user.module.scss';
 
+//Bij deze inerface beschijf ik het type van extra gebruikerdate die uit Firestore word opgehaalde, zoals bedrijfsnaam ect..
+//Zo kan ik ook deze extra velden combineren met de standaard Firebare Auth gebruikersdata in mijn applicatie.
 interface FirestoreUserData {
     companyName?: string;
     phone?: string;
@@ -11,6 +13,9 @@ interface FirestoreUserData {
     kvk?: string;
     creatorUid?: string;
 }
+
+// Dit is een TypeScript type dat een gecombineerde gebruiker beschrijft. 
+// Zo kan ik in de applicatie 1 object gebruiker dat alle gegevens bevat.
 
 export type CombinedUser = {
     id: string;
@@ -23,18 +28,23 @@ export type CombinedUser = {
     lastLoginAt?: string | null; 
 };
 
+//Server component voor de gebruikerspagina
 export default async function UsersPage() {
     let combinedUsers: CombinedUser[] = [];
     let fetchError: string | null = null;
 
     try {
+        // Hier haal ik alle gebruiker op uit Firebase Auth 
         const auth = firebaseAdmin.auth();
         const listUsersResult = await auth.listUsers(1000);
         const authUsers = listUsersResult.users;
 
+        //Hier verzamel ik alle user ID's voor firesotre query
         const userIds = authUsers.map((user: UserRecord) => user.uid);
         const firestoreUsersData: { [key: string]: FirestoreUserData } = {};
 
+        //Hier haal ik de Firestore gebruikersdata op in batches
+        //Ik heb een maximum gegevens van 30 gebruikers per query
         if (userIds.length > 0) {
             const MAX_IDS_PER_QUERY = 30;
             const userDocPromises: Promise<admin.firestore.QuerySnapshot>[] = [];
@@ -46,6 +56,8 @@ export default async function UsersPage() {
                 userDocPromises.push(usersQuery.get());
             }
 
+
+            //Hier combineer ik alle firestore resultaten in 1 object
             const querySnapshots = await Promise.all(userDocPromises);
             querySnapshots.forEach((snapshot: admin.firestore.QuerySnapshot) => {
                 snapshot.forEach((doc: admin.firestore.QueryDocumentSnapshot) => {
@@ -54,6 +66,8 @@ export default async function UsersPage() {
             });
         }
 
+
+        //Hier combineer ik Auth gebruikersdata met Firestore gebruikersdata
         combinedUsers = authUsers.map((authUser: UserRecord) => {
             const firestoreData = firestoreUsersData[authUser.uid] || {};
             return {
@@ -68,10 +82,12 @@ export default async function UsersPage() {
             };
         });
     } catch (error) {
+        //dit is een foutafhandelings functie, die word uitgevoerd als bij ophalen van gebruikers een fout optreed
         console.error('Error fetching users:', error);
         fetchError = 'Failed to load users. Please try again later.';
     }
 
+    //Hier render ik de gebruikerspagina met UserManagementClient of foutmelding
     return (
         <div className={styles.user}>
             {fetchError ? (
