@@ -63,7 +63,7 @@
 
     &__addUserButton {
         padding: 0.875rem 1.5rem;
-        background: #007bff;
+        background: #fc9047;
         color: white;
         border: none;
         border-radius: 6px;
@@ -73,7 +73,7 @@
         transition: background-color 0.2s ease;
 
         &:hover {
-            background: #0056b3;
+            background: #ffa66b;
         }
 
         &:disabled {
@@ -312,7 +312,7 @@
     .saveButton {
         width: 100%;
         padding: 1rem;
-        background: #007bff;
+        background: #fc9047;
         color: white;
         border: none;
         border-radius: 6px;
@@ -323,7 +323,7 @@
         margin-top: 1.5rem;
 
         &:hover:not(:disabled) {
-            background: #0056b3;
+            background: #ffa66b;
             transform: translateY(-1px);
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
@@ -554,19 +554,49 @@
     padding: 1rem;
     background-color: #f8f9fa;
     border-radius: 4px;
+    font-size: 0.9rem;
     
     p {
         margin: 0 0 0.5rem 0;
         font-weight: 500;
+        color: #495057;
     }
     
     ul {
         margin: 0;
         padding-left: 1.5rem;
+        list-style: none;
         
         li {
             margin: 0.25rem 0;
             color: #666;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+
+            &.valid {
+                color: #28a745;
+                &::before {
+                    content: '✓';
+                    color: #28a745;
+                }
+            }
+
+            &.invalid {
+                color: #dc3545;
+                &::before {
+                    content: '×';
+                    color: #dc3545;
+                }
+            }
+
+            &.pending {
+                color: #6c757d;
+                &::before {
+                    content: '○';
+                    color: #6c757d;
+                }
+            }
         }
     }
 }

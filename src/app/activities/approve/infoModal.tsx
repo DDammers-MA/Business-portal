@@ -53,6 +53,7 @@ export const ActivityInfoModal: React.FC<ActivityInfoModalProps> = ({
 						<div className={styles.modal__Section}>
 							<h3 className={styles.modal__ActivityTitle}>{activity.name}</h3>
 							<p className={styles.modal__Text}>{activity.description}</p>
+							<br></br>
 
 							{[
 								{ label: 'Published', value: activity.active ? 'Yes' : 'No' },
