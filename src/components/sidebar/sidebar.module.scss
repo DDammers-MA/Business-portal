@@ -151,13 +151,12 @@
 	}
 
 	&__navItem {
-		display: flex; // keep flex behaviour ✔
+		display: flex;
 		align-items: center;
 		justify-content: center;
 		height: 100%;
  
 		a {
-			// anchor styling from develop ✔
 			color: white;
 			text-decoration: none;
 		}
@@ -301,9 +300,8 @@ background: none;
 
 .sidebar__activeLink,
 .header__activeLink {
-	color: #000; // Active text color (example: black)
-
-	background-color: #fff; // Highlight background
+	color: #000 !important;
+	background-color: #fff;
 	border-radius: 0.8rem;
 	padding: 0.5rem 1rem;
 	text-decoration: none;
