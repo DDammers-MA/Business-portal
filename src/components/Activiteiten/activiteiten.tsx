@@ -414,7 +414,7 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 				<div
 					className={`${styles.toggle} ${!isToggled ? styles.toggle__on : ''} ${
 						isUpdating ? styles.toggle__disabled : ''
-					}`}
+					}`} 
 					onClick={(e) => {
 						e.stopPropagation();
 						handleToggle();
