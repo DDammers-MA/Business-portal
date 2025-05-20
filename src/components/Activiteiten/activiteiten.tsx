@@ -1,24 +1,29 @@
-/* eslint-disable @next/next/no-img-element */
-'use client';
+/**
+ * eslint-disable @next/next/no-img-element
+ *
+ * @format
+ */
 
-import React, { useState, useEffect } from 'react';
-import styles from './activiteiten.module.scss';
-import Link from 'next/link'; // Add import for Link
+"use client";
+
+import React, { useState, useEffect } from "react";
+import styles from "./activiteiten.module.scss";
+import Link from "next/link"; // Add import for Link
 // Import Firestore functions and db instance
-import { db } from '../../../utils/firebase.browser';
+import { db } from "../../../utils/firebase.browser";
 import {
-	collection,
-	query,
-	where,
-	getDocs,
-	doc,
-	deleteDoc,
-	Query,
-	DocumentData,
-	updateDoc,
-} from 'firebase/firestore';
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  deleteDoc,
+  Query,
+  DocumentData,
+  updateDoc,
+} from "firebase/firestore";
 // Import AuthContext hook
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from "@/context/AuthContext";
 
 import { FormData } from '@/types/FormData';
 import { ActivityInfoModal } from '@/app/activities/approve/infoModal';
@@ -27,31 +32,31 @@ import { getUserDetailsAction, UserDetails } from '@/app/activities/approve/acti
 
 // Define configuration for status badges
 const STATUS_CONFIG = {
-	published: {
-		label: 'Published',
-		backgroundColor: '#198754',
-		color: 'white',
-	},
-	inreview: {
-		label: 'In review',
-		backgroundColor: '#ffc107',
-		color: '#333',
-	},
-	denied: {
-		label: 'Denied',
-		backgroundColor: '#ffc107',
-		color: '#333',
-	},
-	draft: {
-		label: 'Draft',
-		backgroundColor: '#6c757d',
-		color: 'white',
-	},
-	default: {
-		label: 'Unknown',
-		backgroundColor: '#6c757d',
-		color: 'white',
-	},
+  published: {
+    label: "Published",
+    backgroundColor: "#198754",
+    color: "white",
+  },
+  inreview: {
+    label: "In review",
+    backgroundColor: "#ffc107",
+    color: "#333",
+  },
+  denied: {
+    label: "Denied",
+    backgroundColor: "#ffc107",
+    color: "#333",
+  },
+  draft: {
+    label: "Draft",
+    backgroundColor: "#6c757d",
+    color: "white",
+  },
+  default: {
+    label: "Unknown",
+    backgroundColor: "#6c757d",
+    color: "white",
+  },
 };
 
 // Add online/offline badge configuration
@@ -70,11 +75,31 @@ const ONLINE_STATUS_CONFIG = {
 
 // Define props interface including the optional filter
 interface ActiviteitenProps {
-	filter?: string;
+  filter?: string;
 }
 
 // Update component signature to accept props
 const Activiteiten = ({ filter }: ActiviteitenProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedActivity, setSelectedActivity] = useState<FormData | null>(
+    null
+  );
+  // State for activities, loading, and errors
+  const [activiteiten, setActiviteiten] = useState<FormData[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  // Get authentication state
+  const { user, isAdmin, loading: authLoading } = useAuth();
+
+  const handleOpenInfoModal = (activity: FormData) => {
+    setSelectedActivity(activity);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseInfoModal = () => {
+    setSelectedActivity(null);
+    setIsModalOpen(false);
+  };
 
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [selectedActivity, setSelectedActivity] = useState<FormData | null>(null);
@@ -228,7 +253,7 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 						<div className={styles.message}>No activities found.</div>
 					) : (
 						/* Map through activities only if not loading, no error, and activities exist */
-						activiteiten.map((activiteit) => {
+						activiteiten.map((activiteit, index) => {
 							// Determine status and look up config
 							const currentStatus = activiteit.status || 'draft'; // Default to draft if undefined
 							const badgeConfig =
@@ -245,6 +270,7 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
   active={activiteit.active ?? false}
   onDelete={() => handleDelete(activiteit.id || '', activiteit.name)}
   onInfoClick={() => handleOpenInfoModal(activiteit)}  
+                  animationDelay={`${index * 50}ms`}
 />
 							);
 						})
@@ -267,31 +293,32 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 };
 
 interface ActiviteitCardProps {
-	id: string; // Add id
-	image: string;
-	title: string;
-	description: string;
-	badgeConfig: {
-		label: string;
-		backgroundColor: string;
-		color: string;
-	}; // Add badge config prop
-	active: boolean; // Renamed from online
-	onDelete: () => void;
-	onInfoClick: () => void;  
+  id: string; // Add id
+  image: string;
+  title: string;
+  description: string;
+  badgeConfig: {
+    label: string;
+    backgroundColor: string;
+    color: string;
+  }; // Add badge config prop
+  active: boolean; // Renamed from online
+  onDelete: () => void;
+	onInfoClick: () => void;
+	animationDelay?: string;
 }
 
 const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
-	id, // Receive id
-	image,
-	title,
-	description,
-	badgeConfig, // Receive badgeConfig
-	active, // Receive corrected prop
-	onDelete,
-	onInfoClick
+  id, // Receive id
+  image,
+  title,
+  description,
+  badgeConfig, // Receive badgeConfig
+  active, // Receive corrected prop
+  onDelete,
+	onInfoClick,
+	animationDelay,
 }) => {
-	
 	const defaultImage = '/images/default.png';
 	const [isToggled, setIsToggled] = useState(active);
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -405,27 +432,79 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
       style={{ color: 'inherit', textDecoration: 'none' }}
       onClick={(e) => e.stopPropagation()} // prevent card click
     >
-      <i
-        className="fa-regular fa-pen-to-square"
-        style={{ cursor: 'pointer' }}
-      ></i>
-    </a>
-  </Link>
-</div>
-<div
-  className={`${styles.toggle} ${!isToggled ? styles.toggle__on : ''} ${
-    isUpdating ? styles.toggle__disabled : ''
-  }`}
-  onClick={(e) => {
-    e.stopPropagation(); // prevent modal
-    handleToggle();
-  }}
->
-  <div className={styles.toggle__circle}></div>
-</div>
-			</div>
-		</div>
-	);
+      {/* Status Badge - Now uses config props */}
+      <span
+        className={styles.statusBadge}
+        style={{
+          backgroundColor: badgeConfig.backgroundColor,
+          color: badgeConfig.color,
+        }}
+      >
+        {badgeConfig.label}
+      </span>
+
+      {/* Image container */}
+      <div className={styles.project__imageContainer}>
+        {/* Show spinner while loading */}
+        {imageLoading && <div className={styles.spinner}></div>}
+        {/* Image element */}
+        <img
+          src={displayUrl}
+          alt={title}
+          className={styles.project__image}
+          onLoad={() => setImageLoading(false)} // Set loading false on successful load
+          onError={() => {
+            // Set loading false and error true on failure
+            setImageLoading(false);
+            setImageError(true);
+          }}
+          // Hide img element itself while loading, spinner takes its place
+          style={{ display: imageLoading ? "none" : "block" }}
+        />
+      </div>
+
+      <div className={styles.project__content}>
+        <h2 className={styles.project__title}>{title}</h2>
+        <p className={styles.project__description}>{description}</p>
+      </div>
+
+      <div className={styles.project__footer}>
+        <div
+          className={styles.project__actions}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <i
+            className="fa-solid fa-trash"
+            style={{ color: "#f00f0f", cursor: "pointer" }}
+            onClick={onDelete}
+          ></i>
+
+          <Link href={`/activity/edit/${id}`} legacyBehavior>
+            <a
+              style={{ color: "inherit", textDecoration: "none" }}
+              onClick={(e) => e.stopPropagation()} // prevent card click
+            >
+              <i
+                className="fa-regular fa-pen-to-square"
+                style={{ cursor: "pointer" }}
+              ></i>
+            </a>
+          </Link>
+        </div>
+        <div
+          className={`${styles.toggle} ${!isToggled ? styles.toggle__on : ""} ${
+            isUpdating ? styles.toggle__disabled : ""
+          }`}
+          onClick={(e) => {
+            e.stopPropagation(); // prevent modal
+            handleToggle();
+          }}
+        >
+          <div className={styles.toggle__circle}></div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Activiteiten;

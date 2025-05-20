@@ -1,3 +1,5 @@
+@use 'src/scss/animations.scss';
+
 .event {
 	padding: 2rem;
 	width: 100%;
@@ -253,3 +255,7 @@ position: relative;
     line-clamp: 4;
     box-orient: vertical;
   }}
+
+.cardFadeIn {
+  animation: fade-in-down 0.6s cubic-bezier(0.23, 1, 0.32, 1) both;
+}

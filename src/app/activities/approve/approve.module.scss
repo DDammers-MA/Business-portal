@@ -1,3 +1,4 @@
+@use 'src/scss/animations.scss';
 .pageContainer {
     padding: 2rem;
     max-width: 132rem;
@@ -246,4 +247,9 @@
 
 .error {
     color: #dc3545;
+}
+
+
+.cardFadeIn {
+  animation: fade-in-down 0.6s cubic-bezier(0.23, 1, 0.32, 1) both;
 }
