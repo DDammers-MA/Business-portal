@@ -23,6 +23,7 @@ import { useAuth } from '@/context/AuthContext';
 import { FormData } from '@/types/FormData';
 import { ActivityInfoModal } from '@/app/activities/approve/infoModal';
 import { toast } from 'sonner';
+import { getUserDetailsAction, UserDetails } from '@/app/activities/approve/actions';
 
 // Define configuration for status badges
 const STATUS_CONFIG = {
@@ -53,6 +54,20 @@ const STATUS_CONFIG = {
 	},
 };
 
+// Add online/offline badge configuration
+const ONLINE_STATUS_CONFIG = {
+	online: {
+		label: 'Online',
+		backgroundColor: '#198754',
+		color: 'white',
+	},
+	offline: {
+		label: 'Offline',
+		backgroundColor: '#6c757d',
+		color: 'white',
+	},
+};
+
 // Define props interface including the optional filter
 interface ActiviteitenProps {
 	filter?: string;
@@ -62,7 +77,9 @@ interface ActiviteitenProps {
 const Activiteiten = ({ filter }: ActiviteitenProps) => {
 
 	const [isModalOpen, setIsModalOpen] = useState(false);
-const [selectedActivity, setSelectedActivity] = useState<FormData | null>(null);
+	const [selectedActivity, setSelectedActivity] = useState<FormData | null>(null);
+	const [creatorData, setCreatorData] = useState<UserDetails | null>(null);
+	const [modalUserLoading, setModalUserLoading] = useState<boolean>(false);
 	// State for activities, loading, and errors
 	const [activiteiten, setActiviteiten] = useState<FormData[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
@@ -70,14 +87,28 @@ const [selectedActivity, setSelectedActivity] = useState<FormData | null>(null);
 	// Get authentication state
 	const { user, isAdmin, loading: authLoading } = useAuth();
 
-	const handleOpenInfoModal = (activity: FormData) => {
+	const handleOpenInfoModal = async (activity: FormData) => {
 		setSelectedActivity(activity);
 		setIsModalOpen(true);
+		setCreatorData(null);
+		
+		if (activity.creatorUid) {
+			setModalUserLoading(true);
+			const result = await getUserDetailsAction(activity.creatorUid);
+			if (result.success && result.user) {
+				setCreatorData(result.user);
+			} else {
+				console.error('Failed to fetch creator details:', result.message);
+				setCreatorData(null);
+			}
+			setModalUserLoading(false);
+		}
 	};
 	
 	const handleCloseInfoModal = () => {
 		setSelectedActivity(null);
 		setIsModalOpen(false);
+		setCreatorData(null);
 	};
 
 
@@ -221,16 +252,16 @@ const [selectedActivity, setSelectedActivity] = useState<FormData | null>(null);
 				</div>
 			</div>
 			{selectedActivity && (
-            <ActivityInfoModal
-                isOpen={isModalOpen}
-                onClose={handleCloseInfoModal}
-                activity={selectedActivity}
-                creatorData={null} // Pass creator data if available
-                modalUserLoading={false} // Adjust loading state if needed
-                modalActionLoading={false} // Adjust loading state if needed
-                onStatusUpdate={() => {}} // Add status update logic if needed
-            />
-        )}
+				<ActivityInfoModal
+					isOpen={isModalOpen}
+					onClose={handleCloseInfoModal}
+					activity={selectedActivity}
+					creatorData={creatorData}
+					modalUserLoading={modalUserLoading}
+					modalActionLoading={false}
+					onStatusUpdate={() => {}}
+				/>
+			)}
 		</div>
 	);
 };
@@ -270,8 +301,8 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 	);
 	const [imageError, setImageError] = useState(false);
 
-
-	
+	// Get online status config
+	const onlineStatusConfig = ONLINE_STATUS_CONFIG[isToggled ? 'online' : 'offline'];
 
 	// Reset loading state if image prop changes
 	useEffect(() => {
@@ -310,16 +341,29 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 				!isToggled ? styles.project__toggled : '' // Apply toggled style when NOT toggled
 			}`}
 		>
-			{/* Status Badge - Now uses config props */}
-			<span
-				className={styles.statusBadge}
-				style={{
-					backgroundColor: badgeConfig.backgroundColor,
-					color: badgeConfig.color,
-				}}
-			>
-				{badgeConfig.label}
-			</span>
+			<div className={styles.project__badges}>
+				{/* Online/Offline Badge - Right side */}
+				<span
+					className={styles.statusBadge}
+					style={{
+						backgroundColor: onlineStatusConfig.backgroundColor,
+						color: onlineStatusConfig.color,
+					}}
+				>
+					{onlineStatusConfig.label}
+				</span>
+
+				{/* Status Badge - Left side */}
+				<span
+					className={styles.statusBadge}
+					style={{
+						backgroundColor: badgeConfig.backgroundColor,
+						color: badgeConfig.color,
+					}}
+				>
+					{badgeConfig.label}
+				</span>
+			</div>
 
 			{/* Image container */}
 			<div className={styles.project__imageContainer}>

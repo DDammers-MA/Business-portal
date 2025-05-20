@@ -368,6 +368,19 @@ function UserForm({
     const [showPassword, setShowPassword] = useState(false);
     const [showRepeatPassword, setShowRepeatPassword] = useState(false);
 
+    const passwordRequirements = [
+        { id: 'length', text: 'Be at least 12 characters long', validate: (pwd: string) => pwd.length >= 12 },
+        { id: 'uppercase', text: 'Include at least one uppercase letter', validate: (pwd: string) => /[A-Z]/.test(pwd) },
+        { id: 'lowercase', text: 'Include at least one lowercase letter', validate: (pwd: string) => /[a-z]/.test(pwd) },
+        { id: 'number', text: 'Include at least one number', validate: (pwd: string) => /[0-9]/.test(pwd) },
+        { id: 'special', text: 'Include at least one special character', validate: (pwd: string) => /[^A-Za-z0-9]/.test(pwd) }
+    ];
+
+    const getRequirementStatus = (requirement: typeof passwordRequirements[0]) => {
+        if (!password) return 'pending';
+        return requirement.validate(password) ? 'valid' : 'invalid';
+    };
+
     useEffect(() => {
         setFormData({
             companyName: user?.companyName || '',
@@ -425,6 +438,7 @@ function UserForm({
             if (passwordError) {
                 clearError();
                 setError(passwordError);
+                toast.error(passwordError);
                 return;
             }
             onSubmit({ ...formData, password });
@@ -576,11 +590,14 @@ function UserForm({
                             <div className={styles.passwordRequirements}>
                                 <p>Password must:</p>
                                 <ul>
-                                    <li>Be at least 12 characters long</li>
-                                    <li>Include at least one uppercase letter</li>
-                                    <li>Include at least one lowercase letter</li>
-                                    <li>Include at least one number</li>
-                                    <li>Include at least one special character</li>
+                                    {passwordRequirements.map((requirement) => (
+                                        <li 
+                                            key={requirement.id}
+                                            className={getRequirementStatus(requirement)}
+                                        >
+                                            {requirement.text}
+                                        </li>
+                                    ))}
                                 </ul>
                             </div>
                         </>
