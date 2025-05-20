@@ -301,7 +301,7 @@ background: none;
 
 .sidebar__activeLink,
 .header__activeLink {
-	color: #000; // Active text color (example: black)
+	color: #000 !important; // Active text color (example: black)
 
 	background-color: #fff; // Highlight background
 	border-radius: 0.8rem;
