@@ -28,9 +28,7 @@ interface UserManagementClientProps {
 export default function UserManagementClient({
     initialUsers,
 }: UserManagementClientProps) {
-    // Hier haal ik de ingelogde gebruiker op uit context
     const { user: loggedInUser } = useAuth();
-    // Hier is de state voor gebruikers, modals, zoeken, sorteren, etc.
     const [users, setUsers] = useState<CombinedUser[]>(initialUsers);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentUser, setCurrentUser] = useState<Partial<CombinedUser> | null>(null);
@@ -41,7 +39,6 @@ export default function UserManagementClient({
     const [formError, setFormError] = useState<string | null>(null);
     const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
 
-    // Dit is een kolomdefinities voor de gebruikers-tabel
     const columnHelper = createColumnHelper<CombinedUser>();
 
     const columns = useMemo(
@@ -50,16 +47,12 @@ export default function UserManagementClient({
                 id: 'user',
                 header: 'User',
                 cell: (info) => (
-                    //Hier toon ik de gebruikersnaam met een icoon ervoor
                     <div className={styles.user__userCell}>
                         <i className={`fa-solid fa-user ${styles.user__userIcon}`}></i>
                         <span className={styles.user__userName}>{info.getValue()}</span>
                     </div>
                 ),
             }),
-
-            // Hier defineer ik de kolommen voor de tabel
-            // De informatie wordt weergegeven met een fallback tekst als het veld leeg is
             columnHelper.accessor('email', {
                 header: 'Email address',
                 cell: (info) => info.getValue() || 'Geen e-mailadres',
@@ -76,7 +69,6 @@ export default function UserManagementClient({
                 id: 'actions',
                 header: 'Actions',
                 cell: (info) => (
-                    //Actie-iconen voor wijzigen en verwijderen
                     <div className={styles.user__actions}>
                         <i
                             className={`fa-regular fa-pen-to-square ${styles.user__editIcon}`}
@@ -100,7 +92,6 @@ export default function UserManagementClient({
         [isPending]
     );
 
-    //Hier filter ik gebruikers op naam, email of bedrijfsnaam
     const filteredData = useMemo(
         () =>
             users.filter(
@@ -112,7 +103,6 @@ export default function UserManagementClient({
         [users, searchTerm]
     );
 
-    //Hier initialiseer ik de react-table met de gefilterde data en kolommen 
     const table = useReactTable({
         data: filteredData,
         columns,
@@ -130,8 +120,6 @@ export default function UserManagementClient({
         },
     });
 
-    // Hier heb ik een handler voor verwijderen van een gebruiker
-    //met een are u sure tekstje erbij tijdens het uitvoeren
     const handleDeleteUser = (userId: string) => {
         if (isPending) return;
 
@@ -146,87 +134,87 @@ export default function UserManagementClient({
         setDeletingUserId(userId);
         setFormError(null);
 
-        startTransition(async () => {
-            const result: DeleteUserResult = await deleteUserAction(userId);
-            if (result.success) {
-                toast.success('User deleted successfully!');
-                setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
-                console.log(result.message);
-            } else {
-                toast.error('Failed to delete user!')
-                setFormError(result.message);
-                console.error('Deletion failed:', result.message);
-            }
-            setDeletingUserId(null);
-        });
-    };
+		startTransition(async () => {
+			const result: DeleteUserResult = await deleteUserAction(userId);
+			if (result.success) {
+				toast.success('User deleted successfully!');
+				setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+				console.log(result.message);
+			} else {
+				toast.error('Failed to delete user!')
+				setFormError(result.message);
+				console.error('Deletion failed:', result.message);
+			}
+			setDeletingUserId(null);
+		});
+	};
 
-    //Hier is een handler voor het toevoegen of wijzigen van een gebruiker
+
     const handleFormSubmit = (userFormData: Partial<CombinedUser>) => {
         if (isPending) return;
         setFormError(null);
 
-        startTransition(async () => {
-            try {
-                if (currentUser && currentUser.id) {
-                    //Hier worden bestaande gebruikers geupdated
-                    const { companyName, phone, kvk } = userFormData;
-                    const updateData = { companyName, phone, kvk };
-                    const result: UpdateUserResult = await updateUserAction(
-                        currentUser.id,
-                        updateData
-                    );
-                    if (result.success) {
-                        setUsers((prevUsers) =>
-                            prevUsers.map((u) =>
-                                u.id === currentUser.id ? { ...u, ...updateData } : u
-                            )
-                        );
-                        setIsModalOpen(false);
-                        setCurrentUser(null);
-                    } else {
-                        setFormError(result.message);
-                    }
-                } else {
-                    //Hier worden nieuwe gebruikers toegevoegd
-                    if (!userFormData.email) {
-                        setFormError('Email is required to add a new user.');
-                        return;
-                    }
-                    if (!loggedInUser) {
-                        setFormError('Cannot add user: Logged in user not found.');
-                        return;
-                    }
-                    const addData = {
-                        email: userFormData.email,
-                        companyName: userFormData.companyName,
-                        phone: userFormData.phone,
-                        kvk: userFormData.kvk,
-                    };
-                    const result: AddUserResult = await addUserAction(addData, loggedInUser.uid);
-                    if (result.success && result.newUser) {
-                        setUsers((prevUsers) => [
-                            ...prevUsers,
-                            result.newUser as CombinedUser,
-                        ]);
-                        setIsModalOpen(false);
-                        setCurrentUser(null);
-                    } else {
-                        setFormError(result.message || 'Failed to add user.');
-                    }
-                }
-            } catch (error) {
-                toast.error('Form submission error')
-                console.error('Form submission error:', error);
-                setFormError('An unexpected error occurred during submission.');
-            }
-        });
-    };
+		startTransition(async () => {
+			try {
+				if (currentUser && currentUser.id) {
+					const { companyName, phone, kvk } = userFormData;
+					const updateData = { companyName, phone, kvk };
+					const result: UpdateUserResult = await updateUserAction(
+						currentUser.id,
+						updateData
+					);
+					if (result.success) {
+						setUsers((prevUsers) =>
+							
+							prevUsers.map((u) =>
+								u.id === currentUser.id ? { ...u, ...updateData } : u
+							)
+						);
+						setIsModalOpen(false);
+						setCurrentUser(null);
 
-    // Hier word gebruikersbeheer UI gerenderd
+						
+					} else {
+						setFormError(result.message);
+					}
+				} else {
+					if (!userFormData.email) {
+						setFormError('Email is required to add a new user.');
+						return;
+					}
+					if (!loggedInUser) {
+						setFormError('Cannot add user: Logged in user not found.');
+						return;
+					}
+					const addData = {
+						email: userFormData.email,
+						companyName: userFormData.companyName,
+						phone: userFormData.phone,
+						kvk: userFormData.kvk,
+					};
+					const result: AddUserResult = await addUserAction(addData, loggedInUser.uid);
+					if (result.success && result.newUser) {
+						setUsers((prevUsers) => [
+							...prevUsers,
+							result.newUser as CombinedUser,
+						]);
+						setIsModalOpen(false);
+						setCurrentUser(null);
+					} else {
+						setFormError(result.message || 'Failed to add user.');
+					}
+				}
+			} catch (error) {
+				toast.error('Form submission error')
+				console.error('Form submission error:', error);
+				setFormError('An unexpected error occurred during submission.');
+			}
+		});
+	};
+
+
     return (
         <div className={styles.user__container}>
-            {/* Dit is de html van de header met zoekbalk en knop voor nieuwe gebruiker */}
             <div className={styles.user__header}>
                 <div className={styles.user__searchBar}>
                     <i className="fa-solid fa-magnifying-glass"></i>
@@ -252,12 +240,10 @@ export default function UserManagementClient({
                 </button>
             </div>
 
-            {/* Dit is een foutmelding die word getoond als er iets fout gaat */}
             {formError && !isModalOpen && (
                 <p className={styles.errorBanner}>{formError}</p>
             )}
 
-            {/* De html van de  Gebruikerstabel */}
             <div className={styles.user__tableContainer}>
                 <table className={styles.user__table}>
                     <thead>
@@ -274,7 +260,6 @@ export default function UserManagementClient({
                                             header.getContext()
                                         )}
                                         {{
-
                                             asc: ' 🔼',
                                             desc: ' 🔽',
                                         }[header.column.getIsSorted() as string] ?? null}
@@ -300,10 +285,8 @@ export default function UserManagementClient({
                 </table>
             </div>
 
-            {/* melding die komt als er geen gebruikers gevonden melding */}
             {filteredData.length === 0 && <p>No users found.</p>}
 
-            {/* Pagina knoppen voor verschilldende paginas van de tabel als er meerdere users komen */}
             <div className={styles.user__pagination}>
                 <button
                     onClick={() => table.setPageIndex(0)}
@@ -339,7 +322,6 @@ export default function UserManagementClient({
                 </button>
             </div>
 
-            {/*  Modal voor toevoegen/wijzigen gebruiker */}
             <Modal
                 isOpen={isModalOpen}
                 onClose={() => {
@@ -361,7 +343,6 @@ export default function UserManagementClient({
     );
 }
 
-//Props voor het gebruikersformulier
 interface UserFormProps {
     user: Partial<CombinedUser> | null;
     onSubmit: (formData: Partial<CombinedUser>) => void;
@@ -370,7 +351,6 @@ interface UserFormProps {
     clearError: () => void;
 }
 
-// Hier is de formuliercomponent voor toevoegen/wijzigen gebruiker
 function UserForm({
     user,
     onSubmit,
@@ -378,10 +358,8 @@ function UserForm({
     error,
     clearError,
 }: UserFormProps) {
-    // Hier is de state voor formulierdata
     const [formData, setFormData] = useState<Partial<CombinedUser>>({});
 
-    //vul  de formulier met bestaande data bij openen of reset error
     useEffect(() => {
         setFormData({
             companyName: user?.companyName || '',
@@ -392,34 +370,28 @@ function UserForm({
         if (error) clearError();
     }, [user, error, clearError]);
 
-    // Hier is een handler voor inputwijzigingen
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
         if (error) clearError();
     };
 
-    // Hier is een handler voor formulier submit
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (isLoading) return;
         onSubmit(formData);
     };
 
-    // Hier wordt bepaald of het formulier in edit-modus is
     const isEditMode = !!user?.id;
 
-    // Hier worde formulier gerenderd 
     return (
         <form className={styles.modalForm} onSubmit={handleSubmit}>
             <h3>
                 {isEditMode ? `Edit ${formData.companyName || 'User'}` : 'Add New User'}
             </h3>
 
-            {/* Voor een foutmelding in het formulier */}
             {error && <p className={styles.errorBannerModal}>{error}</p>}
 
-               {/* De HTML van de render */}
             <div>
                 <label htmlFor="email">Email:</label>
                 <input
