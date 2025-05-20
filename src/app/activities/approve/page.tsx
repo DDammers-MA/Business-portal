@@ -27,6 +27,7 @@ interface ActivitySummaryCardProps {
 	onApprove: (activityId: string) => Promise<void>;
 	onDeny: (activityId: string) => Promise<void>;
 	isUpdating: boolean;
+	animationDelay?: string;
 }
 
 const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
@@ -35,6 +36,8 @@ const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
 	onApprove,
 	onDeny,
 	isUpdating,
+	animationDelay
+
 }) => {
 	const defaultImage = '/images/default.png';
 	const imageUrl = activity.image_url || defaultImage;
@@ -88,7 +91,8 @@ const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
 	// Removed duplicate handleDenyWithReason function as it is unused
 
 	return (
-		<div className={styles.summaryCard}>
+	
+		<div style={{ animationDelay }} className={`${styles.summaryCard} ${styles.cardFadeIn}`}>
 			<span className={`${styles.statusBadge} ${styles.inReview}`}>
 				In Review
 			</span>
@@ -380,7 +384,7 @@ const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
 				</div>
 			) : (
 				<div className={styles.grid}>
-					{activitiesToApprove.map((activity) => (
+					{activitiesToApprove.map((activity, index) => (
 						<ActivitySummaryCard
 							key={activity.id}
 							activity={activity}
@@ -390,8 +394,8 @@ const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
 								handleDenyWithReason(activityId);
 								return Promise.resolve();
 							}}
-
 							isUpdating={directUpdateStates[activity.id || ''] || false}
+						   animationDelay={`${index * 100}ms`}
 						/>
 					))}
 				</div>

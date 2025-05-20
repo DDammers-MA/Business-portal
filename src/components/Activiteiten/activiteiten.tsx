@@ -1,387 +1,393 @@
-/* eslint-disable @next/next/no-img-element */
-'use client';
+/**
+ * eslint-disable @next/next/no-img-element
+ *
+ * @format
+ */
 
-import React, { useState, useEffect } from 'react';
-import styles from './activiteiten.module.scss';
-import Link from 'next/link'; // Add import for Link
+"use client";
+
+import React, { useState, useEffect } from "react";
+import styles from "./activiteiten.module.scss";
+import Link from "next/link"; // Add import for Link
 // Import Firestore functions and db instance
-import { db } from '../../../utils/firebase.browser';
+import { db } from "../../../utils/firebase.browser";
 import {
-	collection,
-	query,
-	where,
-	getDocs,
-	doc,
-	deleteDoc,
-	Query,
-	DocumentData,
-	updateDoc,
-} from 'firebase/firestore';
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  deleteDoc,
+  Query,
+  DocumentData,
+  updateDoc,
+} from "firebase/firestore";
 // Import AuthContext hook
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from "@/context/AuthContext";
 
-import { FormData } from '@/types/FormData';
-import { ActivityInfoModal } from '@/app/activities/approve/infoModal';
-import { toast } from 'sonner';
+import { FormData } from "@/types/FormData";
+import { ActivityInfoModal } from "@/app/activities/approve/infoModal";
+import { toast } from "sonner";
 
 // Define configuration for status badges
 const STATUS_CONFIG = {
-	published: {
-		label: 'Published',
-		backgroundColor: '#198754',
-		color: 'white',
-	},
-	inreview: {
-		label: 'In review',
-		backgroundColor: '#ffc107',
-		color: '#333',
-	},
-	denied: {
-		label: 'Denied',
-		backgroundColor: '#ffc107',
-		color: '#333',
-	},
-	draft: {
-		label: 'Draft',
-		backgroundColor: '#6c757d',
-		color: 'white',
-	},
-	default: {
-		label: 'Unknown',
-		backgroundColor: '#6c757d',
-		color: 'white',
-	},
+  published: {
+    label: "Published",
+    backgroundColor: "#198754",
+    color: "white",
+  },
+  inreview: {
+    label: "In review",
+    backgroundColor: "#ffc107",
+    color: "#333",
+  },
+  denied: {
+    label: "Denied",
+    backgroundColor: "#ffc107",
+    color: "#333",
+  },
+  draft: {
+    label: "Draft",
+    backgroundColor: "#6c757d",
+    color: "white",
+  },
+  default: {
+    label: "Unknown",
+    backgroundColor: "#6c757d",
+    color: "white",
+  },
 };
 
 // Define props interface including the optional filter
 interface ActiviteitenProps {
-	filter?: string;
+  filter?: string;
 }
 
 // Update component signature to accept props
 const Activiteiten = ({ filter }: ActiviteitenProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedActivity, setSelectedActivity] = useState<FormData | null>(
+    null
+  );
+  // State for activities, loading, and errors
+  const [activiteiten, setActiviteiten] = useState<FormData[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  // Get authentication state
+  const { user, isAdmin, loading: authLoading } = useAuth();
 
-	const [isModalOpen, setIsModalOpen] = useState(false);
-const [selectedActivity, setSelectedActivity] = useState<FormData | null>(null);
-	// State for activities, loading, and errors
-	const [activiteiten, setActiviteiten] = useState<FormData[]>([]);
-	const [loading, setLoading] = useState<boolean>(true);
-	const [error, setError] = useState<string | null>(null);
-	// Get authentication state
-	const { user, isAdmin, loading: authLoading } = useAuth();
-
-	const handleOpenInfoModal = (activity: FormData) => {
-		setSelectedActivity(activity);
-		setIsModalOpen(true);
-	};
-	
-	const handleCloseInfoModal = () => {
-		setSelectedActivity(null);
-		setIsModalOpen(false);
-	};
-
-
-	useEffect(() => {
-  if (isModalOpen) {
-    // Prevent scrolling
-    document.body.style.overflow = 'hidden';
-  } else {
-    // Restore scrolling
-    document.body.style.overflow = '';
-  }
-
-  // Cleanup on unmount
-  return () => {
-    document.body.style.overflow = '';
+  const handleOpenInfoModal = (activity: FormData) => {
+    setSelectedActivity(activity);
+    setIsModalOpen(true);
   };
-}, [isModalOpen]);
 
+  const handleCloseInfoModal = () => {
+    setSelectedActivity(null);
+    setIsModalOpen(false);
+  };
 
-	// Fetch data on mount and when filter changes
-	useEffect(() => {
-		const fetchData = async () => {
-			// Show loading state if auth is still loading
-			if (authLoading) {
-				setLoading(true);
-				return;
-			}
+  useEffect(() => {
+    if (isModalOpen) {
+      // Prevent scrolling
+      document.body.style.overflow = "hidden";
+    } else {
+      // Restore scrolling
+      document.body.style.overflow = "";
+    }
 
-			// If not admin and not logged in, show no activities
-			if (!isAdmin && !user) {
-				setActiviteiten([]);
-				setLoading(false);
-				setError(null); // Clear any previous errors
-				return;
-			}
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isModalOpen]);
 
-			setLoading(true);
-			setError(null);
-			try {
-				// Base query for the activities collection
-				let q: Query<DocumentData> = query(collection(db, 'activities'));
+  // Fetch data on mount and when filter changes
+  useEffect(() => {
+    const fetchData = async () => {
+      // Show loading state if auth is still loading
+      if (authLoading) {
+        setLoading(true);
+        return;
+      }
 
-				console.log(filter);
+      // If not admin and not logged in, show no activities
+      if (!isAdmin && !user) {
+        setActiviteiten([]);
+        setLoading(false);
+        setError(null); // Clear any previous errors
+        return;
+      }
 
-				// Apply filter if it's valid
-				if (filter === 'draft') {
-					// If filter is 'draft', fetch both 'draft' and 'denied'
-					q = query(q, where('status', 'in', ['draft', 'denied']));
-				} else if (
-					filter &&
-					['published', 'inreview', 'denied'].includes(filter)
-				) {
-					// For other valid statuses, filter specifically
-					q = query(q, where('status', '==', filter.toLowerCase()));
-				}
+      setLoading(true);
+      setError(null);
+      try {
+        // Base query for the activities collection
+        let q: Query<DocumentData> = query(collection(db, "activities"));
 
-				// Apply user-specific filter if not admin and logged in
-				if (!isAdmin && user) {
-					// Use 'creatorId' as confirmed
-					q = query(q, where('creatorUid', '==', user.uid));
-				}
+        console.log(filter);
 
-				const querySnapshot = await getDocs(q);
-				const fetchedActiviteiten = querySnapshot.docs.map((doc) => ({
-					id: doc.id,
-					...(doc.data() as Omit<FormData, 'id'>),
-				}));
-				console.log(fetchedActiviteiten);
-				setActiviteiten(fetchedActiviteiten);
-			} catch (err) {
-				console.error('Error fetching activities:', err);
-				setError('Failed to load activities.');
-			} finally {
-				setLoading(false);
-			}
-		};
+        // Apply filter if it's valid
+        if (filter === "draft") {
+          // If filter is 'draft', fetch both 'draft' and 'denied'
+          q = query(q, where("status", "in", ["draft", "denied"]));
+        } else if (
+          filter &&
+          ["published", "inreview", "denied"].includes(filter)
+        ) {
+          // For other valid statuses, filter specifically
+          q = query(q, where("status", "==", filter.toLowerCase()));
+        }
 
-		fetchData();
-		// Update dependencies to include auth state
-	}, [filter, user, isAdmin, authLoading]);
+        // Apply user-specific filter if not admin and logged in
+        if (!isAdmin && user) {
+          // Use 'creatorId' as confirmed
+          q = query(q, where("creatorUid", "==", user.uid));
+        }
 
-	// Update handleDelete to remove from Firestore
-	const handleDelete = async (id: string, title: string) => {
-		if (!id) return;
+        const querySnapshot = await getDocs(q);
+        const fetchedActiviteiten = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...(doc.data() as Omit<FormData, "id">),
+        }));
+        console.log(fetchedActiviteiten);
+        setActiviteiten(fetchedActiviteiten);
+      } catch (err) {
+        console.error("Error fetching activities:", err);
+        setError("Failed to load activities.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-		// Add confirmation dialog
-		const confirmation = window.confirm(
-			`Are you sure you want to delete the activity "${title}"?`
-		);
-		if (!confirmation) {
-			return; // Stop deletion if user cancels
-		}
+    fetchData();
+    // Update dependencies to include auth state
+  }, [filter, user, isAdmin, authLoading]);
 
-		try {
-			await deleteDoc(doc(db, 'activities', id));
-			setActiviteiten((prevActiviteiten) =>
-				prevActiviteiten.filter((activiteit) => activiteit.id !== id)
-			
-			);
-				toast.success('Activity deleted successfully!')
-		} catch (err) {
-			toast.error('Failed to delete activity.')
-			console.error('Error deleting activity:', err);
-		}
-	};
+  // Update handleDelete to remove from Firestore
+  const handleDelete = async (id: string, title: string) => {
+    if (!id) return;
 
-	return (
-		<div className={styles.event}>
-			<div className={styles.event__container}>
-				<div className={styles.event__list}>
-					{/* Conditional Rendering Section */}
-					{loading ? (
-						<div className={styles.spinner}></div>
-					) : error ? (
-						<div className={`${styles.message} ${styles.error}`}>{error}</div>
-					) : activiteiten.length === 0 ? (
-						<div className={styles.message}>No activities found.</div>
-					) : (
-						/* Map through activities only if not loading, no error, and activities exist */
-						activiteiten.map((activiteit) => {
-							// Determine status and look up config
-							const currentStatus = activiteit.status || 'draft'; // Default to draft if undefined
-							const badgeConfig =
-								STATUS_CONFIG[currentStatus] || STATUS_CONFIG.default;
+    // Add confirmation dialog
+    const confirmation = window.confirm(
+      `Are you sure you want to delete the activity "${title}"?`
+    );
+    if (!confirmation) {
+      return; // Stop deletion if user cancels
+    }
 
-							return (
-								<ActiviteitCard
-  key={activiteit.id}
-  id={activiteit.id || ''}
-  image={activiteit.image_url || '/images/default.png'}
-  title={activiteit.name}
-  description={activiteit.description}
-  badgeConfig={badgeConfig}
-  active={activiteit.active ?? false}
-  onDelete={() => handleDelete(activiteit.id || '', activiteit.name)}
-  onInfoClick={() => handleOpenInfoModal(activiteit)}  
-/>
-							);
-						})
-					)}
-				</div>
-			</div>
-			{selectedActivity && (
-            <ActivityInfoModal
-                isOpen={isModalOpen}
-                onClose={handleCloseInfoModal}
-                activity={selectedActivity}
-                creatorData={null} // Pass creator data if available
-                modalUserLoading={false} // Adjust loading state if needed
-                modalActionLoading={false} // Adjust loading state if needed
-                onStatusUpdate={() => {}} // Add status update logic if needed
-            />
-        )}
-		</div>
-	);
+    try {
+      await deleteDoc(doc(db, "activities", id));
+      setActiviteiten((prevActiviteiten) =>
+        prevActiviteiten.filter((activiteit) => activiteit.id !== id)
+      );
+      toast.success("Activity deleted successfully!");
+    } catch (err) {
+      toast.error("Failed to delete activity.");
+      console.error("Error deleting activity:", err);
+    }
+  };
+
+  return (
+    <div className={styles.event}>
+      <div className={styles.event__container}>
+        <div className={styles.event__list}>
+          {/* Conditional Rendering Section */}
+          {loading ? (
+            <div className={styles.spinner}></div>
+          ) : error ? (
+            <div className={`${styles.message} ${styles.error}`}>{error}</div>
+          ) : activiteiten.length === 0 ? (
+            <div className={styles.message}>No activities found.</div>
+          ) : (
+            /* Map through activities only if not loading, no error, and activities exist */
+            activiteiten.map((activiteit, index) => {
+              // Determine status and look up config
+              const currentStatus = activiteit.status || "draft"; // Default to draft if undefined
+              const badgeConfig =
+                STATUS_CONFIG[currentStatus] || STATUS_CONFIG.default;
+
+              return (
+                <ActiviteitCard
+                  key={activiteit.id}
+                  id={activiteit.id || ""}
+                  image={activiteit.image_url || "/images/default.png"}
+                  title={activiteit.name}
+                  description={activiteit.description}
+                  badgeConfig={badgeConfig}
+                  active={activiteit.active ?? false}
+                  onDelete={() =>
+                    handleDelete(activiteit.id || "", activiteit.name)
+                  }
+            onInfoClick={() => handleOpenInfoModal(activiteit)}
+              animationDelay={`${index * 100}ms`}
+                />
+              );
+            })
+          )}
+        </div>
+      </div>
+      {selectedActivity && (
+        <ActivityInfoModal
+          isOpen={isModalOpen}
+          onClose={handleCloseInfoModal}
+          activity={selectedActivity}
+          creatorData={null} // Pass creator data if available
+          modalUserLoading={false} // Adjust loading state if needed
+          modalActionLoading={false} // Adjust loading state if needed
+          onStatusUpdate={() => {}} // Add status update logic if needed
+        />
+      )}
+    </div>
+  );
 };
 
 interface ActiviteitCardProps {
-	id: string; // Add id
-	image: string;
-	title: string;
-	description: string;
-	badgeConfig: {
-		label: string;
-		backgroundColor: string;
-		color: string;
-	}; // Add badge config prop
-	active: boolean; // Renamed from online
-	onDelete: () => void;
-	onInfoClick: () => void;  
+  id: string; // Add id
+  image: string;
+  title: string;
+  description: string;
+  badgeConfig: {
+    label: string;
+    backgroundColor: string;
+    color: string;
+  }; // Add badge config prop
+  active: boolean; // Renamed from online
+  onDelete: () => void;
+	onInfoClick: () => void;
+	animationDelay?: string;
 }
 
 const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
-	id, // Receive id
-	image,
-	title,
-	description,
-	badgeConfig, // Receive badgeConfig
-	active, // Receive corrected prop
-	onDelete,
-	onInfoClick
+  id, // Receive id
+  image,
+  title,
+  description,
+  badgeConfig, // Receive badgeConfig
+  active, // Receive corrected prop
+  onDelete,
+	onInfoClick,
+	animationDelay,
 }) => {
-	
-	const defaultImage = '/images/default.png';
-	const [isToggled, setIsToggled] = useState(active);
-	const [isUpdating, setIsUpdating] = useState(false);
-	// State for image loading and error
-	const [imageLoading, setImageLoading] = useState(
-		!!image && image !== defaultImage
-	);
-	const [imageError, setImageError] = useState(false);
+  const defaultImage = "/images/default.png";
+  const [isToggled, setIsToggled] = useState(active);
+  const [isUpdating, setIsUpdating] = useState(false);
+  // State for image loading and error
+  const [imageLoading, setImageLoading] = useState(
+    !!image && image !== defaultImage
+  );
+  const [imageError, setImageError] = useState(false);
 
+  // Reset loading state if image prop changes
+  useEffect(() => {
+    setImageError(false);
+    setImageLoading(!!image && image !== defaultImage);
+  }, [image]);
 
-	
+  // Update handler to toggle 'active' status in Firebase
+  const handleToggle = async () => {
+    if (isUpdating) return; // Prevent multiple clicks
 
-	// Reset loading state if image prop changes
-	useEffect(() => {
-		setImageError(false);
-		setImageLoading(!!image && image !== defaultImage);
-	}, [image]);
+    const newActiveStatus = !isToggled; // Use new variable name
+    setIsUpdating(true);
 
-	// Update handler to toggle 'active' status in Firebase
-	const handleToggle = async () => {
-		if (isUpdating) return; // Prevent multiple clicks
+    try {
+      const activityRef = doc(db, "activities", id);
+      await updateDoc(activityRef, {
+        active: newActiveStatus, // Update active field in Firestore
+      });
+      setIsToggled(newActiveStatus); // Update local state on success
+    } catch (error) {
+      console.error("Error updating active status:", error); // Update error message
+      // Optionally show an error message to the user
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
-		const newActiveStatus = !isToggled; // Use new variable name
-		setIsUpdating(true);
+  // Determine the URL to display (handle error and default)
+  const displayUrl = imageError ? defaultImage : image || defaultImage;
 
-		try {
-			const activityRef = doc(db, 'activities', id);
-			await updateDoc(activityRef, {
-				active: newActiveStatus, // Update active field in Firestore
-			});
-			setIsToggled(newActiveStatus); // Update local state on success
-		} catch (error) {
-			console.error('Error updating active status:', error); // Update error message
-			// Optionally show an error message to the user
-		} finally {
-			setIsUpdating(false);
-		}
-	};
-
-	// Determine the URL to display (handle error and default)
-	const displayUrl = imageError ? defaultImage : image || defaultImage;
-
-	return (
-		<div
-		onClick={onInfoClick}
-			className={`${styles.project} ${
-				!isToggled ? styles.project__toggled : '' // Apply toggled style when NOT toggled
-			}`}
-		>
-			{/* Status Badge - Now uses config props */}
-			<span
-				className={styles.statusBadge}
-				style={{
-					backgroundColor: badgeConfig.backgroundColor,
-					color: badgeConfig.color,
-				}}
-			>
-				{badgeConfig.label}
-			</span>
-
-			{/* Image container */}
-			<div className={styles.project__imageContainer}>
-				{/* Show spinner while loading */}
-				{imageLoading && <div className={styles.spinner}></div>}
-				{/* Image element */}
-				<img
-					src={displayUrl}
-					alt={title}
-					className={styles.project__image}
-					onLoad={() => setImageLoading(false)} // Set loading false on successful load
-					onError={() => {
-						// Set loading false and error true on failure
-						setImageLoading(false);
-						setImageError(true);
-					}}
-					// Hide img element itself while loading, spinner takes its place
-					style={{ display: imageLoading ? 'none' : 'block' }}
-				/>
-			</div>
-			
-			<div className={styles.project__content}>
-
-			<h2 className={styles.project__title}>{title}</h2>
-			<p className={styles.project__description}>{description}</p>
-			</div>
-
-
-			<div className={styles.project__footer}>
-			<div className={styles.project__actions} onClick={(e) => e.stopPropagation()}>
-  <i
-    className="fa-solid fa-trash"
-    style={{ color: '#f00f0f', cursor: 'pointer' }}
-    onClick={onDelete}
-  ></i>
-
-  <Link href={`/activity/edit/${id}`} legacyBehavior>
-    <a
-      style={{ color: 'inherit', textDecoration: 'none' }}
-      onClick={(e) => e.stopPropagation()} // prevent card click
+  return (
+	  <div
+		   style={{ animationDelay }}
+      onClick={onInfoClick}
+      className={`${styles.project} ${styles.cardFadeIn}  ${
+        !isToggled ? styles.project__toggled : "" // Apply toggled style when NOT toggled
+      } `}
     >
-      <i
-        className="fa-regular fa-pen-to-square"
-        style={{ cursor: 'pointer' }}
-      ></i>
-    </a>
-  </Link>
-</div>
-<div
-  className={`${styles.toggle} ${!isToggled ? styles.toggle__on : ''} ${
-    isUpdating ? styles.toggle__disabled : ''
-  }`}
-  onClick={(e) => {
-    e.stopPropagation(); // prevent modal
-    handleToggle();
-  }}
->
-  <div className={styles.toggle__circle}></div>
-</div>
-			</div>
-		</div>
-	);
+      {/* Status Badge - Now uses config props */}
+      <span
+        className={styles.statusBadge}
+        style={{
+          backgroundColor: badgeConfig.backgroundColor,
+          color: badgeConfig.color,
+        }}
+      >
+        {badgeConfig.label}
+      </span>
+
+      {/* Image container */}
+      <div className={styles.project__imageContainer}>
+        {/* Show spinner while loading */}
+        {imageLoading && <div className={styles.spinner}></div>}
+        {/* Image element */}
+        <img
+          src={displayUrl}
+          alt={title}
+          className={styles.project__image}
+          onLoad={() => setImageLoading(false)} // Set loading false on successful load
+          onError={() => {
+            // Set loading false and error true on failure
+            setImageLoading(false);
+            setImageError(true);
+          }}
+          // Hide img element itself while loading, spinner takes its place
+          style={{ display: imageLoading ? "none" : "block" }}
+        />
+      </div>
+
+      <div className={styles.project__content}>
+        <h2 className={styles.project__title}>{title}</h2>
+        <p className={styles.project__description}>{description}</p>
+      </div>
+
+      <div className={styles.project__footer}>
+        <div
+          className={styles.project__actions}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <i
+            className="fa-solid fa-trash"
+            style={{ color: "#f00f0f", cursor: "pointer" }}
+            onClick={onDelete}
+          ></i>
+
+          <Link href={`/activity/edit/${id}`} legacyBehavior>
+            <a
+              style={{ color: "inherit", textDecoration: "none" }}
+              onClick={(e) => e.stopPropagation()} // prevent card click
+            >
+              <i
+                className="fa-regular fa-pen-to-square"
+                style={{ cursor: "pointer" }}
+              ></i>
+            </a>
+          </Link>
+        </div>
+        <div
+          className={`${styles.toggle} ${!isToggled ? styles.toggle__on : ""} ${
+            isUpdating ? styles.toggle__disabled : ""
+          }`}
+          onClick={(e) => {
+            e.stopPropagation(); // prevent modal
+            handleToggle();
+          }}
+        >
+          <div className={styles.toggle__circle}></div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Activiteiten;
