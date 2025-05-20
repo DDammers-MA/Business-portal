@@ -12,15 +12,15 @@ import Link from "next/link"; // Add import for Link
 // Import Firestore functions and db instance
 import { db } from "../../../utils/firebase.browser";
 import {
-  collection,
-  query,
-  where,
-  getDocs,
-  doc,
-  deleteDoc,
-  Query,
-  DocumentData,
-  updateDoc,
+	collection,
+	query,
+	where,
+	getDocs,
+	doc,
+	deleteDoc,
+	Query,
+	DocumentData,
+	updateDoc,
 } from "firebase/firestore";
 // Import AuthContext hook
 import { useAuth } from "@/context/AuthContext";
@@ -32,31 +32,31 @@ import { getUserDetailsAction, UserDetails } from '@/app/activities/approve/acti
 
 // Define configuration for status badges
 const STATUS_CONFIG = {
-  published: {
-    label: "Published",
-    backgroundColor: "#198754",
-    color: "white",
-  },
-  inreview: {
-    label: "In review",
-    backgroundColor: "#ffc107",
-    color: "#333",
-  },
-  denied: {
-    label: "Denied",
-    backgroundColor: "#ffc107",
-    color: "#333",
-  },
-  draft: {
-    label: "Draft",
-    backgroundColor: "#6c757d",
-    color: "white",
-  },
-  default: {
-    label: "Unknown",
-    backgroundColor: "#6c757d",
-    color: "white",
-  },
+	published: {
+		label: "Published",
+		backgroundColor: "#198754",
+		color: "white",
+	},
+	inreview: {
+		label: "In review",
+		backgroundColor: "#ffc107",
+		color: "#333",
+	},
+	denied: {
+		label: "Denied",
+		backgroundColor: "#ffc107",
+		color: "#333",
+	},
+	draft: {
+		label: "Draft",
+		backgroundColor: "#6c757d",
+		color: "white",
+	},
+	default: {
+		label: "Unknown",
+		backgroundColor: "#6c757d",
+		color: "white",
+	},
 };
 
 // Add online/offline badge configuration
@@ -75,41 +75,18 @@ const ONLINE_STATUS_CONFIG = {
 
 // Define props interface including the optional filter
 interface ActiviteitenProps {
-  filter?: string;
+	filter?: string;
 }
 
 // Update component signature to accept props
 const Activiteiten = ({ filter }: ActiviteitenProps) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedActivity, setSelectedActivity] = useState<FormData | null>(
-    null
-  );
-  // State for activities, loading, and errors
-  const [activiteiten, setActiviteiten] = useState<FormData[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  // Get authentication state
-  const { user, isAdmin, loading: authLoading } = useAuth();
-
-  const handleOpenInfoModal = (activity: FormData) => {
-    setSelectedActivity(activity);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseInfoModal = () => {
-    setSelectedActivity(null);
-    setIsModalOpen(false);
-  };
-
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [selectedActivity, setSelectedActivity] = useState<FormData | null>(null);
 	const [creatorData, setCreatorData] = useState<UserDetails | null>(null);
 	const [modalUserLoading, setModalUserLoading] = useState<boolean>(false);
-	// State for activities, loading, and errors
 	const [activiteiten, setActiviteiten] = useState<FormData[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
-	// Get authentication state
 	const { user, isAdmin, loading: authLoading } = useAuth();
 
 	const handleOpenInfoModal = async (activity: FormData) => {
@@ -136,22 +113,20 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 		setCreatorData(null);
 	};
 
-
 	useEffect(() => {
-  if (isModalOpen) {
-    // Prevent scrolling
-    document.body.style.overflow = 'hidden';
-  } else {
-    // Restore scrolling
-    document.body.style.overflow = '';
-  }
+		if (isModalOpen) {
+			// Prevent scrolling
+			document.body.style.overflow = 'hidden';
+		} else {
+			// Restore scrolling
+			document.body.style.overflow = '';
+		}
 
-  // Cleanup on unmount
-  return () => {
-    document.body.style.overflow = '';
-  };
-}, [isModalOpen]);
-
+		// Cleanup on unmount
+		return () => {
+			document.body.style.overflow = '';
+		};
+	}, [isModalOpen]);
 
 	// Fetch data on mount and when filter changes
 	useEffect(() => {
@@ -231,9 +206,9 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 			await deleteDoc(doc(db, 'activities', id));
 			setActiviteiten((prevActiviteiten) =>
 				prevActiviteiten.filter((activiteit) => activiteit.id !== id)
-			
+
 			);
-				toast.success('Activity deleted successfully!')
+			toast.success('Activity deleted successfully!')
 		} catch (err) {
 			toast.error('Failed to delete activity.')
 			console.error('Error deleting activity:', err);
@@ -261,17 +236,17 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 
 							return (
 								<ActiviteitCard
-  key={activiteit.id}
-  id={activiteit.id || ''}
-  image={activiteit.image_url || '/images/default.png'}
-  title={activiteit.name}
-  description={activiteit.description}
-  badgeConfig={badgeConfig}
-  active={activiteit.active ?? false}
-  onDelete={() => handleDelete(activiteit.id || '', activiteit.name)}
-  onInfoClick={() => handleOpenInfoModal(activiteit)}  
-                  animationDelay={`${index * 50}ms`}
-/>
+									key={activiteit.id}
+									id={activiteit.id || ''}
+									image={activiteit.image_url || '/images/default.png'}
+									title={activiteit.name}
+									description={activiteit.description}
+									badgeConfig={badgeConfig}
+									active={activiteit.active ?? false}
+									onDelete={() => handleDelete(activiteit.id || '', activiteit.name)}
+									onInfoClick={() => handleOpenInfoModal(activiteit)}
+									animationDelay={`${index * 50}ms`}
+								/>
 							);
 						})
 					)}
@@ -285,7 +260,7 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 					creatorData={creatorData}
 					modalUserLoading={modalUserLoading}
 					modalActionLoading={false}
-					onStatusUpdate={() => {}}
+					onStatusUpdate={() => { }}
 				/>
 			)}
 		</div>
@@ -293,29 +268,29 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 };
 
 interface ActiviteitCardProps {
-  id: string; // Add id
-  image: string;
-  title: string;
-  description: string;
-  badgeConfig: {
-    label: string;
-    backgroundColor: string;
-    color: string;
-  }; // Add badge config prop
-  active: boolean; // Renamed from online
-  onDelete: () => void;
+	id: string; // Add id
+	image: string;
+	title: string;
+	description: string;
+	badgeConfig: {
+		label: string;
+		backgroundColor: string;
+		color: string;
+	}; // Add badge config prop
+	active: boolean; // Renamed from online
+	onDelete: () => void;
 	onInfoClick: () => void;
 	animationDelay?: string;
 }
 
 const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
-  id, // Receive id
-  image,
-  title,
-  description,
-  badgeConfig, // Receive badgeConfig
-  active, // Receive corrected prop
-  onDelete,
+	id, // Receive id
+	image,
+	title,
+	description,
+	badgeConfig, // Receive badgeConfig
+	active, // Receive corrected prop
+	onDelete,
 	onInfoClick,
 	animationDelay,
 }) => {
@@ -363,23 +338,11 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 
 	return (
 		<div
-		onClick={onInfoClick}
-			className={`${styles.project} ${
-				!isToggled ? styles.project__toggled : '' // Apply toggled style when NOT toggled
-			}`}
+			onClick={onInfoClick}
+			className={`${styles.project} ${!isToggled ? styles.project__toggled : ''} ${styles.cardFadeIn}`}
+			style={{ animationDelay }}
 		>
 			<div className={styles.project__badges}>
-				{/* Online/Offline Badge - Right side */}
-				<span
-					className={styles.statusBadge}
-					style={{
-						backgroundColor: onlineStatusConfig.backgroundColor,
-						color: onlineStatusConfig.color,
-					}}
-				>
-					{onlineStatusConfig.label}
-				</span>
-
 				{/* Status Badge - Left side */}
 				<span
 					className={styles.statusBadge}
@@ -389,6 +352,17 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 					}}
 				>
 					{badgeConfig.label}
+				</span>
+
+				{/* Online/Offline Badge - Right side */}
+				<span
+					className={styles.statusBadge}
+					style={{
+						backgroundColor: onlineStatusConfig.backgroundColor,
+						color: onlineStatusConfig.color,
+					}}
+				>
+					{onlineStatusConfig.label}
 				</span>
 			</div>
 
@@ -411,100 +385,46 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 					style={{ display: imageLoading ? 'none' : 'block' }}
 				/>
 			</div>
-			
-			<div className={styles.project__content}>
 
-			<h2 className={styles.project__title}>{title}</h2>
-			<p className={styles.project__description}>{description}</p>
+			<div className={styles.project__content}>
+				<h2 className={styles.project__title}>{title}</h2>
+				<p className={styles.project__description}>{description}</p>
 			</div>
 
-
 			<div className={styles.project__footer}>
-			<div className={styles.project__actions} onClick={(e) => e.stopPropagation()}>
-  <i
-    className="fa-solid fa-trash"
-    style={{ color: '#f00f0f', cursor: 'pointer' }}
-    onClick={onDelete}
-  ></i>
+				<div className={styles.project__actions} onClick={(e) => e.stopPropagation()}>
+					<i
+						className="fa-solid fa-trash"
+						style={{ color: '#f00f0f', cursor: 'pointer' }}
+						onClick={onDelete}
+					></i>
 
-  <Link href={`/activity/edit/${id}`} legacyBehavior>
-    <a
-      style={{ color: 'inherit', textDecoration: 'none' }}
-      onClick={(e) => e.stopPropagation()} // prevent card click
-    >
-      {/* Status Badge - Now uses config props */}
-      <span
-        className={styles.statusBadge}
-        style={{
-          backgroundColor: badgeConfig.backgroundColor,
-          color: badgeConfig.color,
-        }}
-      >
-        {badgeConfig.label}
-      </span>
-
-      {/* Image container */}
-      <div className={styles.project__imageContainer}>
-        {/* Show spinner while loading */}
-        {imageLoading && <div className={styles.spinner}></div>}
-        {/* Image element */}
-        <img
-          src={displayUrl}
-          alt={title}
-          className={styles.project__image}
-          onLoad={() => setImageLoading(false)} // Set loading false on successful load
-          onError={() => {
-            // Set loading false and error true on failure
-            setImageLoading(false);
-            setImageError(true);
-          }}
-          // Hide img element itself while loading, spinner takes its place
-          style={{ display: imageLoading ? "none" : "block" }}
-        />
-      </div>
-
-      <div className={styles.project__content}>
-        <h2 className={styles.project__title}>{title}</h2>
-        <p className={styles.project__description}>{description}</p>
-      </div>
-
-      <div className={styles.project__footer}>
-        <div
-          className={styles.project__actions}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <i
-            className="fa-solid fa-trash"
-            style={{ color: "#f00f0f", cursor: "pointer" }}
-            onClick={onDelete}
-          ></i>
-
-          <Link href={`/activity/edit/${id}`} legacyBehavior>
-            <a
-              style={{ color: "inherit", textDecoration: "none" }}
-              onClick={(e) => e.stopPropagation()} // prevent card click
-            >
-              <i
-                className="fa-regular fa-pen-to-square"
-                style={{ cursor: "pointer" }}
-              ></i>
-            </a>
-          </Link>
-        </div>
-        <div
-          className={`${styles.toggle} ${!isToggled ? styles.toggle__on : ""} ${
-            isUpdating ? styles.toggle__disabled : ""
-          }`}
-          onClick={(e) => {
-            e.stopPropagation(); // prevent modal
-            handleToggle();
-          }}
-        >
-          <div className={styles.toggle__circle}></div>
-        </div>
-      </div>
-    </div>
-  );
+					<Link href={`/activity/edit/${id}`} legacyBehavior>
+						<a
+							style={{ color: 'inherit', textDecoration: 'none' }}
+							onClick={(e) => e.stopPropagation()} // prevent card click
+						>
+							<i
+								className="fa-regular fa-pen-to-square"
+								style={{ cursor: 'pointer' }}
+							></i>
+						</a>
+					</Link>
+				</div>
+				<div
+					className={`${styles.toggle} ${!isToggled ? styles.toggle__on : ''} ${
+						isUpdating ? styles.toggle__disabled : ''
+					}`}
+					onClick={(e) => {
+						e.stopPropagation();
+						handleToggle();
+					}}
+				>
+					<div className={styles.toggle__circle}></div>
+				</div>
+			</div>
+		</div>
+	);
 };
 
 export default Activiteiten;
