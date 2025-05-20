@@ -81,6 +81,21 @@ const [selectedActivity, setSelectedActivity] = useState<FormData | null>(null);
 	};
 
 
+	useEffect(() => {
+  if (isModalOpen) {
+    // Prevent scrolling
+    document.body.style.overflow = 'hidden';
+  } else {
+    // Restore scrolling
+    document.body.style.overflow = '';
+  }
+
+  // Cleanup on unmount
+  return () => {
+    document.body.style.overflow = '';
+  };
+}, [isModalOpen]);
+
 
 	// Fetch data on mount and when filter changes
 	useEffect(() => {
