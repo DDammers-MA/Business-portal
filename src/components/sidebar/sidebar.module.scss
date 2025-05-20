@@ -151,13 +151,12 @@
 	}
 
 	&__navItem {
-		display: flex; // keep flex behaviour ✔
+		display: flex;
 		align-items: center;
 		justify-content: center;
 		height: 100%;
  
 		a {
-			// anchor styling from develop ✔
 			color: white;
 			text-decoration: none;
 		}
@@ -197,9 +196,9 @@
 	}
 }
 
-/* New Profile Dropdown Styles */
+
 .profileDropdownContainer {
-	position: relative; /* Needed for absolute positioning of the dropdown */
+	position: relative; 
 }
 
 .profileButton {
@@ -208,11 +207,8 @@ background: none;
 	color: white;
 	cursor: pointer;
 	font-size: 2.8rem;
-	/* Adjust size as needed */
 	padding: 0;
-	/* Remove default padding */
 	display: flex;
-	/* Align icon nicely */
 	align-items: center;
 	justify-content: center;
 
@@ -221,52 +217,44 @@ background: none;
 .profileDropdown {
 	position: absolute;
 	top: 100%;
-	/* Position below the button */
 	right: 0;
 	background-color: white;
-	/* White background for contrast */
 	border-radius: 8px;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 	padding: 0.8rem 0;
-	/* Padding top/bottom */
 	min-width: 150px;
-
 	z-index: 1000;
-	
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;
-	/* Spacing between items */
+
 
 	a,
 	button {
 		background: none;
 		border: none;
 		color: #333;
-		/* Darker text color */
 		padding: 0.8rem 1.5rem;
-		/* Padding inside items */
 		text-align: left;
 		cursor: pointer;
 		display: block;
-		/* Make items take full width */
 		width: 100%;
-		font-size: 1rem;
+		font-size: 1.5rem;
 		text-decoration: none;
-		/* Remove underline from link */
+
 	}
 
 	a:hover,
 	button:hover {
 		background-color: #f0f0f0;
-		/* Light grey background on hover */
+		
 	}
 }
 
 @media screen and (max-width: 750px) {
 
 	.header {
-		&__navItem {
+		&__navItem, &__navLink {
 			display: none;
 		}
 	}
@@ -301,10 +289,10 @@ background: none;
 
 .sidebar__activeLink,
 .header__activeLink {
-	color: #000 !important; // Active text color (example: black)
+	color: #000 !important; 
 
-	background-color: #fff; // Highlight background
-	border-radius: 0.5rem;
+	background-color: #fff;
+	border-radius: 0.8rem;
 	padding: 0.5rem 1rem;
 	text-decoration: none;
 

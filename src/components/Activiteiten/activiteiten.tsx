@@ -81,6 +81,21 @@ const [selectedActivity, setSelectedActivity] = useState<FormData | null>(null);
 	};
 
 
+	useEffect(() => {
+  if (isModalOpen) {
+    // Prevent scrolling
+    document.body.style.overflow = 'hidden';
+  } else {
+    // Restore scrolling
+    document.body.style.overflow = '';
+  }
+
+  // Cleanup on unmount
+  return () => {
+    document.body.style.overflow = '';
+  };
+}, [isModalOpen]);
+
 
 	// Fetch data on mount and when filter changes
 	useEffect(() => {
@@ -325,9 +340,13 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 					style={{ display: imageLoading ? 'none' : 'block' }}
 				/>
 			</div>
+			
+			<div className={styles.project__content}>
 
 			<h2 className={styles.project__title}>{title}</h2>
 			<p className={styles.project__description}>{description}</p>
+			</div>
+
 
 			<div className={styles.project__footer}>
 			<div className={styles.project__actions} onClick={(e) => e.stopPropagation()}>

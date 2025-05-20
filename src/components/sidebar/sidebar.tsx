@@ -151,7 +151,7 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 						>
 							<h2 className={styles.sidebar__title}>Navigation</h2>
 
-							<SidebarItem onClick={() => setIsOpen(false)} href="/" label="Home" />
+
 							<SidebarItem onClick={() => setIsOpen(false)} href="/" label="Activities" />
 							<SidebarItem onClick={() => setIsOpen(false)} href="/" label="Published" />
 							<SidebarItem onClick={() => setIsOpen(false)} href="/" label="Unpublished" />
@@ -166,7 +166,7 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 
 const SidebarItem = ({ href, label, onClick }: any) => {
   const pathname = usePathname();
-  const isActive = pathname === href;
+  const isActive = pathname === '/activities';
 
   return (
     <li className={styles.sidebar__navItem} onClick={onClick}>
