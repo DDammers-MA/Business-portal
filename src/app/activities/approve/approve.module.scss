@@ -1,29 +1,23 @@
-/* src/app/activities/approve/approve.module.scss */
-
 .pageContainer {
-	padding: 2rem;
-	max-width: 132rem;
-	margin: 0 auto;
-
+    padding: 2rem;
+    max-width: 132rem;
+    margin: 0 auto;
 }
 
 .title {
-	
-	text-align: center;
-	margin-bottom: 2.5rem; /* Increased margin */
-	color: #343a40; /* Darker title */
-
+    text-align: center;
+    margin-bottom: 2.5rem;
+    color: #343a40;
 }
 
 .grid {
-	display: grid;
-	grid-template-columns: 1fr 1fr 1fr; /* Slightly wider cards */
-	gap: 2rem; /* Increased gap */
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2rem;
 }
 
-/* Styles for the summary card */
 .summaryCard {
-    border: 1px solid #e9ecef; /* Lighter border */
+    border: 1px solid #e9ecef;
     border-radius: 8px;
     overflow: hidden;
     transition: box-shadow 0.3s ease, transform 0.2s ease;
@@ -31,35 +25,33 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow */
-position: relative;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    position: relative;
     &__ClickableArea {
         &:hover {
             cursor: pointer;
-            
         }
     }
 
     &__ImageContainer {
         width: 100%;
-        height: 200px; /* Increased height */
+        height: 200px;
         overflow: hidden;
         position: relative;
         background-color: #f0f0f0;
     }
 
     &__Content {
-        padding: 1.5rem 1.75rem; /* Adjusted padding */
+        padding: 1.5rem 1.75rem;
         flex-grow: 1;
         display: flex;
         flex-direction: column;
-		height: 15rem;
+        height: 15rem;
     }
 
     &__Title {
-        font-size: 2rem; /* Increased font size */
-
-        margin: 0 0 0.75rem 0; /* Added bottom margin */
+        font-size: 2rem;
+        margin: 0 0 0.75rem 0;
         color: #343a40;
         white-space: nowrap;
         overflow: hidden;
@@ -67,28 +59,27 @@ position: relative;
     }
 
     &__Submitter {
-	font-size: 0.85rem;
-	color: #6c757d;
-	margin-top: auto;
-	min-height: 1.2em;
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-top: auto;
+        min-height: 1.2em;
     }
 
     &__Actions {
       padding: 2rem;
-     
         display: flex;
-        justify-content: space-between; /* Space out buttons */
-        gap: 1rem; /* Increased gap */
+        justify-content: space-between;
+        gap: 1rem;
     }
 
     &__Button {
-        padding: 0.6rem 1rem; /* Larger buttons */
+        padding: 0.6rem 1rem;
         border: none;
         border-radius:  8px;
         cursor: pointer;
-        font-size: 1.2rem; /* Increased font size */
+        font-size: 1.2rem;
         transition: background-color 0.2s ease, opacity 0.2s ease;
-        flex-grow: 1; /* Make buttons fill space */
+        flex-grow: 1;
         text-align: center;
 
         &:disabled {
@@ -107,7 +98,6 @@ position: relative;
     }
 
     &__ButtonDeny {
-	
         background-color: #dc3545;
         color: white;
 
@@ -118,158 +108,142 @@ position: relative;
 }
 
 .statusBadge {
-	z-index: 999;
-	position: absolute;
-	top: 1rem;
-	right: 1rem;
-	padding: 0.4rem 0.8rem;
-	border-radius: 4px;
-	font-size: 0.85rem;
-	font-weight: 500;
-	z-index: 1;
-	background-color: #ffd700; // Default color for draft
-	color: #000;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    z-index: 1;
+    background-color: #ffd700;
+    color: #000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
-	&.inReview {
-		background-color: #ff9800;
-		color: #fff;
-	}
+    &.inReview {
+        background-color: #ff9800;
+        color: #fff;
+    }
 }
-
-
 
 .modalImage {
-	width: 100%;
-	height: auto; /* Adjust height automatically */
-	max-height: 450px; /* Limit max image height */
-	object-fit: contain;
-	display: block;
-	border-radius: 4px; /* Slight radius on image itself */
+    width: 100%;
+    height: auto;
+    max-height: 450px;
+    object-fit: contain;
+    display: block;
+    border-radius: 4px;
 }
 
-
-
-/* Modal buttons - inherit base styles but can override if needed */
-/* Example: Slightly larger buttons in modal */
 .modalActions 
 
-/* Use base button styles defined earlier */
 .button {
-	padding: 0.6rem 1.2rem;
-	border: none;
-	border-radius: 5px;
-	cursor: pointer;
-	font-size: 1rem;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
 
-	transition: background-color 0.2s ease, opacity 0.2s ease;
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
 
-	&:disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
-	}
-
-	&__Approve {
-		background-color: #28a745;
-		color: white;
-	
-		&:hover:not(:disabled) {
-			background-color: #218838;
-		}
-	}
-	
-	
-	&__Deny {
-		background-color: #dc3545;
-		color: white;
-	
-		&:hover:not(:disabled) {
-			background-color: #c82333;
-		}
-	}
+    &__Approve {
+        background-color: #28a745;
+        color: white;
+    
+        &:hover:not(:disabled) {
+            background-color: #218838;
+        }
+    }
+    
+    &__Deny {
+        background-color: #dc3545;
+        color: white;
+    
+        &:hover:not(:disabled) {
+            background-color: #c82333;
+        }
+    }
 }
 
 .summaryCardSubmitter{
-	       font-size: 2rem; /* Increased font size */
-
-        margin: 1rem 0 0 0; /* Added bottom margin */
-        
-        white-space: nowrap;
-        overflow: hidden;
+    font-size: 2rem;
+    margin: 1rem 0 0 0;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .locationDateContainer {
-	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
-	font-size: 1.5rem;
-
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 1.5rem;
 }
 
 .locationInfo {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-	
-	i {
-		font-size: 1rem;
-		color: #6c757d;
-	}
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    
+    i {
+        font-size: 1rem;
+        color: #6c757d;
+    }
 }
 
 .dateInfo {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-	
-	i {
-		font-size: 1rem;
-		color: #6c757d;
-	}
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    
+    i {
+        font-size: 1rem;
+        color: #6c757d;
+    }
 }
 
-
-/* Utility Styles */
 .spinner {
-	border: 4px solid rgba(0, 0, 0, 0.1);
-	width: 36px;
-	height: 36px;
-	border-radius: 50%;
-	border-left-color: #0d6efd; /* Bootstrap primary blue */
-	animation: spin 1s ease infinite;
-	margin: 2rem auto;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border-left-color: #0d6efd;
+    animation: spin 1s ease infinite;
+    margin: 2rem auto;
 }
 
-/* Spinner within card/modal */
 .inlineSpinner {
-	border: 2px solid rgba(0, 0, 0, 0.1);
-	width: 16px;
-	height: 16px;
-	border-radius: 50%;
-	border-left-color: #6c757d;
-	animation: spin 0.8s ease infinite;
-	display: inline-block; /* Or block with margin */
-	vertical-align: middle;
-	margin-left: 5px;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border-left-color: #6c757d;
+    animation: spin 0.8s ease infinite;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 5px;
 }
 
 @keyframes spin {
-	0% {
-		transform: rotate(0deg);
-	}
-	100% {
-		transform: rotate(360deg);
-	}
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .message {
-	text-align: center;
-	padding: 3rem; /* Increased padding */
-	font-size: 1.1rem;
-	color: #6c757d;
+    text-align: center;
+    padding: 3rem;
+    font-size: 1.1rem;
+    color: #6c757d;
 }
 
 .error {
-	color: #dc3545;
-
+    color: #dc3545;
 }

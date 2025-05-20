@@ -34,7 +34,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); 
 position: relative;
 
 
@@ -96,9 +96,9 @@ position: relative;
 		font-size: 1.4rem;
 		color: black;
 		
-  display: -webkit-box;        /* create a flex-like box in WebKit/Blink */
+  display: -webkit-box;       
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;       /* show up to 4 lines, then cut off */
+  -webkit-line-clamp: 4;   
   overflow: hidden;   
 	}
 
