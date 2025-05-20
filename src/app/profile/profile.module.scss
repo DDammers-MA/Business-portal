@@ -1,186 +1,302 @@
 .profileContainer {
     max-width: 70rem;
-    margin: 0 auto;
-    padding: 2rem;
+    margin: 2rem auto;
+    padding: 2.5rem;
     background-color: #fff;
     border-radius: 0.8rem;
-    box-shadow: 0 0.8rem 1.6rem rgba(0, 0, 0, 0.2);
-  
-    .title {
-      font-size: 1.5rem;
-      font-weight: bold;
-      margin-bottom: 2rem;
-      text-align: center;
-      color: #333;
+    box-shadow: 0 0.8rem 1.6rem rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 0.4rem;
+        background: linear-gradient(90deg, #fc9047, #ffa66b);
     }
-  
+
+    .title {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 2.5rem;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        i {
+            color: #fc9047;
+        }
+    }
+
     .profileInfo {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-  
-      .infoItem {
-        padding: 1rem;
-        border: 0.2rem solid #fc9047;
-        border-radius: 0.8rem;
-        background-color: #fff;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2.5rem;
+
+        .infoItem {
+            padding: 1.2rem;
+            border: 0.1rem solid #e0e0e0;
+            border-radius: 0.8rem;
+            background-color: #fff;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+
+            &:hover {
+                border-color: #fc9047;
+                box-shadow: 0 0.4rem 1.2rem rgba(252, 144, 71, 0.1);
+            }
+
+            strong {
+                color: #666;
+                font-size: 1.2rem;
+                font-weight: 500;
+            }
+
+            input {
+                padding: 0.8rem;
+                font-size: 1.4rem;
+                border: 0.1rem solid #e0e0e0;
+                border-radius: 0.8rem;
+                transition: all 0.3s ease;
+                width: 100%;
+
+                &:focus {
+                    border-color: #fc9047;
+                    box-shadow: 0 0 0 0.2rem rgba(252, 144, 71, 0.2);
+                    outline: none;
+                }
+            }
+
+            span {
+                font-size: 1.4rem;
+                color: #333;
+            }
+        }
+    }
+
+    .buttonGroup {
         display: flex;
         justify-content: space-between;
         align-items: center;
-  
-        input {
-          padding: 0.3rem;
-          font-size: 1.5rem;
-        }
-  
-        strong,
-        span {
-          padding: 1rem;
-          color: #000;
-          font-size: 1.5rem;
-          font-weight: normal;
-        }
-      }
-    }
-  
-    .toggleButton {
-      padding: 0.8rem 1.5rem;
-      font-size: 1.5rem;
-      color: #fff;
-      background-color: #fc9047;
-      border: none;
-      border-radius: 0.8rem;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-  
-      &:hover {
-        background-color: #e67a3c;
-      }
-    }
-  
-    .passwordSection {
-      margin-top: 2rem;
-  
-      .subtitle {
-        font-size: 1.5rem;
-        font-weight: bold;
-        margin-bottom: 1rem;
-        color: #333;
-      }
-  
-      .passwordForm {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-  
-        .formGroup {
-          display: flex;
-          flex-direction: column;
-  
-          label {
-            font-size: 1.5rem;
-            color: #000;
-            margin-bottom: 0.5rem;
-          }
-  
-          .passwordInput {
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 0.1rem solid #e0e0e0;
+
+        &__btns {
             display: flex;
-            align-items: center;
-            width: 29rem;
-            border: 0.2rem solid #fc9047;
-            border-radius: 0.8rem;
-            overflow: hidden;
-  
-            input {
-              flex: 1;
-              padding: 0.8rem;
-              font-size: 1.5rem;
-              border: none;
-              outline: none;
-              background-color: #fff;
+            gap: 1rem;
+
+            button {
+                padding: 1rem 2rem;
+                font-size: 1.4rem;
+                border: none;
+                border-radius: 0.8rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 0.8rem;
+
+                i {
+                    font-size: 1.6rem;
+                }
             }
-  
-            .showText {
-              padding: 0 1rem;
-              font-size: 1.5rem;
-              color: #888;
-              cursor: pointer;
-              user-select: none;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-  
-              &:hover {
-                color: #555;
-              }
-            }
-          }
         }
-  
-        .submitButton {
-          padding: 0.8rem 1.5rem;
-          font-size: 1.5rem;
-          color: #fff;
-          background-color: #fc9047;
-          border: none;
-          border-radius: 0.8rem;
-          cursor: pointer;
-          transition: background-color 0.3s ease;
-          width: 19rem;
-  
-          &:hover {
-            background-color: #e67a3c;
-          }
-        }
-      }
     }
-  
-    .buttonGroup {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-  
-      &__btns {
+
+    .toggleButton {
+        padding: 1rem 2rem;
+        font-size: 1.4rem;
+        color: #fff;
+        background-color: #fc9047;
+        border: none;
+        border-radius: 0.8rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
         display: flex;
-        gap: 1rem;
-  
-        .saveButton,
-        .cancelButton {
-          padding: 0.8rem 1.5rem;
-          font-size: 1.5rem;
-          border: none;
-          border-radius: 0.8rem;
-          cursor: pointer;
-          transition: background-color 0.3s ease;
+        align-items: center;
+        gap: 0.8rem;
+
+        i {
+            font-size: 1.6rem;
         }
-  
-        .saveButton {
-          background-color: #4caf50;
-          color: #fff;
-  
-          &:hover {
+
+        &:hover {
+            background-color: #e67a3c;
+            transform: translateY(-0.2rem);
+        }
+
+        &:active {
+            transform: translateY(0);
+        }
+    }
+
+    .saveButton {
+        background-color: #4caf50;
+        color: #fff;
+
+        &:hover {
             background-color: #43a047;
-          }
+            transform: translateY(-0.2rem);
         }
-  
-        .cancelButton {
-          background-color: #f44336;
-          color: #fff;
-  
-          &:hover {
+
+        &:active {
+            transform: translateY(0);
+        }
+    }
+
+    .cancelButton {
+        background-color: #f44336;
+        color: #fff;
+
+        &:hover {
             background-color: #d32f2f;
-          }
+            transform: translateY(-0.2rem);
         }
-      }
+
+        &:active {
+            transform: translateY(0);
+        }
     }
-  
+
     .error {
-      color: red;
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 1rem;
-      font-size: 1.5rem;
+        color: #f44336;
+        font-size: 1.4rem;
+        padding: 1rem;
+        background-color: #ffebee;
+        border-radius: 0.8rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+
+        i {
+            font-size: 1.6rem;
+        }
     }
-  }
+}
+
+.modalContent {
+    padding: 2rem;
+    background: white;
+    border-radius: 0.8rem;
+    width: 100%;
+    max-width: 50rem;
+}
+
+.modalTitle {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    i {
+        color: #fc9047;
+    }
+}
+
+.modalForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+
+    label {
+        font-size: 1.4rem;
+        color: #666;
+        font-weight: 500;
+    }
+}
+
+.passwordInput {
+    display: flex;
+    align-items: center;
+    border: 0.1rem solid #e0e0e0;
+    border-radius: 0.8rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+
+    &:focus-within {
+        border-color: #fc9047;
+        box-shadow: 0 0 0 0.2rem rgba(252, 144, 71, 0.2);
+    }
+
+    input {
+        flex: 1;
+        padding: 1rem;
+        font-size: 1.4rem;
+        border: none;
+        outline: none;
+        background-color: #fff;
+    }
+
+    .showText {
+        padding: 0 1.2rem;
+        font-size: 1.4rem;
+        color: #666;
+        cursor: pointer;
+        user-select: none;
+        transition: color 0.3s ease;
+
+        &:hover {
+            color: #fc9047;
+        }
+    }
+}
+
+.modalActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.modalButtonCancel,
+.modalButtonSubmit {
+    padding: 1rem 2rem;
+    font-size: 1.4rem;
+    border: none;
+    border-radius: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.modalButtonCancel {
+    background-color: #f5f5f5;
+    color: #666;
+
+    &:hover:not(:disabled) {
+        background-color: #e0e0e0;
+    }
+}
+
+.modalButtonSubmit {
+    background-color: #fc9047;
+    color: #fff;
+
+    &:hover:not(:disabled) {
+        background-color: #e67a3c;
+    }
+}
+
+.modalButtonCancel:disabled,
+.modalButtonSubmit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
   

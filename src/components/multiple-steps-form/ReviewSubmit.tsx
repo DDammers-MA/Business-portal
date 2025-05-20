@@ -54,7 +54,7 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
 				// Card shape and centering
 				maxWidth: '350px', // Limit width
 				margin: '20px auto', // Center horizontally, add some vertical margin
-				borderRadius: '15px', // Rounded corners
+				borderRadius: '8px', // Rounded corners
 				overflow: 'hidden', // Clip background to border radius
 				// Background image and layout
 				backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.6)), url(${previewSrc})`,
@@ -70,7 +70,7 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
 				// Default style if no image
 				maxWidth: '350px',
 				margin: '20px auto',
-				borderRadius: '15px',
+				borderRadius: '8px',
 				padding: '20px',
 				minHeight: '400px',
 				backgroundColor: '#e0e0e0',

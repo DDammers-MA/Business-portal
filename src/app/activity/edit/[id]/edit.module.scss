@@ -2,16 +2,16 @@
 	padding: 2rem;
 	display: flex;
 	justify-content: center;
-	align-items: flex-start; // Align items to the top
-	min-height: calc(100vh - 100px); // Adjust based on header/footer height
+	align-items: flex-start; 
+	min-height: calc(100vh - 100px); 
 }
 
 .container {
 
 	width: 100%;
-	background-color: #fff; // Optional: background for the form container
+	background-color: #fff; 
 	padding: 2rem;
-	border-radius: 8px; // Optional: rounded corners
+	border-radius: 8px; 
 
 	display: flex;
 	flex-direction: column;
@@ -28,7 +28,7 @@
 	width: 36px;
 	height: 36px;
 	border-radius: 50%;
-	border-left-color: #8a2be2; // Or your theme color
+	border-left-color: #8a2be2;
 	animation: spin 1s ease infinite;
 	margin-bottom: 1rem;
 }
@@ -43,6 +43,6 @@
 }
 
 .error {
-	color: #d9534f; // Bootstrap danger color
+	color: #d9534f; 
 	font-weight: bold;
 }

@@ -8,7 +8,7 @@
 	height: 80vh;
 	max-height: 80vh;
 	padding: 2rem;
-	border-radius: 2rem;
+	border-radius: 8px;
 	max-width: 132rem;
 
 	&__Container {
@@ -50,7 +50,7 @@
 
 	&__input {
 		background: white;
-		border-radius: 1rem;
+		border-radius: 8px;
 		padding: 1rem;
 
 		border: 0.2rem solid black;
@@ -63,7 +63,7 @@
 		&--time{
 			width: 100%;
 			padding: 0.5rem;
-			border-radius: 1rem;
+			border-radius: 8px;
 	
 	
 			background: white;
@@ -223,7 +223,7 @@
 	
 	&__icon {
 		position: absolute;
-		left: 10px; /* Adjust based on your design */
+		left: 10px;
 		color: #000000;
 		font-size: 1.5rem;
 	}
@@ -235,7 +235,7 @@
 .nextBtn {
 	background: #bc76f1;
 	padding: 1rem 3rem;
-	border-radius: 1rem;
+	border-radius: 8px;
 	color: white;
 	border: none;
 	cursor: pointer;
@@ -260,7 +260,7 @@
 		background: #bc76f1;
 		color: white;
 		padding: 1rem 2rem;
-		border-radius: 1rem;
+		border-radius: 8px;
 		cursor: pointer;
 		text-align: center;
 		transition: background 0.3s;
