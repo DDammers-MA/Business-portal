@@ -44,7 +44,7 @@ const STATUS_CONFIG = {
 	},
 	denied: {
 		label: "Denied",
-		backgroundColor: "#ffc107",
+		backgroundColor: "#ff2d2d",
 		color: "#333",
 	},
 	draft: {
