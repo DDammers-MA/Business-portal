@@ -93,7 +93,7 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 		setSelectedActivity(activity);
 		setIsModalOpen(true);
 		setCreatorData(null);
-		
+
 		if (activity.creatorUid) {
 			setModalUserLoading(true);
 			const result = await getUserDetailsAction(activity.creatorUid);
@@ -106,7 +106,7 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 			setModalUserLoading(false);
 		}
 	};
-	
+
 	const handleCloseInfoModal = () => {
 		setSelectedActivity(null);
 		setIsModalOpen(false);
@@ -412,9 +412,7 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 					</Link>
 				</div>
 				<div
-					className={`${styles.toggle} ${!isToggled ? styles.toggle__on : ''} ${
-						isUpdating ? styles.toggle__disabled : ''
-					}`}
+					className={`${styles.toggle} ${isToggled ? styles['toggle--online'] : styles.toggle__on} ${isUpdating ? styles.toggle__disabled : ''}`}
 					onClick={(e) => {
 						e.stopPropagation();
 						handleToggle();

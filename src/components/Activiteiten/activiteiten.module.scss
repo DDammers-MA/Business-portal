@@ -187,6 +187,9 @@ position: relative;
 				transform: translateX(0);
 			}
 		}
+		&.toggle--online {
+        background-color: #198754 !important; // Bootstrap groen
+    }
 	}
 
 @media Screen and (max-width: 1090px) {
