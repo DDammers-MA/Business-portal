@@ -68,7 +68,7 @@ const ONLINE_STATUS_CONFIG = {
 	},
 	offline: {
 		label: 'Offline',
-		backgroundColor: '#6c757d',
+		backgroundColor: '#474141',
 		color: 'white',
 	},
 };

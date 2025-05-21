@@ -161,59 +161,59 @@
 }
 
 .toggle {
-    width: 8rem; 
-    height: 2.4rem;
-    border-radius: 2.5rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    padding: 0 0.5rem;
-    transition: background-color 0.3s ease;
-    position: relative;
-    font-size: 1.2rem;
-    font-weight: 700;
-    user-select: none;
+	width: 8rem;
+	height: 2.4rem;
+	border-radius: 2.5rem;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	padding: 0 0.5rem;
+	transition: background-color 0.3s ease;
+	position: relative;
+	font-size: 1.2rem;
+	font-weight: 700;
+	user-select: none;
 
-    &__circle {
-        width: 1.5rem;
-        aspect-ratio: 1/1;
-        background-color: white;
-        border-radius: 50%;
-        position: absolute;
-        top: 50%;
-        left: 1rem;
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        transform: translateY(-50%) translateX(0);
-    }
+	&__circle {
+		width: 1.5rem;
+		aspect-ratio: 1/1;
+		background-color: white;
+		border-radius: 50%;
+		position: absolute;
+		top: 50%;
+		left: 1rem;
+		transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		transform: translateY(-50%) translateX(0);
+	}
 
-    &__on {
-        background-color: #474141;
+	&__on {
+		background-color: #474141;
 
-        .toggle__circle {
-            transform: translateY(-50%) translateX(0); 
-        }
-    }
+		.toggle__circle {
+			transform: translateY(-50%) translateX(0);
+		}
+	}
 
-    &.toggle--online {
-        background-color: #198754 !important; 
+	&.toggle--online {
+		background-color: #198754 !important;
 
-        .toggle__circle {
-            transform: translateY(-50%) translateX(4.5rem); 
-        }
-    }
+		.toggle__circle {
+			transform: translateY(-50%) translateX(4.5rem);
+		}
+	}
 
-    &__label {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        z-index: 2;
-        pointer-events: none;
-        font-size: 1.2rem;
-        font-weight: 700;
-        color: #fff;
-        padding: 0 1.2rem;
-    }
+	&__label {
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		z-index: 2;
+		pointer-events: none;
+		font-size: 1.2rem;
+		font-weight: 700;
+		color: #fff;
+		padding: 0 1.2rem;
+	}
 }
 
 @media Screen and (max-width: 1090px) {
