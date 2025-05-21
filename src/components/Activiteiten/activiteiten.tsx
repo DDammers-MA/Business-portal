@@ -412,14 +412,19 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 					</Link>
 				</div>
 				<div
-					className={`${styles.toggle} ${isToggled ? styles['toggle--online'] : styles.toggle__on} ${isUpdating ? styles.toggle__disabled : ''}`}
-					onClick={(e) => {
-						e.stopPropagation();
-						handleToggle();
-					}}
-				>
-					<div className={styles.toggle__circle}></div>
-				</div>
+    className={`${styles.toggle} ${isToggled ? styles['toggle--online'] : styles.toggle__on} ${isUpdating ? styles.toggle__disabled : ''}`}
+    onClick={(e) => {
+        e.stopPropagation();
+        handleToggle();
+    }}
+>
+    <span className={styles.toggle__label}>
+        {/* east: "On" altijd links, "Off" altijd rechts, maar alleen één zichtbaar */}
+        <span style={{ visibility: isToggled ? 'visible' : 'hidden' }}>On</span>
+        <span style={{ visibility: !isToggled ? 'visible' : 'hidden' }}>Off</span>
+    </span>
+    <div className={styles.toggle__circle}></div>
+</div>
 			</div>
 		</div>
 	);
