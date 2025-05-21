@@ -94,12 +94,14 @@
         width: 100%;
         border-collapse: separate;
         border-spacing: 0;
-        font-size: 1rem;
+        font-size: 2rem;
 
-        th, td {
+        th,
+        td {
             padding: 1.25rem 1.5rem;
             text-align: left;
             border-bottom: 1px solid #eee;
+            font-size: 2rem;
         }
 
         th {
@@ -107,7 +109,7 @@
             font-weight: 600;
             color: #495057;
             white-space: nowrap;
-            font-size: 1.1rem;
+            font-size: 2rem;
         }
 
         td {
@@ -148,7 +150,7 @@
 
     &__userName {
         font-weight: 500;
-        font-size: 1.05rem;
+        font-size: 2rem;
     }
 
     &__actions {
@@ -158,7 +160,8 @@
         min-width: 100px;
     }
 
-    &__editIcon, &__deleteIcon {
+    &__editIcon,
+    &__deleteIcon {
         cursor: pointer;
         font-size: 1rem;
         transition: color 0.2s ease;
@@ -264,7 +267,7 @@
         text-align: left;
     }
 
-    > div {
+    >div {
         margin-bottom: 1.5rem;
     }
 
@@ -452,7 +455,9 @@
         }
 
         &__table {
-            th, td {
+
+            th,
+            td {
                 padding: 0.75rem;
             }
         }
@@ -487,7 +492,7 @@
 
 .passwordModeContainer {
     margin: 1rem 0;
-    
+
     label {
         display: block;
         margin-bottom: 0.5rem;
@@ -499,14 +504,14 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    
+
     label {
         display: flex;
         align-items: center;
         gap: 0.5rem;
         font-weight: normal;
         cursor: pointer;
-        
+
         input[type="radio"] {
             cursor: pointer;
         }
@@ -515,7 +520,7 @@
 
 .passwordInputContainer {
     margin: 1rem 0;
-    
+
     label {
         display: block;
         margin-bottom: 0.5rem;
@@ -526,7 +531,7 @@
 .passwordField {
     display: flex;
     gap: 0.5rem;
-    
+
     input {
         flex: 1;
     }
@@ -538,11 +543,11 @@
     border: 1px solid #ddd;
     border-radius: 4px;
     cursor: pointer;
-    
+
     &:hover {
         background-color: #e0e0e0;
     }
-    
+
     &:disabled {
         cursor: not-allowed;
         opacity: 0.6;
@@ -555,18 +560,18 @@
     background-color: #f8f9fa;
     border-radius: 4px;
     font-size: 0.9rem;
-    
+
     p {
         margin: 0 0 0.5rem 0;
         font-weight: 500;
         color: #495057;
     }
-    
+
     ul {
         margin: 0;
         padding-left: 1.5rem;
         list-style: none;
-        
+
         li {
             margin: 0.25rem 0;
             color: #666;
@@ -576,6 +581,7 @@
 
             &.valid {
                 color: #28a745;
+
                 &::before {
                     content: '✓';
                     color: #28a745;
@@ -584,6 +590,7 @@
 
             &.invalid {
                 color: #dc3545;
+
                 &::before {
                     content: '×';
                     color: #dc3545;
@@ -592,6 +599,7 @@
 
             &.pending {
                 color: #6c757d;
+
                 &::before {
                     content: '○';
                     color: #6c757d;
