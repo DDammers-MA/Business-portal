@@ -244,7 +244,7 @@ const prevStep = () => setStep((prev) => {
 					prevStep={prevStep}
 				/>
 			)}
-			{step === 3 && formData.type === 'event' && ( // Adjust step number for OpeningTimes
+			{step === 3 && formData.type === 'activity'  && ( // Adjust step number for OpeningTimes
 				<OpeningTimes
 					formData={formData}
 					setFormData={setFormData} // Pass setFormData down
@@ -253,7 +253,7 @@ const prevStep = () => setStep((prev) => {
 				/>
 			)}
 
-			{(step === 3 && formData.type === 'activity') || step === 4 ? (
+			{(step === 3 && formData.type === 'event') || step === 4 ? (
 			<ReviewSubmit
 					formData={formData}
 					prevStep={prevStep}

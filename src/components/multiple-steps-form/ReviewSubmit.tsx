@@ -138,7 +138,7 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
 
 			{submitError && <p className={style.errorText}>{submitError}</p>}
 
-{(step === 4 || (step === 3 && formData.type === 'activity')) && (
+{(step === 4 || (step === 3 && formData.type === 'event')) && (
 				<div className={style.form__buttonContainer}>
 					<button
 						className={style.nextBtn}
