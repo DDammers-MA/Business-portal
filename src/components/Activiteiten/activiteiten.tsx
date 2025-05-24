@@ -44,7 +44,7 @@ const STATUS_CONFIG = {
 	},
 	denied: {
 		label: "Denied",
-		backgroundColor: "#ffc107",
+		backgroundColor: "#ff2d2d",
 		color: "#333",
 	},
 	draft: {
@@ -68,7 +68,7 @@ const ONLINE_STATUS_CONFIG = {
 	},
 	offline: {
 		label: 'Offline',
-		backgroundColor: '#6c757d',
+		backgroundColor: '#474141',
 		color: 'white',
 	},
 };
@@ -93,7 +93,7 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 		setSelectedActivity(activity);
 		setIsModalOpen(true);
 		setCreatorData(null);
-		
+
 		if (activity.creatorUid) {
 			setModalUserLoading(true);
 			const result = await getUserDetailsAction(activity.creatorUid);
@@ -106,7 +106,7 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 			setModalUserLoading(false);
 		}
 	};
-	
+
 	const handleCloseInfoModal = () => {
 		setSelectedActivity(null);
 		setIsModalOpen(false);
@@ -413,16 +413,19 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 					</Link>
 				</div>
 				<div
-					className={`${styles.toggle} ${!isToggled ? styles.toggle__on : ''} ${
-						isUpdating ? styles.toggle__disabled : ''
-					}`} 
-					onClick={(e) => {
-						e.stopPropagation();
-						handleToggle();
-					}}
-				>
-					<div className={styles.toggle__circle}></div>
-				</div>
+    className={`${styles.toggle} ${isToggled ? styles['toggle--online'] : styles.toggle__on} ${isUpdating ? styles.toggle__disabled : ''}`}
+    onClick={(e) => {
+        e.stopPropagation();
+        handleToggle();
+    }}
+>
+    <span className={styles.toggle__label}>
+        {/* east: "On" altijd links, "Off" altijd rechts, maar alleen één zichtbaar */}
+        <span style={{ visibility: isToggled ? 'visible' : 'hidden' }}>On</span>
+        <span style={{ visibility: !isToggled ? 'visible' : 'hidden' }}>Off</span>
+    </span>
+    <div className={styles.toggle__circle}></div>
+</div>
 			</div>
 		</div>
 	);
