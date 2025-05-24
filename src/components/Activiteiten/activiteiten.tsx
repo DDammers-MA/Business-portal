@@ -218,6 +218,7 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 	return (
 		<div className={styles.event}>
 			<div className={styles.event__container}>
+				
 				<div className={styles.event__list}>
 					{/* Conditional Rendering Section */}
 					{loading ? (
