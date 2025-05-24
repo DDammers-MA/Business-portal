@@ -58,10 +58,16 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 						<div className={styles.header__left}>
 							{isAdmin && (
 								<button
-									className={`${styles.toggleButton} ${
-										isOpen ? styles['toggleButton--hidden'] : ''
-									}`}
-									onClick={() => setIsOpen(!isOpen)}
+									className={`${styles.toggleButton} ${isOpen ? styles['toggleButton--hidden'] : ''
+										}`}
+									onClick={() => {
+										
+										setIsOpen(!isOpen)
+										if (isProfileOpen) setIsProfileOpen(false)
+					
+
+									}
+									}
 								>
 									{isOpen ? (
 										<i className="fa-solid fa-x"></i>
@@ -91,7 +97,14 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 								<li className={`${styles.profileDropdownContainer}`}>
 										<button
 											className={styles.profileButton}
-											onClick={() => setIsProfileOpen(!isProfileOpen)}
+											onClick={() => {
+												
+												setIsProfileOpen(!isProfileOpen)
+												if (isOpen) {
+													setIsOpen(false);
+												}
+											}
+											}
 										>
 											<i className="fas fa-user-circle"></i>
 										</button>

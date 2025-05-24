@@ -24,7 +24,7 @@ const MultiStepForm = ({ mode, initialData }: MultiStepFormProps) => {
 	// Initialize state with initialData if provided, else default
 	const [formData, setFormData] = useState<FormData>(() => {
 		const defaults: FormData = {
-			  title: '',    
+			title: '',    
 			type: '',
 			name: '',
 			addr: '',
@@ -67,8 +67,18 @@ const MultiStepForm = ({ mode, initialData }: MultiStepFormProps) => {
 		}
 	}, [initialData]);
 
-	const nextStep = () => setStep((prev) => prev + 1);
-	const prevStep = () => setStep((prev) => prev - 1);
+	const nextStep = () => setStep((prev) => {
+  if (prev === 2 && formData.type === 'activity') {
+    return 3; // Skip OpeningTimes for 'activity' and go to ReviewSubmit (step 3)
+  }
+  return prev + 1; // must return!
+});
+const prevStep = () => setStep((prev) => {
+  if (prev === 3 && formData.type === 'activity') {
+    return 2; // Back from review to LocationInfo for 'activity'
+  }
+  return prev - 1; // must return!
+});
 
 	const handleInputChange = (
 		field: keyof FormData,
@@ -125,7 +135,7 @@ const MultiStepForm = ({ mode, initialData }: MultiStepFormProps) => {
 
 			const finalData: Partial<FormData> = {
 				...dataToSend, // Use the rest of the form data
-				type: 'activity', // Ensure type is set
+				type: formData.type, // Ensure type is set
 				image_url: finalImageUrl, // Use the potentially updated URL
 				// Ensure user-related fields are set correctly, especially for create mode
 				email:
@@ -234,7 +244,7 @@ const MultiStepForm = ({ mode, initialData }: MultiStepFormProps) => {
 					prevStep={prevStep}
 				/>
 			)}
-			{step === 3 && ( // Adjust step number for OpeningTimes
+			{step === 3 && formData.type === 'activity'  && ( // Adjust step number for OpeningTimes
 				<OpeningTimes
 					formData={formData}
 					setFormData={setFormData} // Pass setFormData down
@@ -242,7 +252,21 @@ const MultiStepForm = ({ mode, initialData }: MultiStepFormProps) => {
 					prevStep={prevStep}
 				/>
 			)}
-			{step === 4 && ( // Adjust step number for ReviewSubmit
+
+			{(step === 3 && formData.type === 'event') || step === 4 ? (
+			<ReviewSubmit
+					formData={formData}
+					prevStep={prevStep}
+					submitForm={submitForm}
+					step={step}
+					isSubmitting={isSubmitting}
+					submitError={submitError}
+					handleInputChange={handleInputChange}
+				/>
+
+) : null}
+
+			{/* {step === 4 && ( // Adjust step number for ReviewSubmit
 				<ReviewSubmit
 					formData={formData}
 					prevStep={prevStep}
@@ -252,7 +276,7 @@ const MultiStepForm = ({ mode, initialData }: MultiStepFormProps) => {
 					submitError={submitError}
 					handleInputChange={handleInputChange}
 				/>
-			)}
+			)} */}
 		</form>
 	);
 };

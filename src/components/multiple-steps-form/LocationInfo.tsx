@@ -209,36 +209,43 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
 					/>
 				</div>
 
-				<div className={styles.form__divContainer}>
-					<FormInput
-						label="Start time"
-						type="time"
-						placeholder="Enter Start time"
-						value={formData.start_time}
-						onChange={(e) => handleChange(e, 'start_time')}
-						onBlur={(e) => handleBlur(e, 'start_time')}
-						error={
-							touched.start_time && errors.start_time
-								? errors.start_time
-								: undefined
-						}
-						className={styles['form__input--title']}
-					/>
+				{formData.type === "event" &&(
+					<div className={styles.form__divContainer}>
+						<FormInput
+							label="Start time"
+							type="time"
+							placeholder="Enter Start time"
+							value={formData.start_time}
+							onChange={(e) => handleChange(e, 'start_time')}
+							onBlur={(e) => handleBlur(e, 'start_time')}
+							error={
+								touched.start_time && errors.start_time
+									? errors.start_time
+									: undefined
+							}
+							className={styles['form__input--title']}
+						/>
 
-					<FormInput
-						label="End time"
-						type="time"
-						placeholder="Enter End time"
-						value={formData.end_time}
-						onChange={(e) => handleChange(e, 'end_time')}
-						onBlur={(e) => handleBlur(e, 'end_time')}
-						error={
-							touched.end_time && errors.end_time ? errors.end_time : undefined
-						}
-						className={styles['form__input--title']}
-					/>
-				</div>
+						<FormInput
+							label="End time"
+							type="time"
+							placeholder="Enter End time"
+							value={formData.end_time}
+							onChange={(e) => handleChange(e, 'end_time')}
+							onBlur={(e) => handleBlur(e, 'end_time')}
+							error={
+								touched.end_time && errors.end_time ? errors.end_time : undefined
+							}
+							className={styles['form__input--title']}
+						/>
+					</div>
+				)}
 
+			
+				
+				
+
+				
 				<div className={styles.form__buttonContainer}>
 					<button className={styles.nextBtn} onClick={prevStep}>
 						Back
