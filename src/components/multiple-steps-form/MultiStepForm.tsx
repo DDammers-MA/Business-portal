@@ -68,10 +68,10 @@ const MultiStepForm = ({ mode, initialData }: MultiStepFormProps) => {
 	}, [initialData]);
 
 	const nextStep = () => setStep((prev) => {
-  if (prev === 2 && formData.type === 'activity') {
-    return 3; // Skip OpeningTimes for 'activity' and go to ReviewSubmit (step 3)
-  }
-  return prev + 1; // must return!
+		if (prev === 2 && formData.type === 'activity') return 3;
+		if (prev === 3 && formData.type === 'activity') return 4
+		
+		  return prev + 1;
 });
 const prevStep = () => setStep((prev) => {
   if (prev === 3 && formData.type === 'activity') {
@@ -253,7 +253,7 @@ const prevStep = () => setStep((prev) => {
 				/>
 			)}
 
-			{(step === 3 && formData.type === 'event') || step === 4 ? (
+		{(formData.type === 'event' && step === 3) || (formData.type === 'activity' && step === 4) ? (
 			<ReviewSubmit
 					formData={formData}
 					prevStep={prevStep}

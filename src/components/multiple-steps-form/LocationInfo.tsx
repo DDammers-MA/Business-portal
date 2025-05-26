@@ -97,28 +97,30 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
 			hasErrors = true;
 		}
 
-		const start_timeError = validateField('start_time', formData.start_time);
-		if (start_timeError) {
-			currentErrors.start_time = start_timeError;
-			hasErrors = true;
-		}
+		if (formData.type === 'event') {
+			const start_timeError = validateField('start_time', formData.start_time);
+			if (start_timeError) {
+				currentErrors.start_time = start_timeError;
+				hasErrors = true;
+			}
 
-		const end_timeError = validateField('end_time', formData.end_time);
-		if (end_timeError) {
-			currentErrors.end_time = end_timeError;
-			hasErrors = true;
+			const end_timeError = validateField('end_time', formData.end_time);
+			if (end_timeError) {
+				currentErrors.end_time = end_timeError;
+				hasErrors = true;
+			}
 		}
 
 		setErrors(currentErrors);
-		setIsNextDisabled(
-			hasErrors ||
-				!formData.place ||
-				!formData.date ||
-				!formData.postal_code ||
-				!formData.addr ||
-				!formData.start_time ||
-				!formData.end_time
-		);
+const requiredFieldsFilled =
+	formData.place &&
+	formData.date &&
+	formData.postal_code &&
+	formData.addr &&
+	(formData.type !== 'event' ||
+		(formData.start_time && formData.end_time));
+
+setIsNextDisabled(hasErrors || !requiredFieldsFilled);
 	}, [
 		formData.place,
 		formData.date,
