@@ -22,13 +22,13 @@
         font-size: 2rem;
         font-weight: 600;
         margin-bottom: 2.5rem;
-        color: #333;
+        color: #000; 
         display: flex;
         align-items: center;
         gap: 1rem;
 
         i {
-            color: #fc9047;
+            color: #000 !important; 
         }
     }
 
@@ -54,7 +54,7 @@
             }
 
             strong {
-                color: #666;
+                color: #000; 
                 font-size: 1.2rem;
                 font-weight: 500;
             }
@@ -76,7 +76,11 @@
 
             span {
                 font-size: 1.4rem;
-                color: #333;
+                color: #000; 
+            }
+
+            i {
+                color: #000 !important; 
             }
         }
     }
@@ -194,14 +198,14 @@
 .modalTitle {
     font-size: 2rem;
     font-weight: 600;
-    color: #333;
+    color: #000; 
     margin-bottom: 2rem;
     display: flex;
     align-items: center;
     gap: 1rem;
 
     i {
-        color: #fc9047;
+        color: #000 !important;
     }
 }
 
@@ -299,4 +303,3 @@
     opacity: 0.6;
     cursor: not-allowed;
 }
-  
