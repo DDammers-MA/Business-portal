@@ -89,6 +89,11 @@ position: relative;
 		font-size: 2.5rem;
 
 		color: black;
+
+		  display: -webkit-box;       
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;   
+  overflow: hidden; 
 	}
 
 	&__description {
