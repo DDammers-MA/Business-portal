@@ -98,9 +98,9 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
 			</div>
 
 			{/* Add Toggle and Select Inputs - Only show in final step */}
-			{step === 4 && (
+		
+{(step === 4 || (step === 3 && formData.type === 'event')) && (
 				<div className={styles.inputGroup}>
-					{/* Active Status Toggle */}
 					{/* <div className={styles.formControl}>
 						<label htmlFor="activeToggle" className={styles.label}>
 							Active?
@@ -138,12 +138,15 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
 
 			{submitError && <p className={style.errorText}>{submitError}</p>}
 
-			{step === 4 && (
+			
+		
+{(step === 4 || (step === 3 && formData.type === 'event')) && (
 				<div className={style.form__buttonContainer}>
 					<button
 						className={style.nextBtn}
 						onClick={prevStep}
 						disabled={isSubmitting}
+						type="button" 
 					>
 						Back
 					</button>

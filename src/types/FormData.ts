@@ -1,5 +1,7 @@
+import { ReactNode } from 'react';
+
 export interface FormData {
-	title: ReactNode;
+	title: string;
 	id?: string;
 	creatorUid?: string;
 	type: string;

@@ -44,7 +44,7 @@ const STATUS_CONFIG = {
 	},
 	denied: {
 		label: "Denied",
-		backgroundColor: "#ffc107",
+		backgroundColor: "#ff2d2d",
 		color: "#333",
 	},
 	draft: {
@@ -68,9 +68,27 @@ const ONLINE_STATUS_CONFIG = {
 	},
 	offline: {
 		label: 'Offline',
-		backgroundColor: '#6c757d',
+		backgroundColor: '#474141',
 		color: 'white',
 	},
+};
+
+const TYPE_BADGE_CONFIG = {
+  event: {
+    label: "Event",
+    backgroundColor: "#007bff", // blue
+    color: "white",
+  },
+  activity: {
+    label: "Activity",
+    backgroundColor: "#28a745", // green
+    color: "white",
+  },
+  default: {
+    label: "Unknown",
+    backgroundColor: "#6c757d", // grey
+    color: "white",
+  },
 };
 
 // Define props interface including the optional filter
@@ -93,7 +111,7 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 		setSelectedActivity(activity);
 		setIsModalOpen(true);
 		setCreatorData(null);
-		
+
 		if (activity.creatorUid) {
 			setModalUserLoading(true);
 			const result = await getUserDetailsAction(activity.creatorUid);
@@ -106,7 +124,7 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 			setModalUserLoading(false);
 		}
 	};
-	
+
 	const handleCloseInfoModal = () => {
 		setSelectedActivity(null);
 		setIsModalOpen(false);
@@ -218,6 +236,7 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 	return (
 		<div className={styles.event}>
 			<div className={styles.event__container}>
+				
 				<div className={styles.event__list}>
 					{/* Conditional Rendering Section */}
 					{loading ? (
@@ -230,10 +249,13 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 						/* Map through activities only if not loading, no error, and activities exist */
 						activiteiten.map((activiteit, index) => {
 							// Determine status and look up config
+							const typeKey = activiteit.type && (activiteit.type === 'event' || activiteit.type === 'activity') 
+  ? activiteit.type 
+  : 'default';
 							const currentStatus = activiteit.status || 'draft'; // Default to draft if undefined
 							const badgeConfig =
 								STATUS_CONFIG[currentStatus] || STATUS_CONFIG.default;
-
+const typeBadgeConfig = TYPE_BADGE_CONFIG[typeKey];
 							return (
 								<ActiviteitCard
 									key={activiteit.id}
@@ -241,6 +263,7 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 									image={activiteit.image_url || '/images/default.png'}
 									title={activiteit.name}
 									description={activiteit.description}
+									typeBadgeConfig={typeBadgeConfig} 
 									badgeConfig={badgeConfig}
 									active={activiteit.active ?? false}
 									onDelete={() => handleDelete(activiteit.id || '', activiteit.name)}
@@ -272,6 +295,12 @@ interface ActiviteitCardProps {
 	image: string;
 	title: string;
 	description: string;
+
+	  typeBadgeConfig: {
+    label: string;
+    backgroundColor: string;
+    color: string;
+  };
 	badgeConfig: {
 		label: string;
 		backgroundColor: string;
@@ -289,6 +318,7 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 	title,
 	description,
 	badgeConfig, // Receive badgeConfig
+	typeBadgeConfig,
 	active, // Receive corrected prop
 	onDelete,
 	onInfoClick,
@@ -305,7 +335,6 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 
 	// Get online status config
 	const onlineStatusConfig = ONLINE_STATUS_CONFIG[isToggled ? 'online' : 'offline'];
-
 	// Reset loading state if image prop changes
 	useEffect(() => {
 		setImageError(false);
@@ -362,7 +391,7 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 						color: onlineStatusConfig.color,
 					}}
 				>
-					{onlineStatusConfig.label}
+					{typeBadgeConfig.label}
 				</span>
 			</div>
 
@@ -412,16 +441,19 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 					</Link>
 				</div>
 				<div
-					className={`${styles.toggle} ${!isToggled ? styles.toggle__on : ''} ${
-						isUpdating ? styles.toggle__disabled : ''
-					}`} 
-					onClick={(e) => {
-						e.stopPropagation();
-						handleToggle();
-					}}
-				>
-					<div className={styles.toggle__circle}></div>
-				</div>
+    className={`${styles.toggle} ${isToggled ? styles['toggle--online'] : styles.toggle__on} ${isUpdating ? styles.toggle__disabled : ''}`}
+    onClick={(e) => {
+        e.stopPropagation();
+        handleToggle();
+    }}
+>
+    <span className={styles.toggle__label}>
+        {/* east: "On" altijd links, "Off" altijd rechts, maar alleen één zichtbaar */}
+        <span style={{ visibility: isToggled ? 'visible' : 'hidden' }}>On</span>
+        <span style={{ visibility: !isToggled ? 'visible' : 'hidden' }}>Off</span>
+    </span>
+    <div className={styles.toggle__circle}></div>
+</div>
 			</div>
 		</div>
 	);

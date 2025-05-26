@@ -97,28 +97,30 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
 			hasErrors = true;
 		}
 
-		const start_timeError = validateField('start_time', formData.start_time);
-		if (start_timeError) {
-			currentErrors.start_time = start_timeError;
-			hasErrors = true;
-		}
+		if (formData.type === 'event') {
+			const start_timeError = validateField('start_time', formData.start_time);
+			if (start_timeError) {
+				currentErrors.start_time = start_timeError;
+				hasErrors = true;
+			}
 
-		const end_timeError = validateField('end_time', formData.end_time);
-		if (end_timeError) {
-			currentErrors.end_time = end_timeError;
-			hasErrors = true;
+			const end_timeError = validateField('end_time', formData.end_time);
+			if (end_timeError) {
+				currentErrors.end_time = end_timeError;
+				hasErrors = true;
+			}
 		}
 
 		setErrors(currentErrors);
-		setIsNextDisabled(
-			hasErrors ||
-				!formData.place ||
-				!formData.date ||
-				!formData.postal_code ||
-				!formData.addr ||
-				!formData.start_time ||
-				!formData.end_time
-		);
+const requiredFieldsFilled =
+	formData.place &&
+	formData.date &&
+	formData.postal_code &&
+	formData.addr &&
+	(formData.type !== 'event' ||
+		(formData.start_time && formData.end_time));
+
+setIsNextDisabled(hasErrors || !requiredFieldsFilled);
 	}, [
 		formData.place,
 		formData.date,
@@ -209,36 +211,43 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
 					/>
 				</div>
 
-				<div className={styles.form__divContainer}>
-					<FormInput
-						label="Start time"
-						type="time"
-						placeholder="Enter Start time"
-						value={formData.start_time}
-						onChange={(e) => handleChange(e, 'start_time')}
-						onBlur={(e) => handleBlur(e, 'start_time')}
-						error={
-							touched.start_time && errors.start_time
-								? errors.start_time
-								: undefined
-						}
-						className={styles['form__input--title']}
-					/>
+				{formData.type === "event" &&(
+					<div className={styles.form__divContainer}>
+						<FormInput
+							label="Start time"
+							type="time"
+							placeholder="Enter Start time"
+							value={formData.start_time}
+							onChange={(e) => handleChange(e, 'start_time')}
+							onBlur={(e) => handleBlur(e, 'start_time')}
+							error={
+								touched.start_time && errors.start_time
+									? errors.start_time
+									: undefined
+							}
+							className={styles['form__input--title']}
+						/>
 
-					<FormInput
-						label="End time"
-						type="time"
-						placeholder="Enter End time"
-						value={formData.end_time}
-						onChange={(e) => handleChange(e, 'end_time')}
-						onBlur={(e) => handleBlur(e, 'end_time')}
-						error={
-							touched.end_time && errors.end_time ? errors.end_time : undefined
-						}
-						className={styles['form__input--title']}
-					/>
-				</div>
+						<FormInput
+							label="End time"
+							type="time"
+							placeholder="Enter End time"
+							value={formData.end_time}
+							onChange={(e) => handleChange(e, 'end_time')}
+							onBlur={(e) => handleBlur(e, 'end_time')}
+							error={
+								touched.end_time && errors.end_time ? errors.end_time : undefined
+							}
+							className={styles['form__input--title']}
+						/>
+					</div>
+				)}
 
+			
+				
+				
+
+				
 				<div className={styles.form__buttonContainer}>
 					<button className={styles.nextBtn} onClick={prevStep}>
 						Back

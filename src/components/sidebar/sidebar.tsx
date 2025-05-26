@@ -10,15 +10,17 @@ import styles from './sidebar.module.scss';
 
 import { usePathname, useSearchParams } from 'next/navigation';
 
-
 type SidebarProps = {
 	isOpen: boolean;
 	setIsOpen: (open: boolean) => void;
 	isAdmin: boolean;
 	onClick?: () => void;
-    href: string;
-  label: string;
+};
 
+type SidebarItemProps = {
+	href: string;
+	label: string;
+	onClick?: () => void;
 };
 
 const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
@@ -44,8 +46,6 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 		}
 	};
 
-	
-
 	return (
 		<>
 			<header
@@ -61,7 +61,10 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 									className={`${styles.toggleButton} ${
 										isOpen ? styles['toggleButton--hidden'] : ''
 									}`}
-									onClick={() => setIsOpen(!isOpen)}
+									onClick={() => {
+										setIsOpen(!isOpen);
+										if (isProfileOpen) setIsProfileOpen(false);
+									}}
 								>
 									{isOpen ? (
 										<i className="fa-solid fa-x"></i>
@@ -88,14 +91,19 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 						<div className={styles.header__right}>
 							{isLoggedIn && (
 								<ul className={styles.header__navList}>
-								<li className={`${styles.profileDropdownContainer}`}>
+									<li className={`${styles.profileDropdownContainer}`}>
 										<button
 											className={styles.profileButton}
-											onClick={() => setIsProfileOpen(!isProfileOpen)}
+											onClick={() => {
+												setIsProfileOpen(!isProfileOpen);
+												if (isOpen) {
+													setIsOpen(false);
+												}
+											}}
 										>
 											<i className="fas fa-user-circle"></i>
 										</button>
-								
+
 										{isProfileOpen && (
 											<div className={styles.profileDropdown}>
 												<Link
@@ -107,7 +115,7 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 												<button onClick={handleLogout}>Logout</button>
 											</div>
 										)}
-							</li>
+									</li>
 								</ul>
 							)}
 						</div>
@@ -137,13 +145,21 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 						<ul className={styles.sidebar__navList}>
 							<h2 className={styles.sidebar__title}>Admin</h2>
 
-							<SidebarItem onClick={() => setIsOpen(false)} href="/users" label="Users" />
+							<SidebarItem
+								onClick={() => setIsOpen(false)}
+								href="/users"
+								label="Users"
+							/>
 							<SidebarItem
 								onClick={() => setIsOpen(false)}
 								href="/activities/approve"
 								label="Unapproved activities"
 							/>
-							<SidebarItem onClick={() => setIsOpen(false)} href="/statistics" label="Statistics" />
+							<SidebarItem
+								onClick={() => setIsOpen(false)}
+								href="/statistics"
+								label="Statistics"
+							/>
 						</ul>
 
 						<ul
@@ -151,11 +167,26 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 						>
 							<h2 className={styles.sidebar__title}>Navigation</h2>
 
-
-							<SidebarItem onClick={() => setIsOpen(false)} href="/" label="Activities" />
-							<SidebarItem onClick={() => setIsOpen(false)} href="/" label="Published" />
-							<SidebarItem onClick={() => setIsOpen(false)} href="/" label="Unpublished" />
-							<SidebarItem onClick={() => setIsOpen(false)} href="/" label="Drafts" />
+							<SidebarItem
+								onClick={() => setIsOpen(false)}
+								href="/"
+								label="Activities"
+							/>
+							<SidebarItem
+								onClick={() => setIsOpen(false)}
+								href="/"
+								label="Published"
+							/>
+							<SidebarItem
+								onClick={() => setIsOpen(false)}
+								href="/"
+								label="Unpublished"
+							/>
+							<SidebarItem
+								onClick={() => setIsOpen(false)}
+								href="/"
+								label="Drafts"
+							/>
 						</ul>
 					</nav>
 				</div>
@@ -164,21 +195,23 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 	);
 };
 
-const SidebarItem = ({ href, label, onClick }: any) => {
-  const pathname = usePathname();
-  const isActive = pathname === '/activities';
+const SidebarItem = ({ href, label, onClick }: SidebarItemProps) => {
+	const pathname = usePathname();
+	const isActive = pathname === '/activities';
 
-  return (
-    <li className={styles.sidebar__navItem} onClick={onClick}>
-      <Link
-        href={href}
-        className={isActive ? styles.sidebar__activeLink : styles.sidebar__navLink}
-      >
-        {label}
-      </Link>
-    </li>
-  );
-}
+	return (
+		<li className={styles.sidebar__navItem} onClick={onClick}>
+			<Link
+				href={href}
+				className={
+					isActive ? styles.sidebar__activeLink : styles.sidebar__navLink
+				}
+			>
+				{label}
+			</Link>
+		</li>
+	);
+};
 
 const HeaderItem = ({ href, label }: { href: string; label: string }) => {
 	const pathname = usePathname();
@@ -191,20 +224,16 @@ const HeaderItem = ({ href, label }: { href: string; label: string }) => {
 	const currentFilter = searchParams.get('filter');
 
 	// Make it active if pathname matches and filter matches
-	const isActive =
-		pathname === url.pathname && targetFilter === currentFilter;
+	const isActive = pathname === url.pathname && targetFilter === currentFilter;
 
 	return (
 		<li className={styles.header__navItem}>
 			<Link
 				href={href}
 				className={
-					isActive
-						? styles.sidebar__activeLink
-						: styles.sidebar__navLink
+					isActive ? styles.sidebar__activeLink : styles.sidebar__navLink
 				}
 			>
-
 				{label}
 			</Link>
 		</li>

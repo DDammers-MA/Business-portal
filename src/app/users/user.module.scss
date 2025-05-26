@@ -94,12 +94,14 @@
         width: 100%;
         border-collapse: separate;
         border-spacing: 0;
-        font-size: 1rem;
+        font-size: 2rem;
 
-        th, td {
+        th,
+        td {
             padding: 1.25rem 1.5rem;
             text-align: left;
             border-bottom: 1px solid #eee;
+            font-size: 2rem;
         }
 
         th {
@@ -107,7 +109,7 @@
             font-weight: 600;
             color: #495057;
             white-space: nowrap;
-            font-size: 1.1rem;
+            font-size: 2rem;
         }
 
         td {
@@ -148,7 +150,7 @@
 
     &__userName {
         font-weight: 500;
-        font-size: 1.05rem;
+        font-size: 2rem;
     }
 
     &__actions {
@@ -158,7 +160,8 @@
         min-width: 100px;
     }
 
-    &__editIcon, &__deleteIcon {
+    &__editIcon,
+    &__deleteIcon {
         cursor: pointer;
         font-size: 1rem;
         transition: color 0.2s ease;
@@ -264,7 +267,7 @@
         text-align: left;
     }
 
-    > div {
+    >div {
         margin-bottom: 1.5rem;
     }
 
@@ -350,11 +353,27 @@
     }
 }
 
+@media screen and (max-width: 750px) {
+    .user__header {
+        flex-direction: column;
+        align-items: center; 
+        gap: 1rem;
+    }
+    .user__addUserButton {
+        width: 200px;
+        margin-top: 0.5rem;
+        align-self: center;
+    }
+}   
+
 @media screen and (max-width: 1120px) {
     .user__table {
         display: block;
         width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
         overflow-x: auto;
+        background: none;
     }
 
     .user__table thead {
@@ -369,234 +388,88 @@
     .user__table tr {
         display: flex;
         flex-direction: column;
-        margin-bottom: 1rem;
+        align-items: center;
+        justify-content: center; 
+        margin-bottom: 1.2rem;
         border: 1px solid #ddd;
         border-radius: 0.8rem;
-        padding: 1rem;
+        padding: 1.2rem 0.7rem;
+        background: #fff;
+        width: 100%;
+        box-sizing: border-box;
+        min-width: 0;
     }
 
     .user__table td {
         display: flex;
-        justify-content: space-between;
-        padding: 0.5rem 0;
+        flex-direction: column; 
+        justify-content: center;
+        align-items: center; 
+        padding: 0.6rem 0.2rem;
         border: none;
+        font-size: 1.1rem;
+        position: relative;
+        width: 100%;
+        text-align: center;
+        min-width: 0;
+        box-sizing: border-box;
+        background: none;
+        word-break: break-word;
     }
 
     .user__table td::before {
         content: attr(data-label);
         font-weight: bold;
-        flex: 1;
         color: #333;
-    }
-
-    .user__actions {
-        justify-content: flex-start;
-    }
-}
-
-@media screen and (max-width: 470) {
-    .user {
-        &__searchBar {
-            width: 25rem;
-        }
-    }
-}
-
-@media screen and (max-width: 685px) {
-    .user__container {
-        padding: 1rem;
-    }
-
-    .user__header {
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .user__addUserButton {
-        width: 17rem;
+        margin-bottom: 0.2rem;
+        min-width: unset;
         text-align: center;
-    }
-
-    .user__userRow {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-        height: auto;
+        display: block;
+        flex-shrink: 0;
     }
 
     .user__actions {
-        display: flex;
-        justify-content: flex-start;
+        justify-content: center;
+        width: 100%;
+        gap: 1.2rem;
     }
 
     .user__userName {
-        margin-left: 0;
-        font-size: 1.4rem;
-    }
-
-    .user__editIcon,
-    .user__deleteIcon {
-        font-size: 1.2rem;
+        font-size: 1.3rem;
+        text-align: center;
+        margin: 0 auto;
+        width: 100%;
     }
 }
 
-@media (max-width: 768px) {
-    .user {
-        &__header {
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        &__searchBar {
-            max-width: 100%;
-        }
-
-        &__table {
-            th, td {
-                padding: 0.75rem;
-            }
-        }
-
-        &__actions {
-            gap: 0.5rem;
-        }
+@media screen and (max-width: 600px) {
+    .user__table {
+        max-width: 100vw;
     }
-
-    .modal {
-        width: 95%;
-        padding: 1.5rem;
+    .user__table tr {
+        padding: 1rem 0.3rem;
     }
-
-    .modalForm {
-        h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .inputField {
-            padding: 0.875rem;
-            font-size: 1rem;
-        }
-
-        .saveButton {
-            padding: 0.875rem;
-            font-size: 1rem;
-        }
+    .user__table td {
+        font-size: 1rem;
+        padding: 0.5rem 0.1rem;
+    }
+    .user__userName {
+        font-size: 1.1rem;
     }
 }
 
-.passwordModeContainer {
-    margin: 1rem 0;
-    
-    label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 500;
+@media screen and (max-width: 400px) {
+    .user__table {
+        max-width: 100vw;
     }
-}
-
-.radioGroup {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    
-    label {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-weight: normal;
-        cursor: pointer;
-        
-        input[type="radio"] {
-            cursor: pointer;
-        }
+    .user__table tr {
+        padding: 0.7rem 0.1rem;
     }
-}
-
-.passwordInputContainer {
-    margin: 1rem 0;
-    
-    label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 500;
+    .user__table td {
+        font-size: 0.9rem;
+        padding: 0.3rem 0.05rem;
     }
-}
-
-.passwordField {
-    display: flex;
-    gap: 0.5rem;
-    
-    input {
-        flex: 1;
-    }
-}
-
-.showPasswordButton {
-    padding: 0.5rem 1rem;
-    background-color: #f0f0f0;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    cursor: pointer;
-    
-    &:hover {
-        background-color: #e0e0e0;
-    }
-    
-    &:disabled {
-        cursor: not-allowed;
-        opacity: 0.6;
-    }
-}
-
-.passwordRequirements {
-    margin: 1rem 0;
-    padding: 1rem;
-    background-color: #f8f9fa;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    
-    p {
-        margin: 0 0 0.5rem 0;
-        font-weight: 500;
-        color: #495057;
-    }
-    
-    ul {
-        margin: 0;
-        padding-left: 1.5rem;
-        list-style: none;
-        
-        li {
-            margin: 0.25rem 0;
-            color: #666;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-
-            &.valid {
-                color: #28a745;
-                &::before {
-                    content: '✓';
-                    color: #28a745;
-                }
-            }
-
-            &.invalid {
-                color: #dc3545;
-                &::before {
-                    content: '×';
-                    color: #dc3545;
-                }
-            }
-
-            &.pending {
-                color: #6c757d;
-                &::before {
-                    content: '○';
-                    color: #6c757d;
-                }
-            }
-        }
+    .user__userName {
+        font-size: 0.95rem;
     }
 }
