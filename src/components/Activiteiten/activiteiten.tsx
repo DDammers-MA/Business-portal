@@ -8,8 +8,7 @@
 
 import React, { useState, useEffect } from "react";
 import styles from "./activiteiten.module.scss";
-import Link from "next/link"; // Add import for Link
-// Import Firestore functions and db instance
+import Link from "next/link";
 import { db } from "../../../utils/firebase.browser";
 import {
 	collection,
@@ -22,9 +21,7 @@ import {
 	DocumentData,
 	updateDoc,
 } from "firebase/firestore";
-// Import AuthContext hook
 import { useAuth } from "@/context/AuthContext";
-
 import { FormData } from '@/types/FormData';
 import { ActivityInfoModal } from '@/app/activities/approve/infoModal';
 import { toast } from 'sonner';
@@ -73,30 +70,29 @@ const ONLINE_STATUS_CONFIG = {
 	},
 };
 
+ // Add event/activities badge configuration
 const TYPE_BADGE_CONFIG = {
   event: {
     label: "Event",
-    backgroundColor: "#007bff", // blue
+    backgroundColor: "#007bff",
     color: "white",
   },
   activity: {
     label: "Activity",
-    backgroundColor: "#28a745", // green
+    backgroundColor: "#28a745",
     color: "white",
   },
   default: {
     label: "Unknown",
-    backgroundColor: "#6c757d", // grey
+    backgroundColor: "#6c757d",
     color: "white",
   },
 };
 
-// Define props interface including the optional filter
 interface ActiviteitenProps {
 	filter?: string;
 }
 
-// Update component signature to accept props
 const Activiteiten = ({ filter }: ActiviteitenProps) => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [selectedActivity, setSelectedActivity] = useState<FormData | null>(null);
@@ -217,7 +213,7 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 			`Are you sure you want to delete the activity "${title}"?`
 		);
 		if (!confirmation) {
-			return; // Stop deletion if user cancels
+			return;
 		}
 
 		try {
@@ -238,7 +234,7 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 			<div className={styles.event__container}>
 				
 				<div className={styles.event__list}>
-					{/* Conditional Rendering Section */}
+			
 					{loading ? (
 						<div className={styles.spinner}></div>
 					) : error ? (
@@ -249,13 +245,10 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 						/* Map through activities only if not loading, no error, and activities exist */
 						activiteiten.map((activiteit, index) => {
 							// Determine status and look up config
-							const typeKey = activiteit.type && (activiteit.type === 'event' || activiteit.type === 'activity') 
-  ? activiteit.type 
-  : 'default';
+							const typeKey = activiteit.type && (activiteit.type === 'event' || activiteit.type === 'activity') ? activiteit.type : 'default';
 							const currentStatus = activiteit.status || 'draft'; // Default to draft if undefined
-							const badgeConfig =
-								STATUS_CONFIG[currentStatus] || STATUS_CONFIG.default;
-const typeBadgeConfig = TYPE_BADGE_CONFIG[typeKey];
+							const badgeConfig = STATUS_CONFIG[currentStatus] || STATUS_CONFIG.default;
+							const typeBadgeConfig = TYPE_BADGE_CONFIG[typeKey];
 							return (
 								<ActiviteitCard
 									key={activiteit.id}
@@ -291,7 +284,7 @@ const typeBadgeConfig = TYPE_BADGE_CONFIG[typeKey];
 };
 
 interface ActiviteitCardProps {
-	id: string; // Add id
+	id: string;
 	image: string;
 	title: string;
 	description: string;
@@ -305,21 +298,21 @@ interface ActiviteitCardProps {
 		label: string;
 		backgroundColor: string;
 		color: string;
-	}; // Add badge config prop
-	active: boolean; // Renamed from online
+	};
+	active: boolean;
 	onDelete: () => void;
 	onInfoClick: () => void;
 	animationDelay?: string;
 }
 
 const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
-	id, // Receive id
+	id,
 	image,
 	title,
 	description,
-	badgeConfig, // Receive badgeConfig
+	badgeConfig, 
 	typeBadgeConfig,
-	active, // Receive corrected prop
+	active,
 	onDelete,
 	onInfoClick,
 	animationDelay,
@@ -327,7 +320,6 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 	const defaultImage = '/images/default.png';
 	const [isToggled, setIsToggled] = useState(active);
 	const [isUpdating, setIsUpdating] = useState(false);
-	// State for image loading and error
 	const [imageLoading, setImageLoading] = useState(
 		!!image && image !== defaultImage
 	);
@@ -335,7 +327,7 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 
 	// Get online status config
 	const onlineStatusConfig = ONLINE_STATUS_CONFIG[isToggled ? 'online' : 'offline'];
-	// Reset loading state if image prop changes
+
 	useEffect(() => {
 		setImageError(false);
 		setImageLoading(!!image && image !== defaultImage);
@@ -345,7 +337,7 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 	const handleToggle = async () => {
 		if (isUpdating) return; // Prevent multiple clicks
 
-		const newActiveStatus = !isToggled; // Use new variable name
+		const newActiveStatus = !isToggled;
 		setIsUpdating(true);
 
 		try {
@@ -372,7 +364,7 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 			style={{ animationDelay }}
 		>
 			<div className={styles.project__badges}>
-				{/* Status Badge - Left side */}
+			
 				<span
 					className={styles.statusBadge}
 					style={{
@@ -383,7 +375,6 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 					{badgeConfig.label}
 				</span>
 
-				{/* Online/Offline Badge - Right side */}
 				<span
 					className={styles.statusBadge}
 					style={{
@@ -395,11 +386,11 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 				</span>
 			</div>
 
-			{/* Image container */}
+		
 			<div className={styles.project__imageContainer}>
 				{/* Show spinner while loading */}
 				{imageLoading && <div className={styles.spinner}></div>}
-				{/* Image element */}
+				
 				<img
 					src={displayUrl}
 					alt={title}
@@ -431,7 +422,7 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 					<Link href={`/activity/edit/${id}`} legacyBehavior>
 						<a
 							style={{ color: 'inherit', textDecoration: 'none' }}
-							onClick={(e) => e.stopPropagation()} // prevent card click
+							onClick={(e) => e.stopPropagation()}
 						>
 							<i
 								className="fa-regular fa-pen-to-square"

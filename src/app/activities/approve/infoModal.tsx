@@ -5,7 +5,7 @@ import { Modal } from '@/components/modal/modal';
 import { FormData } from '@/types/FormData';
 import { UserDetails } from './actions';
 import Image from 'next/image';
-import styles from './infomodal.module.scss'; // Create this or reuse existing styles
+import styles from './infomodal.module.scss';
 
 interface ActivityInfoModalProps {
 	isOpen: boolean;

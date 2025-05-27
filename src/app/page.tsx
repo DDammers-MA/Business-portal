@@ -11,10 +11,7 @@ export default function Home() {
 
 	return (
 		<>
-		
 				<Link className={styles.modal__button} href="/create"> <i className="fa-solid fa-plus"></i> Add new</Link>
-		
-
 			<main className={styles.page__main}>
 				<Activiteiten filter={filter} />
 			</main>

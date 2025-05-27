@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Modal } from '@/components/modal/modal'; // Adjust the import path if necessary
-import styles from './denyModal.module.scss'; // Create this file or adjust the path
+import { Modal } from '@/components/modal/modal'; 
+import styles from './denyModal.module.scss'; 
 
 interface DenyModalProps {
     isOpen: boolean;
@@ -23,8 +23,8 @@ const DenyModal: React.FC<DenyModalProps> = ({ isOpen, onClose, onSubmit }) => {
         setIsSubmitting(true);
         try {
             await onSubmit(reason);
-            setReason(''); // Clear the textarea after submission
-            onClose(); // Close the modal
+            setReason(''); 
+            onClose(); 
         } catch (error) {
             console.error('Error submitting reason:', error);
             alert('Failed to submit the reason. Please try again.');

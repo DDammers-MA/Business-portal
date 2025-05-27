@@ -7,7 +7,6 @@ import styles from './layout.module.scss';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import Footer from '@/components/footer/footer';
 
-// Inner component to access auth context
 const LayoutContent = ({ children }: { children: React.ReactNode }) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const { isAdmin } = useAuth();

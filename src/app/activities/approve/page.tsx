@@ -88,8 +88,6 @@ const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
 		}
 	};
 
-	// Removed duplicate handleDenyWithReason function as it is unused
-
 	return (
 	
 		<div style={{ animationDelay }} className={`${styles.summaryCard} ${styles.cardFadeIn}`}>
@@ -144,7 +142,6 @@ const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
 					</p>
 				</div>
 			</div>
-			{/* Action buttons always visible at the bottom */}
 			<div className={styles.summaryCard__Actions}>
 				<button
 					className={`${styles.summaryCard__Button} ${styles.summaryCard__ButtonDeny}`}
@@ -182,7 +179,7 @@ export default function ApprovePage() {
 	);
 
 	const [isDenyModalOpen, setIsDenyModalOpen] = useState(false);
-const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
+	const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
 
 
 	const [creatorData, setCreatorData] = useState<UserDetails | null>(null);
@@ -191,9 +188,6 @@ const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
 	const [directUpdateStates, setDirectUpdateStates] = useState<
 		Record<string, boolean>
 	>({});
-
-	// Fullscreen image modal state
-	// const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
 
 	useEffect(() => {
 		if (authLoading) {
@@ -351,14 +345,6 @@ const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
 		},
 		[updateActivityStatus]
 	);
-
-	// const handleImageClick = (imageUrl: string) => {
-	// 	setFullscreenImage(imageUrl);
-	// };
-
-	// const handleCloseFullscreen = () => {
-	// 	setFullscreenImage(null);
-	// };
 
 	if (authLoading || loading) {
 		return <div className={styles.spinner}></div>;

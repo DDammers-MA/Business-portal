@@ -12,16 +12,15 @@ import { storage, auth } from '../../../utils/firebase.browser';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
-// Define Props interface
+
 interface MultiStepFormProps {
 	mode: 'create' | 'edit';
-	initialData?: FormData & { id?: string }; // Include optional id for edit mode
+	initialData?: FormData & { id?: string }; 
 }
 
 const MultiStepForm = ({ mode, initialData }: MultiStepFormProps) => {
 	const router = useRouter();
 	const [step, setStep] = useState(1);
-	// Initialize state with initialData if provided, else default
 	const [formData, setFormData] = useState<FormData>(() => {
 		const defaults: FormData = {
 			title: '',    
@@ -50,12 +49,11 @@ const MultiStepForm = ({ mode, initialData }: MultiStepFormProps) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [submitError, setSubmitError] = useState<string | null>(null);
 
-	// Effect to update state if initialData changes (e.g., after fetch in edit page)
-	// Important if initialData is fetched asynchronously
+
 	useEffect(() => {
 		if (initialData) {
 			const defaults: Partial<FormData> = {
-				active: true, // Ensure defaults are applied if missing in initialData
+				active: true,
 				status: 'inreview',
 				openingTimes: {},
 			};
@@ -75,9 +73,9 @@ const MultiStepForm = ({ mode, initialData }: MultiStepFormProps) => {
 });
 const prevStep = () => setStep((prev) => {
   if (prev === 3 && formData.type === 'activity') {
-    return 2; // Back from review to LocationInfo for 'activity'
+    return 2;
   }
-  return prev - 1; // must return!
+  return prev - 1;
 });
 
 	const handleInputChange = (
@@ -154,7 +152,7 @@ const prevStep = () => setStep((prev) => {
 
 			console.log(`Submitting data in ${mode} mode to API:`, finalData);
 
-			// --- API Call (Conditional) ---
+	
 			const apiUrl =
 				mode === 'create'
 					? '/api/activity/create'
@@ -213,7 +211,7 @@ const prevStep = () => setStep((prev) => {
 				});
 				setStep(1);
 			}
-			router.push('/'); // Redirect to home page after create or update
+			router.push('/'); 
 		} catch (error) {
 			toast.error('Error submitting form. Please try again.');
 			console.error('Submission Error:', error);
@@ -266,17 +264,6 @@ const prevStep = () => setStep((prev) => {
 
 ) : null}
 
-			{/* {step === 4 && ( // Adjust step number for ReviewSubmit
-				<ReviewSubmit
-					formData={formData}
-					prevStep={prevStep}
-					submitForm={submitForm}
-					step={step}
-					isSubmitting={isSubmitting}
-					submitError={submitError}
-					handleInputChange={handleInputChange}
-				/>
-			)} */}
 		</form>
 	);
 };

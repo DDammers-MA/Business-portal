@@ -32,7 +32,6 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
 }) => {
 	const [errors, setErrors] = useState<FormErrors>({});
 	const [isNextDisabled, setIsNextDisabled] = useState(true);
-	// Add touched state
 	const [touched, setTouched] = useState<TouchedFields>({});
 
 	const validateField = (
