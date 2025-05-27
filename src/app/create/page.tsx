@@ -5,6 +5,9 @@
 import { useState } from 'react';
 import MultiStepForm from '../../components/multiple-steps-form/MultiStepForm';
 import styles from './create.module.scss';
+import { Tooltip } from "@heroui/tooltip";
+
+
 
 export default function CreatePage() {
 	const [selectedType, setSelectedType] = useState<'activity' | 'event'>('activity');
@@ -36,13 +39,19 @@ export default function CreatePage() {
 				<div className={styles.page}>
 			<div className={styles.page__container}>
 				<div className={styles.typeToggle}>
-					<button
+					
+					<Tooltip className={styles.customTooltip} content="Activities are a one-time orcurrence, like a workshop or a class.">
+						<button
+							title="This is a tooltip"
 						className={selectedType === 'activity' ? styles.active : ''}
 						onClick={() => setSelectedType('activity')}
 						type="button"
 					>
 						Activity
-					</button>
+						</button>
+					</Tooltip>
+						
+						<Tooltip className={styles.customTooltip} content="Events are recurring activities, like weekly meetups or regular series.">
 					<button
 						className={selectedType === 'event' ? styles.active : ''}
 						onClick={() => setSelectedType('event')}
@@ -50,6 +59,7 @@ export default function CreatePage() {
 					>
 						Event
 					</button>
+				</Tooltip>
 				</div>
 
 				<MultiStepForm mode="create"
