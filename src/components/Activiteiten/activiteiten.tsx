@@ -420,10 +420,9 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
     }}
 >
     <span className={styles.toggle__label}>
-        {/* east: "On" altijd links, "Off" altijd rechts, maar alleen één zichtbaar */}
-        <span style={{ visibility: isToggled ? 'visible' : 'hidden' }}>On</span>
-        <span style={{ visibility: !isToggled ? 'visible' : 'hidden' }}>Off</span>
-    </span>
+    <span style={{ visibility: isToggled ? 'visible' : 'hidden' }}>Online</span>
+    <span style={{ visibility: !isToggled ? 'visible' : 'hidden' }}>Offline</span>
+</span>
     <div className={styles.toggle__circle}></div>
 </div>
 			</div>
