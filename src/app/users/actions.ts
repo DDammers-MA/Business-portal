@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { firebaseAdmin, db } from '../../../utils/firebase.admin';
 import admin from 'firebase-admin'; // Import admin
-import { CombinedUser } from './page'; // Assuming type is exported from page.tsx
+import type { CombinedUser } from './types'; // Assuming type is exported from page.tsx
 // Import FirebaseError from the correct path
 import { FirebaseError } from 'firebase-admin/app';
 import type { UpdateData } from 'firebase-admin/firestore'; // Import UpdateData type for Firestore updates

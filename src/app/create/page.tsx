@@ -28,6 +28,7 @@ export default function CreatePage() {
 			date: '',
 			place: '',
 			postal_code: '',
+			region: '',
 			active: true,
 			status: 'inreview',
 			openingTimes: {},

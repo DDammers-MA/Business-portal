@@ -1,8 +1,10 @@
+import React from 'react';
 import { firebaseAdmin, db } from '../../../utils/firebase.admin';
 import { UserRecord } from 'firebase-admin/auth';
 import admin from 'firebase-admin';
 import UserManagementClient from './UserManagementClient';
 import styles from './user.module.scss';
+import type { CombinedUser } from './types';
 
 interface FirestoreUserData {
 	companyName?: string;
@@ -11,18 +13,6 @@ interface FirestoreUserData {
 	kvk?: string;
 	creatorUid?: string;
 }
-
-export type CombinedUser = {
-	id: string;
-	email?: string;
-	displayName?: string | null;
-	photoURL?: string | null;
-	companyName?: string;
-	phone?: string;
-	kvk?: string;
-	lastLoginAt?: string | null;
-	password?: string;
-};
 
 export default async function UsersPage() {
 	let combinedUsers: CombinedUser[] = [];
@@ -55,6 +45,19 @@ export default async function UsersPage() {
 			});
 		}
 
+		// Get admin status for each user
+		const adminStatusPromises = authUsers.map(async (authUser: UserRecord) => {
+			const userRecord = await auth.getUser(authUser.uid);
+			return {
+				uid: authUser.uid,
+				isAdmin: userRecord.customClaims?.admin === true,
+			};
+		});
+		const adminStatuses = await Promise.all(adminStatusPromises);
+		const adminStatusMap = Object.fromEntries(
+			adminStatuses.map((status) => [status.uid, status.isAdmin])
+		);
+
 		combinedUsers = authUsers.map((authUser: UserRecord) => {
 			const firestoreData = firestoreUsersData[authUser.uid] || {};
 			return {
@@ -66,6 +69,7 @@ export default async function UsersPage() {
 				phone: firestoreData.phone,
 				kvk: firestoreData.kvk,
 				lastLoginAt: authUser.metadata.lastSignInTime || null,
+				isAdmin: adminStatusMap[authUser.uid] || false,
 			};
 		});
 	} catch (error) {

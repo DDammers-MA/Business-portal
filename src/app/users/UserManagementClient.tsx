@@ -3,7 +3,7 @@
 import { useState, useTransition, useEffect, useMemo } from 'react';
 import styles from './user.module.scss';
 import { Modal } from '@/components/modal/modal';
-import { CombinedUser } from './page';
+import type { CombinedUser } from './types';
 import { addUserAction, updateUserAction, deleteUserAction } from './actions';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
@@ -17,6 +17,8 @@ import {
 	SortingState,
 } from '@tanstack/react-table';
 import { PasswordField } from '@/components/password-field/PasswordField';
+import AdminBadge from '@/components/AdminBadge';
+import AdminControls from '@/components/AdminControls';
 
 type AddUserResult = Awaited<ReturnType<typeof addUserAction>>;
 type UpdateUserResult = Awaited<ReturnType<typeof updateUserAction>>;
@@ -29,7 +31,7 @@ interface UserManagementClientProps {
 export default function UserManagementClient({
 	initialUsers,
 }: UserManagementClientProps) {
-	const { user: loggedInUser } = useAuth();
+	const { user: loggedInUser, isAdmin } = useAuth();
 	const [users, setUsers] = useState<CombinedUser[]>(initialUsers);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [currentUser, setCurrentUser] = useState<Partial<CombinedUser> | null>(
@@ -44,10 +46,20 @@ export default function UserManagementClient({
 
 	const columnHelper = createColumnHelper<CombinedUser>();
 
+	const adminCount = useMemo(
+		() => users.filter((u) => u.isAdmin).length,
+		[users]
+	);
+
+	const handleAdminStatusChange = () => {
+		// Refresh the users list to get updated admin statuses
+		window.location.reload();
+	};
+
 	const columns = useMemo(
 		() => [
 			columnHelper.accessor(
-				(row) => row.companyName || row.displayName || row.email || 'Onbekend',
+				(row) => row.companyName || row.displayName || row.email || 'Unknown',
 				{
 					id: 'user',
 					header: 'User',
@@ -61,11 +73,11 @@ export default function UserManagementClient({
 			),
 			columnHelper.accessor('email', {
 				header: 'Email address',
-				cell: (info) => info.getValue() || 'Geen e-mailadres',
+				cell: (info) => info.getValue() || 'No email address',
 			}),
 			columnHelper.accessor('phone', {
 				header: 'Phone number',
-				cell: (info) => info.getValue() || 'Geen telefoonnummer',
+				cell: (info) => info.getValue() || 'No phone number',
 			}),
 			columnHelper.accessor('lastLoginAt', {
 				header: 'Last login',
@@ -74,6 +86,10 @@ export default function UserManagementClient({
 						? new Date(info.getValue()!).toLocaleString()
 						: 'No login data',
 			}),
+			columnHelper.accessor('isAdmin', {
+				header: 'Role',
+				cell: (info) => (info.getValue() ?? false) && <AdminBadge />,
+			}),
 			columnHelper.accessor('id', {
 				id: 'actions',
 				header: 'Actions',
@@ -81,7 +97,7 @@ export default function UserManagementClient({
 					<div className={styles.user__actions}>
 						<i
 							className={`fa-regular fa-pen-to-square ${styles.user__editIcon}`}
-							title="Wijzig gebruiker"
+							title="Edit user"
 							onClick={() => {
 								if (isPending) return;
 								setCurrentUser(info.row.original);
@@ -91,14 +107,25 @@ export default function UserManagementClient({
 						></i>
 						<i
 							className={`fa-solid fa-trash ${styles.user__deleteIcon}`}
-							title="Verwijder gebruiker"
+							title="Delete user"
 							onClick={() => handleDeleteUser(info.getValue())}
 						></i>
+						{isAdmin && (
+							<AdminControls
+								userId={info.getValue()}
+								isAdmin={Boolean(info.row.original.isAdmin)}
+								isCurrentUser={info.getValue() === loggedInUser?.uid}
+								isLastAdmin={
+									adminCount === 1 && Boolean(info.row.original.isAdmin)
+								}
+								onStatusChange={handleAdminStatusChange}
+							/>
+						)}
 					</div>
 				),
 			}),
 		],
-		[isPending]
+		[isPending, isAdmin, loggedInUser?.uid, adminCount]
 	);
 
 	const filteredData = useMemo(
@@ -207,18 +234,13 @@ export default function UserManagementClient({
 						toast.error('Cannot add user: You are not logged in');
 						return;
 					}
-					const addData: Pick<
-						CombinedUser,
-						'email' | 'companyName' | 'phone' | 'kvk'
-					> & { password?: string } = {
+					const addData = {
 						email: userFormData.email,
-						companyName: userFormData.companyName,
-						phone: userFormData.phone,
-						kvk: userFormData.kvk,
+						companyName: userFormData.companyName || '',
+						phone: userFormData.phone || '',
+						kvk: userFormData.kvk || '',
+						password: userFormData.password,
 					};
-					if (userFormData.password) {
-						addData.password = userFormData.password;
-					}
 					const result: AddUserResult = await addUserAction(
 						addData,
 						loggedInUser.uid
@@ -410,7 +432,7 @@ function UserForm({
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
-		setFormData((prev) => ({ ...prev, [name]: value }));
+		setFormData((prev: Partial<CombinedUser>) => ({ ...prev, [name]: value }));
 		if (error) clearError();
 	};
 
@@ -418,7 +440,7 @@ function UserForm({
 		e.preventDefault();
 		if (isLoading) return;
 
-		if (passwordMode === 'manual') {
+		if (!isEditMode && passwordMode === 'manual') {
 			if (!password || !repeatPassword) {
 				clearError();
 				setError('Please fill in both password fields.');

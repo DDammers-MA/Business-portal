@@ -223,7 +223,7 @@ const MultiStepForm = ({ mode, initialData }: MultiStepFormProps) => {
 			if (!confirmed) return;
 		}
 
-		router.push('/activities');
+		router.push('/');
 	};
 
 	const isFormValid = (isDraft: boolean = false) => {

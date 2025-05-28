@@ -5,6 +5,30 @@ const protectedPaths = ['/', '/create'];
 const adminPaths = ['/users', '/activities/approve'];
 const publicOnlyPaths = ['/login'];
 
+// Simple JWT token expiry check
+function isTokenExpired(token: string): boolean {
+	try {
+		const base64Payload = token.split('.')[1];
+		const payload = JSON.parse(Buffer.from(base64Payload, 'base64').toString());
+		return Date.now() >= payload.exp * 1000;
+	} catch {
+		return true;
+	}
+}
+
+function decodeToken(token: string): { uid: string; admin?: boolean } | null {
+	try {
+		const base64Payload = token.split('.')[1];
+		const payload = JSON.parse(Buffer.from(base64Payload, 'base64').toString());
+		return {
+			uid: payload.user_id || payload.sub,
+			admin: payload.admin === true,
+		};
+	} catch {
+		return null;
+	}
+}
+
 export async function middleware(request: NextRequest) {
 	const { pathname } = request.nextUrl;
 
@@ -23,36 +47,14 @@ export async function middleware(request: NextRequest) {
 	let userId: string | null = null;
 	let isAdmin: boolean = false;
 
-	if (token) {
-		const verifyUrl = new URL('/api/auth/verify', request.url);
-		try {
+	if (token && !isTokenExpired(token)) {
+		const decodedToken = decodeToken(token);
+		if (decodedToken) {
+			userId = decodedToken.uid;
+			isAdmin = decodedToken.admin === true;
 			console.log(
-				`[Middleware] Calling verification API: ${verifyUrl.toString()}`
+				`[Middleware] Token decoded for UID: ${userId}, isAdmin: ${isAdmin}`
 			);
-			const response = await fetch(verifyUrl, {
-				headers: {
-					Cookie: request.headers.get('Cookie') || '',
-				},
-			});
-
-			if (response.ok) {
-				const data = await response.json();
-				if (data.valid && data.uid) {
-					userId = data.uid;
-					isAdmin = data.claims?.admin === true;
-					console.log(
-						`[Middleware] Verification API returned valid UID: ${userId}, isAdmin: ${isAdmin}`
-					);
-				} else {
-					console.log('[Middleware] Verification API returned invalid status.');
-				}
-			} else {
-				console.error(
-					`[Middleware] Verification API call failed with status: ${response.status}`
-				);
-			}
-		} catch (error) {
-			console.error('[Middleware] Error calling verification API:', error);
 		}
 	}
 
