@@ -402,7 +402,7 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 					alt={title}
 					width={400}
 					height={300}
-					className={styles.project__image}
+					className={`${styles.project__image} ${!isToggled ? styles['project__image--offline'] : ''}`}
 					onLoadingComplete={() => setImageLoading(false)}
 					onError={() => {
 						setImageLoading(false);
@@ -453,11 +453,17 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 					}}
 				>
 					<span className={styles.toggle__label}>
-						<span style={{ visibility: isToggled ? 'visible' : 'hidden' }}>
-							On
+						<span
+							className={styles.onlineLabel}
+							style={{ opacity: isToggled ? 1 : 0, pointerEvents: 'none' }}
+						>
+							Online
 						</span>
-						<span style={{ visibility: !isToggled ? 'visible' : 'hidden' }}>
-							Off
+						<span
+							className={styles.offlineLabel}
+							style={{ opacity: !isToggled ? 1 : 0, pointerEvents: 'none' }}
+						>
+							Offline
 						</span>
 					</span>
 					<div className={styles.toggle__circle}></div>
