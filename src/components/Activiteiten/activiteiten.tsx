@@ -375,14 +375,12 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 				<img
 					src={displayUrl}
 					alt={title}
-					className={styles.project__image}
-					onLoad={() => setImageLoading(false)} // Set loading false on successful load
+					className={`${styles.project__image} ${!isToggled ? styles['project__image--offline'] : ''}`}
+					onLoad={() => setImageLoading(false)}
 					onError={() => {
-						// Set loading false and error true on failure
 						setImageLoading(false);
 						setImageError(true);
 					}}
-					// Hide img element itself while loading, spinner takes its place
 					style={{ display: imageLoading ? 'none' : 'block' }}
 				/>
 			</div>
