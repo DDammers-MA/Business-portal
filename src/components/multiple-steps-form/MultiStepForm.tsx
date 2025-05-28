@@ -11,11 +11,11 @@ import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage, auth } from '../../../utils/firebase.browser';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-
+import { optimizeImage, shouldOptimizeImage } from '@/utils/imageOptimizer';
 
 interface MultiStepFormProps {
 	mode: 'create' | 'edit';
-	initialData?: FormData & { id?: string }; 
+	initialData?: FormData & { id?: string };
 }
 
 const MultiStepForm = ({ mode, initialData }: MultiStepFormProps) => {
@@ -23,7 +23,7 @@ const MultiStepForm = ({ mode, initialData }: MultiStepFormProps) => {
 	const [step, setStep] = useState(1);
 	const [formData, setFormData] = useState<FormData>(() => {
 		const defaults: FormData = {
-			title: '',    
+			title: '',
 			type: '',
 			name: '',
 			addr: '',
@@ -49,7 +49,6 @@ const MultiStepForm = ({ mode, initialData }: MultiStepFormProps) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [submitError, setSubmitError] = useState<string | null>(null);
 
-
 	useEffect(() => {
 		if (initialData) {
 			const defaults: Partial<FormData> = {
@@ -61,22 +60,24 @@ const MultiStepForm = ({ mode, initialData }: MultiStepFormProps) => {
 				...defaults,
 				...initialData,
 				image_file: prev.image_file,
-			})); // Keep existing image_file if any
+			}));
 		}
 	}, [initialData]);
 
-	const nextStep = () => setStep((prev) => {
-		if (prev === 2 && formData.type === 'activity') return 3;
-		if (prev === 3 && formData.type === 'activity') return 4
-		
-		  return prev + 1;
-});
-const prevStep = () => setStep((prev) => {
-  if (prev === 3 && formData.type === 'activity') {
-    return 2;
-  }
-  return prev - 1;
-});
+	const nextStep = () =>
+		setStep((prev) => {
+			if (prev === 2 && formData.type === 'activity') return 3;
+			if (prev === 3 && formData.type === 'activity') return 4;
+			return prev + 1;
+		});
+
+	const prevStep = () =>
+		setStep((prev) => {
+			if (prev === 3 && formData.type === 'activity') {
+				return 2;
+			}
+			return prev - 1;
+		});
 
 	const handleInputChange = (
 		field: keyof FormData,
@@ -85,111 +86,85 @@ const prevStep = () => setStep((prev) => {
 		setFormData((prev) => ({ ...prev, [field]: value }));
 	};
 
-	const submitForm = async () => {
-		const user = auth.currentUser;
-		if (!user) {
-			setSubmitError('You must be logged in to submit the form.');
-			setIsSubmitting(false);
-			return;
-		}
-	
-		setIsSubmitting(true);
-		setSubmitError(null);
-
-		let finalImageUrl = formData.image_url;
-
+	const handleSubmit = async (asDraft: boolean = false) => {
 		try {
-			if (formData.image_file) {
-				console.log('New image file detected, starting upload...');
-				// **Optional: Delete old image here if initialData.image_url exists**
-				const file = formData.image_file;
-				const randomString = Math.random().toString(36).substring(7);
-				const fileName = `${Date.now()}-${randomString}-${
-					formData.name || 'activity'
-				}-${file.name}`;
-				const storageRef = ref(storage, `activityImages/${fileName}`);
+			setIsSubmitting(true);
+			setSubmitError(null);
 
-				const metadata = {
-					customMetadata: {
-						creatorUid: user.uid,
-					},
-				};
-
-				const uploadTask = uploadBytesResumable(storageRef, file, metadata);
-				await uploadTask;
-				finalImageUrl = await getDownloadURL(uploadTask.snapshot.ref);
-				console.log('File uploaded successfully. URL:', finalImageUrl);
-			} else {
-				console.log('No new image file, keeping existing URL:', finalImageUrl);
+			if (!auth.currentUser) {
+				throw new Error('You must be logged in to submit');
 			}
 
-			// --- Prepare Data for API ---
-			// Remove image_file before sending to API
-			// Explicitly use the destructured variable 'dataToSend'
-			const { image_file, ...dataToSend } = formData;
-			// Use console.log or similar if needed to mark 'image_file' as used
-			if (image_file)
-				console.log('Preparing data, excluding image_file object.');
+			let imageUrl = formData.image_url;
 
-			const finalData: Partial<FormData> = {
-				...dataToSend, // Use the rest of the form data
-				type: formData.type, // Ensure type is set
-				image_url: finalImageUrl, // Use the potentially updated URL
-				// Ensure user-related fields are set correctly, especially for create mode
-				email:
-					mode === 'create'
-						? user.email || ''
-						: formData.email || user.email || '',
-				phone:
-					mode === 'create'
-						? user.phoneNumber || ''
-						: formData.phone || user.phoneNumber || '',
-				// creatorUid is added server-side for create, don't send from client
-				// For update, it's used for validation server-side but not updated
+			if (formData.image_file) {
+				let fileToUpload = formData.image_file;
+
+				// Check if image needs optimization
+				if (shouldOptimizeImage(formData.image_file)) {
+					try {
+						fileToUpload = await optimizeImage(formData.image_file);
+						toast.success('Image optimized successfully');
+					} catch (error) {
+						console.error('Image optimization failed:', error);
+						toast.error(
+							'Image optimization failed, proceeding with original image'
+						);
+					}
+				}
+
+				const storageRef = ref(
+					storage,
+					`activities/${auth.currentUser.uid}-${Date.now()}-${formData.name
+						.toLowerCase()
+						.replace(/ /g, '-')}`
+				);
+				const uploadTask = uploadBytesResumable(storageRef, fileToUpload);
+
+				await new Promise((resolve, reject) => {
+					uploadTask.on(
+						'state_changed',
+						() => {},
+						(error) => reject(error),
+						() => resolve(getDownloadURL(uploadTask.snapshot.ref))
+					);
+				});
+
+				imageUrl = await getDownloadURL(uploadTask.snapshot.ref);
+			}
+
+			const submissionData = {
+				...formData,
+				image_url: imageUrl,
+				status: asDraft ? 'draft' : 'inreview',
+				created_at: new Date().toISOString(),
+				updated_at: new Date().toISOString(),
+				creatorUid: auth.currentUser.uid,
 			};
 
-			const token = await user.getIdToken();
+			delete submissionData.image_file;
 
-			console.log(`Submitting data in ${mode} mode to API:`, finalData);
-
-	
-			const apiUrl =
-				mode === 'create'
-					? '/api/activity/create'
-					: `/api/activity/${initialData?.id}`;
-			const apiMethod = mode === 'create' ? 'POST' : 'PUT';
-
-			if (mode === 'edit' && !initialData?.id) {
-				throw new Error('Cannot update: Missing activity ID.');
-			}
-
-			const response = await fetch(apiUrl, {
-				method: apiMethod,
+			const response = await fetch('/api/activity/create', {
+				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					Authorization: `Bearer ${token}`,
 				},
-				body: JSON.stringify(finalData),
+				body: JSON.stringify(submissionData),
 			});
 
 			if (!response.ok) {
-				let errorMessage = `API Error: ${response.status} ${response.statusText}`;
-				try {
-					const errorData = await response.json();
-					errorMessage = errorData.message || errorMessage;
-				} catch {
-					console.log('Response was not JSON, using status text.');
-				}
-				throw new Error(errorMessage);
+				throw new Error('Failed to submit form');
 			}
 
-			const result = await response.json();
-			console.log('API Response:', result);
-			toast.success(`Activitie Submitted Successfully!`)
-			// Reset form only in create mode, redirect in both
+			toast.success(
+				asDraft
+					? 'Successfully saved as draft'
+					: 'Successfully submitted for review'
+			);
+
 			if (mode === 'create') {
 				setFormData({
-					title: '',  
+					title: '',
 					type: '',
 					name: '',
 					addr: '',
@@ -211,7 +186,7 @@ const prevStep = () => setStep((prev) => {
 				});
 				setStep(1);
 			}
-			router.push('/'); 
+			router.push('/');
 		} catch (error) {
 			toast.error('Error submitting form. Please try again.');
 			console.error('Submission Error:', error);
@@ -225,34 +200,107 @@ const prevStep = () => setStep((prev) => {
 		}
 	};
 
+	const submitForm = () => handleSubmit(false);
+	const saveDraft = () => handleSubmit(true);
+
+	const handleCancel = () => {
+		if (isSubmitting) return;
+
+		// Check if form has been modified
+		const hasChanges = Object.entries(formData).some(([key, value]) => {
+			if (key === 'image_file') return false; // Skip image file comparison
+			return initialData
+				? initialData[key as keyof FormData] !== value
+				: value !== '';
+		});
+
+		if (hasChanges) {
+			const confirmed = window.confirm(
+				'Are you sure you want to cancel? Any unsaved changes will be lost.'
+			);
+			if (!confirmed) return;
+		}
+
+		router.push('/activities');
+	};
+
+	const isFormValid = (isDraft: boolean = false) => {
+		// Basic validation functions
+		const isValidName = (name: string) => name.length >= 5;
+		const isValidDescription = (desc: string) => desc.length >= 10;
+		const isValidPlace = (place: string) => place.length >= 2;
+		const isValidAddress = (addr: string) => addr.length >= 5;
+
+		// For drafts, any valid field is enough
+		if (isDraft) {
+			return (
+				(formData.name ? isValidName(formData.name) : false) ||
+				(formData.description
+					? isValidDescription(formData.description)
+					: false) ||
+				(formData.place ? isValidPlace(formData.place) : false) ||
+				(formData.addr ? isValidAddress(formData.addr) : false)
+			);
+		}
+
+		// For final submission, all fields must be valid
+		return (
+			isValidName(formData.name) &&
+			isValidDescription(formData.description) &&
+			isValidPlace(formData.place) &&
+			isValidAddress(formData.addr)
+		);
+	};
+
 	return (
 		<form className={styles.form}>
+			<div className={styles.form__topButtons}>
+				<button
+					type="button"
+					className={styles.form__draftButton}
+					onClick={saveDraft}
+					disabled={isSubmitting || !isFormValid(true)}
+				>
+					{isSubmitting ? 'Saving...' : 'Save as Draft'}
+				</button>
+				<button
+					type="button"
+					className={styles.form__cancelButton}
+					onClick={handleCancel}
+					disabled={isSubmitting}
+				>
+					Cancel
+				</button>
+			</div>
+
 			{step === 1 && (
 				<EventInfo
 					formData={formData}
-					setFormData={setFormData} // Pass setFormData down
+					setFormData={setFormData}
 					nextStep={nextStep}
+					prevStep={prevStep}
 				/>
 			)}
 			{step === 2 && (
 				<LocationInfo
 					formData={formData}
-					setFormData={setFormData} // Pass setFormData down
+					setFormData={setFormData}
 					nextStep={nextStep}
 					prevStep={prevStep}
 				/>
 			)}
-			{step === 3 && formData.type === 'activity'  && ( // Adjust step number for OpeningTimes
+			{step === 3 && formData.type === 'activity' && (
 				<OpeningTimes
 					formData={formData}
-					setFormData={setFormData} // Pass setFormData down
+					setFormData={setFormData}
 					nextStep={nextStep}
 					prevStep={prevStep}
 				/>
 			)}
 
-		{(formData.type === 'event' && step === 3) || (formData.type === 'activity' && step === 4) ? (
-			<ReviewSubmit
+			{(formData.type === 'event' && step === 3) ||
+			(formData.type === 'activity' && step === 4) ? (
+				<ReviewSubmit
 					formData={formData}
 					prevStep={prevStep}
 					submitForm={submitForm}
@@ -261,9 +309,7 @@ const prevStep = () => setStep((prev) => {
 					submitError={submitError}
 					handleInputChange={handleInputChange}
 				/>
-
-) : null}
-
+			) : null}
 		</form>
 	);
 };

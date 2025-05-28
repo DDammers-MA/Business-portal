@@ -36,12 +36,13 @@ const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
 	onApprove,
 	onDeny,
 	isUpdating,
-	animationDelay
-
+	animationDelay,
 }) => {
 	const defaultImage = '/images/default.png';
 	const imageUrl = activity.image_url || defaultImage;
-	const [submitterName, setSubmitterName] = useState<string | null>('Loading...');
+	const [submitterName, setSubmitterName] = useState<string | null>(
+		'Loading...'
+	);
 	const [isSubmitterLoading, setIsSubmitterLoading] = useState<boolean>(true);
 
 	useEffect(() => {
@@ -89,8 +90,10 @@ const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
 	};
 
 	return (
-	
-		<div style={{ animationDelay }} className={`${styles.summaryCard} ${styles.cardFadeIn}`}>
+		<div
+			style={{ animationDelay }}
+			className={`${styles.summaryCard} ${styles.cardFadeIn}`}
+		>
 			<span className={`${styles.statusBadge} ${styles.inReview}`}>
 				In Review
 			</span>
@@ -116,7 +119,7 @@ const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
 					<h3 className={styles.summaryCard__Title} title={activity.name}>
 						{activity.name}
 					</h3>
-					
+
 					<div className={styles.locationDateContainer}>
 						{activity.place && activity.addr && (
 							<div className={styles.locationInfo}>
@@ -180,7 +183,6 @@ export default function ApprovePage() {
 
 	const [isDenyModalOpen, setIsDenyModalOpen] = useState(false);
 	const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
-
 
 	const [creatorData, setCreatorData] = useState<UserDetails | null>(null);
 	const [modalUserLoading, setModalUserLoading] = useState<boolean>(false);
@@ -263,18 +265,18 @@ export default function ApprovePage() {
 
 	const handleDenySubmit = async (reason: string) => {
 		if (!activityToDeny?.id) return;
-	
+
 		try {
 			await updateDoc(doc(db, 'activities', activityToDeny.id), {
 				status: 'denied',
 				denyReason: reason,
 			});
-	
+
 			// Remove from list
 			setActivitiesToApprove((prev) =>
 				prev.filter((activity) => activity.id !== activityToDeny.id)
 			);
-	
+
 			// Close modal
 			setIsDenyModalOpen(false);
 			setActivityToDeny(null);
@@ -283,7 +285,6 @@ export default function ApprovePage() {
 			alert('Failed to deny the activity. Please try again.');
 		}
 	};
-	
 
 	const updateActivityStatus = useCallback(
 		async (activityId: string, newStatus: 'published' | 'denied') => {
@@ -340,8 +341,7 @@ export default function ApprovePage() {
 			setDirectUpdateStates((prev) => ({ ...prev, [activityId]: true }));
 			try {
 				await updateActivityStatus(activityId, newStatus);
-			} catch {
-			}
+			} catch {}
 		},
 		[updateActivityStatus]
 	);
@@ -381,37 +381,35 @@ export default function ApprovePage() {
 								return Promise.resolve();
 							}}
 							isUpdating={directUpdateStates[activity.id || ''] || false}
-						   animationDelay={`${index * 100}ms`}
+							animationDelay={`${index * 100}ms`}
 						/>
 					))}
 				</div>
 			)}
 
 			{selectedActivity && (
-
 				<ActivityInfoModal
-			isOpen={isModalOpen}
-			onClose={handleCloseModal}
-			activity={selectedActivity}
-			creatorData={creatorData}
-			modalUserLoading={modalUserLoading}
-			modalActionLoading={modalActionLoading}
-			onStatusUpdate={handleModalStatusUpdate}
-		/>
-		
+					isOpen={isModalOpen}
+					onClose={handleCloseModal}
+					activity={selectedActivity}
+					creatorData={creatorData}
+					modalUserLoading={modalUserLoading}
+					modalActionLoading={modalActionLoading}
+					onStatusUpdate={handleModalStatusUpdate}
+				/>
 			)}
 
-{activityToDeny && (
-    <DenyModal
-        isOpen={isDenyModalOpen}
-        onClose={() => {
-            setIsDenyModalOpen(false);
-            setActivityToDeny(null);
-        }}
-        onSubmit={handleDenySubmit}
-    />
-)}
-
+			{activityToDeny && (
+				<DenyModal
+					isOpen={isDenyModalOpen}
+					onClose={() => {
+						setIsDenyModalOpen(false);
+						setActivityToDeny(null);
+					}}
+					onSubmit={handleDenySubmit}
+					activity={activityToDeny}
+				/>
+			)}
 		</div>
 	);
 }

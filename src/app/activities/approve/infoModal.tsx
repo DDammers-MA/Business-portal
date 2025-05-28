@@ -23,27 +23,30 @@ export const ActivityInfoModal: React.FC<ActivityInfoModalProps> = ({
 	activity,
 	creatorData,
 	modalUserLoading,
-
 }) => {
 	const imageUrl = activity.image_url || '/images/default.png';
 
 	return (
 		<Modal isOpen={isOpen} onClose={onClose}>
 			<div className={styles.modal}>
-				<div className={styles.modal__Header}>Activity Details</div>
+				<div className={styles.modal__Header}>
+					{activity.type === 'event' ? 'Event Details' : 'Activity Details'}
+				</div>
 				<div className={styles.modal__Body}>
 					<div className={styles.modal__ImageContainer}>
 						{activity.image_url ? (
-						<Image
-                        src={imageUrl}
-                        alt={activity.name || 'Activity image'}
-                        fill
-                        style={{ objectFit: 'contain' }}
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                        onError={(e) => {
-                            (e.target as HTMLImageElement).src = '/images/default.png'; // Fallback to default image
-                        }}
-                    />
+							<Image
+								src={imageUrl}
+								alt={`${
+									activity.type === 'event' ? 'Event' : 'Activity'
+								} image`}
+								fill
+								style={{ objectFit: 'contain' }}
+								sizes="(max-width: 768px) 100vw, 50vw"
+								onError={(e) => {
+									(e.target as HTMLImageElement).src = '/images/default.png'; // Fallback to default image
+								}}
+							/>
 						) : (
 							<div className={styles.message}>No Image Provided</div>
 						)}
@@ -57,7 +60,7 @@ export const ActivityInfoModal: React.FC<ActivityInfoModalProps> = ({
 
 							{[
 								{ label: 'Published', value: activity.active ? 'Yes' : 'No' },
-								{ label: 'Address', value: activity.addr },
+								{ label: 'Address', value: activity.addr || 'Not specified' },
 								{ label: 'Date', value: activity.date },
 								{ label: 'Type', value: activity.type },
 								{ label: 'Place', value: activity.place },
@@ -70,10 +73,7 @@ export const ActivityInfoModal: React.FC<ActivityInfoModalProps> = ({
 							].map(
 								(field, idx) =>
 									field.value && (
-										<div
-											className={styles.modal__DetailItem}
-											key={idx}
-										>
+										<div className={styles.modal__DetailItem} key={idx}>
 											<strong>{field.label}:</strong> {field.value}
 										</div>
 									)
