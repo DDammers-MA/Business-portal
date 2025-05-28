@@ -25,6 +25,7 @@ export default function CreatePage() {
 	phone: '',
 	budget: '',
 	start_time: '',
+	region: '',
 	end_time: '',
 	date: '',
 	place: '',
