@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 .card {
 	display: flex;
 	align-items: center;
@@ -54,7 +56,7 @@
 	transition: background 0.3s, opacity 0.3s;
 
 	&:hover:not(:disabled) {
-		background: darken(#bc76f1, 10%);
+		background: color.adjust(#bc76f1, $lightness: -10%);
 	}
 
 	&:disabled {
