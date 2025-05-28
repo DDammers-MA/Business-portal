@@ -19,6 +19,7 @@ export default function Login() {
 	const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 	const [resetLoading, setResetLoading] = useState(false);
 	const [resetMessage, setResetMessage] = useState<string | null>(null);
+	const [loginSuccess, setLoginSuccess] = useState(false);
 	const router = useRouter();
 	const searchParams = useSearchParams();
 
@@ -28,6 +29,17 @@ export default function Login() {
 		}
 		console.log('[Login Page Component] Component Mounted in Browser');
 	}, [searchParams, router]);
+
+	useEffect(() => {
+		if (loginSuccess) {
+			const redirectTimeout = setTimeout(() => {
+				const redirectedFrom = searchParams.get('redirectedFrom');
+				router.push(redirectedFrom || '/');
+			}, 3000);
+
+			return () => clearTimeout(redirectTimeout);
+		}
+	}, [loginSuccess, router, searchParams]);
 
 	const handleLogin = async () => {
 		if (!email) {
@@ -72,6 +84,7 @@ export default function Login() {
 				throw new Error(data.message || 'Failed to set session.');
 			}
 
+			setLoginSuccess(true);
 			const redirectedFrom = searchParams.get('redirectedFrom');
 			router.push(redirectedFrom || '/');
 		} catch (err) {

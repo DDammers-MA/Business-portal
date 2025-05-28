@@ -51,11 +51,10 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
 	// Define background style dynamically
 	const cardStyle: React.CSSProperties = previewSrc
 		? {
-		
-				maxWidth: '350px', 
+				maxWidth: '350px',
 				margin: '20px auto',
-				borderRadius: '8px', 
-				overflow: 'hidden', 
+				borderRadius: '8px',
+				overflow: 'hidden',
 				backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.6)), url(${previewSrc})`,
 				backgroundSize: 'cover',
 				backgroundPosition: 'center',
@@ -66,7 +65,6 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
 				justifyContent: 'flex-end',
 		  }
 		: {
-		
 				maxWidth: '350px',
 				margin: '20px auto',
 				borderRadius: '8px',
@@ -96,39 +94,15 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
 				</div>
 			</div>
 
-			
-		
-{(step === 4 || (step === 3 && formData.type === 'event')) && (
-				<div className={styles.inputGroup}>
-				
-					<div className={styles.formControl}>
-						<label htmlFor="statusSelect" className={styles.label}>
-							Status
-						</label>
-						<select
-							id="statusSelect"
-							className={styles.selectInput}
-							value={formData.status ?? 'inreview'}
-							onChange={(e) => handleInputChange('status', e.target.value)}
-						>
-							<option value="inreview">Send for review</option>
-							<option value="draft">Draft</option>
-						</select>
-					</div>
-				</div>
-			)}
-
 			{submitError && <p className={style.errorText}>{submitError}</p>}
 
-			
-		
-{(step === 4 || (step === 3 && formData.type === 'event')) && (
+			{(step === 4 || (step === 3 && formData.type === 'event')) && (
 				<div className={style.form__buttonContainer}>
 					<button
 						className={style.nextBtn}
 						onClick={prevStep}
 						disabled={isSubmitting}
-						type="button" 
+						type="button"
 					>
 						Back
 					</button>
@@ -137,11 +111,7 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
 						onClick={submitForm}
 						disabled={isSubmitting}
 					>
-						{isSubmitting
-							? 'Submitting...'
-							: formData.status === 'draft'
-							? 'Save as Draft'
-							: 'Submit for Review'}
+						{isSubmitting ? 'Submitting...' : 'Submit for Review'}
 					</button>
 				</div>
 			)}

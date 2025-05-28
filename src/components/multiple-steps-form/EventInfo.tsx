@@ -8,6 +8,7 @@ interface EventInfoProps {
 	formData: FormData;
 	setFormData: React.Dispatch<React.SetStateAction<FormData>>;
 	nextStep: () => void;
+	prevStep: () => void;
 }
 
 interface FormErrors {
@@ -24,6 +25,7 @@ const EventInfo: React.FC<EventInfoProps> = ({
 	formData,
 	setFormData,
 	nextStep,
+	prevStep,
 }) => {
 	const [errors, setErrors] = useState<FormErrors>({});
 	const [isNextDisabled, setIsNextDisabled] = useState(true);
@@ -89,7 +91,6 @@ const EventInfo: React.FC<EventInfoProps> = ({
 		const error = validateField(field, value);
 		setErrors((prevErrors) => ({ ...prevErrors, [field]: error }));
 	};
-
 
 	const handleBlur = (
 		e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -162,8 +163,6 @@ const EventInfo: React.FC<EventInfoProps> = ({
 				</div>
 
 				<div className={styles.form__divContainer}>
-
-
 					<FormInput
 						iconClass="fa-solid fa-euro-sign"
 						label="Budget per person"
@@ -190,13 +189,18 @@ const EventInfo: React.FC<EventInfoProps> = ({
 						/>
 					</div>
 				</div>
-				<button
-					className={styles.nextBtn}
-					onClick={nextStep}
-					disabled={isNextDisabled}
-				>
-					Next
-				</button>
+				<div className={styles.form__buttonContainer}>
+					<button className={styles.nextBtn} onClick={prevStep} disabled={true}>
+						Back
+					</button>
+					<button
+						className={styles.nextBtn}
+						onClick={nextStep}
+						disabled={isNextDisabled}
+					>
+						Next
+					</button>
+				</div>
 			</div>
 
 			<div className={styles.form__previewContainer}>
