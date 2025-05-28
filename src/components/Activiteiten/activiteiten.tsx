@@ -218,7 +218,7 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 	return (
 		<div className={styles.event}>
 			<div className={styles.event__container}>
-				
+
 				<div className={styles.event__list}>
 					{/* Conditional Rendering Section */}
 					{loading ? (
@@ -413,18 +413,28 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 					</Link>
 				</div>
 				<div
-    className={`${styles.toggle} ${isToggled ? styles['toggle--online'] : styles.toggle__on} ${isUpdating ? styles.toggle__disabled : ''}`}
-    onClick={(e) => {
-        e.stopPropagation();
-        handleToggle();
-    }}
->
-    <span className={styles.toggle__label}>
-    <span style={{ visibility: isToggled ? 'visible' : 'hidden' }}>Online</span>
-    <span style={{ visibility: !isToggled ? 'visible' : 'hidden' }}>Offline</span>
-</span>
-    <div className={styles.toggle__circle}></div>
-</div>
+					className={`${styles.toggle} ${isToggled ? styles['toggle--online'] : styles.toggle__on} ${isUpdating ? styles.toggle__disabled : ''}`}
+					onClick={(e) => {
+						e.stopPropagation();
+						handleToggle();
+					}}
+				>
+					<span className={styles.toggle__label}>
+						<span
+							className={styles.onlineLabel}
+							style={{ opacity: isToggled ? 1 : 0, pointerEvents: 'none' }}
+						>
+							Online
+						</span>
+						<span
+							className={styles.offlineLabel}
+							style={{ opacity: !isToggled ? 1 : 0, pointerEvents: 'none' }}
+						>
+							Offline
+						</span>
+					</span>
+					<div className={styles.toggle__circle}></div>
+				</div>
 			</div>
 		</div>
 	);
