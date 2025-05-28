@@ -7,10 +7,10 @@ interface AdminBadgeProps {
 const AdminBadge: React.FC<AdminBadgeProps> = ({ className = '' }) => {
 	return (
 		<span
-			className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 ${className}`}
+			className={`inline-flex items-center ml-2 text-xs font-medium text-purple-800 ${className}`}
 			title="Administrator"
 		>
-			Admin
+			<i className="fa-solid fa-crown text-purple-600 mr-1"></i>
 		</span>
 	);
 };

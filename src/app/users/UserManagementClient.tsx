@@ -33,6 +33,7 @@ export default function UserManagementClient({
 }: UserManagementClientProps) {
 	const { user: loggedInUser, isAdmin } = useAuth();
 	const [users, setUsers] = useState<CombinedUser[]>(initialUsers);
+	const [isLoading, setIsLoading] = useState(true);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [currentUser, setCurrentUser] = useState<Partial<CombinedUser> | null>(
 		null
@@ -51,6 +52,42 @@ export default function UserManagementClient({
 		[users]
 	);
 
+	useEffect(() => {
+		const fetchAdditionalUserData = async () => {
+			if (!isAdmin) return;
+
+			try {
+				const idToken = await loggedInUser?.getIdToken();
+				if (!idToken) return;
+
+				const response = await fetch('/api/auth/admin/users/batch', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${idToken}`,
+					},
+					body: JSON.stringify({ userIds: users.map((u) => u.id) }),
+				});
+
+				if (!response.ok) {
+					throw new Error('Failed to fetch additional user data');
+				}
+
+				const data = await response.json();
+				setUsers(data.users);
+			} catch (error) {
+				console.error('Error fetching additional user data:', error);
+				// Fall back to initial users if batch request fails
+				setUsers(initialUsers);
+			} finally {
+				setIsLoading(false);
+			}
+		};
+
+		setUsers(initialUsers);
+		fetchAdditionalUserData();
+	}, [initialUsers, isAdmin, loggedInUser]);
+
 	const handleAdminStatusChange = () => {
 		// Refresh the users list to get updated admin statuses
 		window.location.reload();
@@ -66,7 +103,10 @@ export default function UserManagementClient({
 					cell: (info) => (
 						<div className={styles.user__userCell}>
 							<i className={`fa-solid fa-user ${styles.user__userIcon}`}></i>
-							<span className={styles.user__userName}>{info.getValue()}</span>
+							<span className={styles.user__userName}>
+								{info.getValue()}
+								{info.row.original.isAdmin && <AdminBadge />}
+							</span>
 						</div>
 					),
 				}
@@ -86,30 +126,11 @@ export default function UserManagementClient({
 						? new Date(info.getValue()!).toLocaleString()
 						: 'No login data',
 			}),
-			columnHelper.accessor('isAdmin', {
-				header: 'Role',
-				cell: (info) => (info.getValue() ?? false) && <AdminBadge />,
-			}),
 			columnHelper.accessor('id', {
 				id: 'actions',
 				header: 'Actions',
 				cell: (info) => (
 					<div className={styles.user__actions}>
-						<i
-							className={`fa-regular fa-pen-to-square ${styles.user__editIcon}`}
-							title="Edit user"
-							onClick={() => {
-								if (isPending) return;
-								setCurrentUser(info.row.original);
-								setFormError(null);
-								setIsModalOpen(true);
-							}}
-						></i>
-						<i
-							className={`fa-solid fa-trash ${styles.user__deleteIcon}`}
-							title="Delete user"
-							onClick={() => handleDeleteUser(info.getValue())}
-						></i>
 						{isAdmin && (
 							<AdminControls
 								userId={info.getValue()}
@@ -119,6 +140,19 @@ export default function UserManagementClient({
 									adminCount === 1 && Boolean(info.row.original.isAdmin)
 								}
 								onStatusChange={handleAdminStatusChange}
+								onEdit={() => {
+									if (isPending) return;
+									setCurrentUser(info.row.original);
+									setFormError(null);
+									setIsModalOpen(true);
+								}}
+								onDelete={() => handleDeleteUser(info.getValue())}
+								userName={
+									info.row.original.companyName ||
+									info.row.original.displayName ||
+									info.row.original.email ||
+									'Unknown'
+								}
 							/>
 						)}
 					</div>
@@ -272,6 +306,11 @@ export default function UserManagementClient({
 
 	return (
 		<div className={styles.user__container}>
+			{isLoading && (
+				<div className={styles.loadingOverlay}>
+					Loading additional user data...
+				</div>
+			)}
 			<div className={styles.user__header}>
 				<div className={styles.user__searchBar}>
 					<i className="fa-solid fa-magnifying-glass"></i>

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { auth } from '../../../utils/firebase.browser';
+import styles from './adminControls.module.scss';
 
 interface AdminControlsProps {
 	userId: string;
@@ -8,6 +9,9 @@ interface AdminControlsProps {
 	isCurrentUser: boolean;
 	isLastAdmin: boolean;
 	onStatusChange: () => void;
+	onEdit: () => void;
+	onDelete: () => void;
+	userName: string;
 }
 
 const AdminControls: React.FC<AdminControlsProps> = ({
@@ -16,10 +20,42 @@ const AdminControls: React.FC<AdminControlsProps> = ({
 	isCurrentUser,
 	isLastAdmin,
 	onStatusChange,
+	onEdit,
+	onDelete,
+	userName,
 }) => {
 	const { user } = useAuth();
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const [isOpen, setIsOpen] = useState(false);
+	const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
+	const dropdownRef = useRef<HTMLDivElement>(null);
+	const triggerRef = useRef<HTMLButtonElement>(null);
+
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (
+				dropdownRef.current &&
+				!dropdownRef.current.contains(event.target as Node)
+			) {
+				setIsOpen(false);
+			}
+		};
+
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => document.removeEventListener('mousedown', handleClickOutside);
+	}, []);
+
+	const handleToggleMenu = () => {
+		if (!isOpen && triggerRef.current) {
+			const rect = triggerRef.current.getBoundingClientRect();
+			setMenuPosition({
+				top: rect.bottom + window.scrollY,
+				left: rect.left + rect.width / 2 - 90, // Half of min-width (180px)
+			});
+		}
+		setIsOpen(!isOpen);
+	};
 
 	const handleAdminAction = async () => {
 		if (isLoading || !user) return;
@@ -29,6 +65,15 @@ const AdminControls: React.FC<AdminControlsProps> = ({
 		}
 		if (isLastAdmin && isAdmin) {
 			setError('Cannot demote the last admin');
+			return;
+		}
+
+		const action = isAdmin ? 'remove admin rights from' : 'make';
+		const confirmMessage = `Are you sure you want to ${action} ${userName} ${
+			isAdmin ? '' : 'an admin'
+		}?`;
+
+		if (!window.confirm(confirmMessage)) {
 			return;
 		}
 
@@ -57,6 +102,7 @@ const AdminControls: React.FC<AdminControlsProps> = ({
 			}
 
 			onStatusChange();
+			setIsOpen(false);
 		} catch (err) {
 			setError(err instanceof Error ? err.message : 'An error occurred');
 		} finally {
@@ -64,34 +110,69 @@ const AdminControls: React.FC<AdminControlsProps> = ({
 		}
 	};
 
+	const handleAction = (action: () => void) => {
+		action();
+		setIsOpen(false);
+	};
+
 	return (
-		<div className="flex flex-col items-start gap-2">
+		<div className={styles.dropdown} ref={dropdownRef}>
 			<button
-				onClick={handleAdminAction}
-				disabled={
-					isLoading || (isLastAdmin && isAdmin) || isCurrentUser || !user
-				}
-				className={`px-3 py-1 rounded text-sm font-medium transition-colors
-                    ${
-											isAdmin
-												? 'bg-red-100 text-red-700 hover:bg-red-200 disabled:bg-gray-100 disabled:text-gray-400'
-												: 'bg-purple-100 text-purple-700 hover:bg-purple-200 disabled:bg-gray-100 disabled:text-gray-400'
-										}`}
+				ref={triggerRef}
+				onClick={handleToggleMenu}
+				className={styles.dropdown__trigger}
+				title="Actions"
 			>
-				{isLoading ? 'Processing...' : isAdmin ? 'Remove Admin' : 'Make Admin'}
+				<i className="fa-solid fa-ellipsis"></i>
 			</button>
 
-			{error && <p className="text-sm text-red-600">{error}</p>}
+			{isOpen && (
+				<div
+					className={styles.dropdown__menu}
+					style={{
+						top: `${menuPosition.top}px`,
+						left: `${menuPosition.left}px`,
+					}}
+				>
+					<button
+						onClick={() => handleAction(onEdit)}
+						className={styles.dropdown__item}
+						title="Edit user"
+					>
+						<i className="fa-regular fa-pen-to-square"></i>
+						<span>Edit</span>
+					</button>
 
-			{isLastAdmin && isAdmin && (
-				<p className="text-sm text-gray-500">Cannot demote the last admin</p>
+					{user && !isCurrentUser && (
+						<button
+							onClick={handleAdminAction}
+							disabled={isLoading || (isLastAdmin && isAdmin) || isCurrentUser}
+							className={styles.dropdown__item}
+							title={isAdmin ? 'Remove admin rights' : 'Grant admin rights'}
+						>
+							<i
+								className={`fa-solid ${
+									isAdmin ? 'fa-crown text-purple-600' : 'fa-crown'
+								}`}
+							></i>
+							<span>{isAdmin ? 'Remove Admin' : 'Make Admin'}</span>
+						</button>
+					)}
+
+					{!isCurrentUser && (
+						<button
+							onClick={() => handleAction(onDelete)}
+							className={`${styles.dropdown__item} ${styles.dropdown__item_danger}`}
+							title="Delete user"
+						>
+							<i className="fa-solid fa-trash"></i>
+							<span>Delete</span>
+						</button>
+					)}
+				</div>
 			)}
 
-			{isCurrentUser && (
-				<p className="text-sm text-gray-500">
-					Cannot modify your own admin status
-				</p>
-			)}
+			{error && <p className={styles.dropdown__error}>{error}</p>}
 		</div>
 	);
 };

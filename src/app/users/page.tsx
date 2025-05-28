@@ -15,7 +15,7 @@ interface FirestoreUserData {
 }
 
 export default async function UsersPage() {
-	let combinedUsers: CombinedUser[] = [];
+	const combinedUsers: CombinedUser[] = [];
 	let fetchError: string | null = null;
 
 	try {
@@ -26,6 +26,7 @@ export default async function UsersPage() {
 		const userIds = authUsers.map((user: UserRecord) => user.uid);
 		const firestoreUsersData: { [key: string]: FirestoreUserData } = {};
 
+		// Batch get Firestore data
 		if (userIds.length > 0) {
 			const MAX_IDS_PER_QUERY = 30;
 			const userDocPromises: Promise<admin.firestore.QuerySnapshot>[] = [];
@@ -45,33 +46,32 @@ export default async function UsersPage() {
 			});
 		}
 
-		// Get admin status for each user
-		const adminStatusPromises = authUsers.map(async (authUser: UserRecord) => {
-			const userRecord = await auth.getUser(authUser.uid);
-			return {
-				uid: authUser.uid,
-				isAdmin: userRecord.customClaims?.admin === true,
-			};
-		});
-		const adminStatuses = await Promise.all(adminStatusPromises);
+		// Batch get admin status
+		const userRecords = await auth.getUsers(userIds.map((uid) => ({ uid })));
 		const adminStatusMap = Object.fromEntries(
-			adminStatuses.map((status) => [status.uid, status.isAdmin])
+			userRecords.users.map((user) => [
+				user.uid,
+				user.customClaims?.admin === true,
+			])
 		);
 
-		combinedUsers = authUsers.map((authUser: UserRecord) => {
-			const firestoreData = firestoreUsersData[authUser.uid] || {};
-			return {
-				id: authUser.uid,
-				email: authUser.email,
-				displayName: authUser.displayName,
-				photoURL: authUser.photoURL,
-				companyName: firestoreData.companyName,
-				phone: firestoreData.phone,
-				kvk: firestoreData.kvk,
-				lastLoginAt: authUser.metadata.lastSignInTime || null,
-				isAdmin: adminStatusMap[authUser.uid] || false,
-			};
-		});
+		// Combine all data
+		combinedUsers.push(
+			...authUsers.map((authUser: UserRecord) => {
+				const firestoreData = firestoreUsersData[authUser.uid] || {};
+				return {
+					id: authUser.uid,
+					email: authUser.email,
+					displayName: authUser.displayName,
+					photoURL: authUser.photoURL,
+					companyName: firestoreData.companyName,
+					phone: firestoreData.phone,
+					kvk: firestoreData.kvk,
+					lastLoginAt: authUser.metadata.lastSignInTime || null,
+					isAdmin: adminStatusMap[authUser.uid] || false,
+				};
+			})
+		);
 	} catch (error) {
 		console.error('Error fetching users:', error);
 		fetchError = 'Failed to load users. Please try again later.';

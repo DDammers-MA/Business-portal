@@ -83,11 +83,30 @@
 	}
 
 	&__tableContainer {
+		position: relative;
 		overflow-x: auto;
 		margin: 1.5rem 0;
 		border-radius: 8px;
 		border: 1px solid #eee;
 		padding: 0.5rem;
+
+		&::-webkit-scrollbar {
+			height: 8px;
+		}
+
+		&::-webkit-scrollbar-track {
+			background: #f1f1f1;
+			border-radius: 4px;
+		}
+
+		&::-webkit-scrollbar-thumb {
+			background: #888;
+			border-radius: 4px;
+		}
+
+		&::-webkit-scrollbar-thumb:hover {
+			background: #555;
+		}
 	}
 
 	&__table {
@@ -95,6 +114,7 @@
 		border-collapse: separate;
 		border-spacing: 0;
 		font-size: 1.265rem;
+		position: relative;
 
 		th,
 		td {
@@ -102,6 +122,7 @@
 			text-align: left;
 			border-bottom: 1px solid #eee;
 			font-size: 1.265rem;
+			position: relative;
 		}
 
 		th {
@@ -151,13 +172,16 @@
 	&__userName {
 		font-weight: 500;
 		font-size: 1.38rem;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
 	}
 
 	&__actions {
 		display: flex;
-		gap: 1.725rem;
-		justify-content: flex-start;
-		min-width: 115px;
+		justify-content: center;
+		min-width: 60px;
+		padding: 0 0.5rem;
 	}
 
 	&__editIcon,
@@ -622,4 +646,24 @@
 	.user__userName {
 		font-size: 1.15rem;
 	}
+}
+
+:global(.dropdown__menu) {
+	z-index: 1000;
+}
+
+.loadingOverlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(255, 255, 255, 0.8);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+	font-size: 1.2rem;
+	color: var(--text-color);
+	backdrop-filter: blur(2px);
 }
