@@ -37,7 +37,7 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
 			// Use existing URL if no new file is selected
 			setPreviewSrc(formData.image_url);
 		} else {
-			setPreviewSrc(null); // No image
+			setPreviewSrc(null);
 		}
 
 		// Cleanup function to revoke the blob URL
@@ -51,12 +51,10 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
 	// Define background style dynamically
 	const cardStyle: React.CSSProperties = previewSrc
 		? {
-				// Card shape and centering
-				maxWidth: '350px', // Limit width
-				margin: '20px auto', // Center horizontally, add some vertical margin
-				borderRadius: '8px', // Rounded corners
-				overflow: 'hidden', // Clip background to border radius
-				// Background image and layout
+				maxWidth: '350px',
+				margin: '20px auto',
+				borderRadius: '8px',
+				overflow: 'hidden',
 				backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.6)), url(${previewSrc})`,
 				backgroundSize: 'cover',
 				backgroundPosition: 'center',
@@ -67,7 +65,6 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
 				justifyContent: 'flex-end',
 		  }
 		: {
-				// Default style if no image
 				maxWidth: '350px',
 				margin: '20px auto',
 				borderRadius: '8px',
@@ -76,8 +73,8 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
 				backgroundColor: '#e0e0e0',
 				backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.6)), url('../../../public/images/placeholder-2-1.png')`,
 				display: 'flex',
-				alignItems: 'center', // Center placeholder text
-				justifyContent: 'center', // Center placeholder text
+				alignItems: 'center',
+				justifyContent: 'center',
 		  };
 
 	return (
@@ -97,53 +94,15 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
 				</div>
 			</div>
 
-			{/* Add Toggle and Select Inputs - Only show in final step */}
-			{step === 4 && (
-				<div className={styles.inputGroup}>
-					{/* Active Status Toggle */}
-					{/* <div className={styles.formControl}>
-						<label htmlFor="activeToggle" className={styles.label}>
-							Active?
-						</label>
-						<label className={styles.toggleSwitch}>
-							<input
-								type="checkbox"
-								id="activeToggle"
-								checked={formData.active ?? true}
-								onChange={() =>
-									handleInputChange('active', !(formData.active ?? true))
-								}
-							/>
-							<span className={styles.slider}></span>
-						</label>
-					</div> */}
-
-					{/* Status Select */}
-					<div className={styles.formControl}>
-						<label htmlFor="statusSelect" className={styles.label}>
-							Status
-						</label>
-						<select
-							id="statusSelect"
-							className={styles.selectInput}
-							value={formData.status ?? 'inreview'}
-							onChange={(e) => handleInputChange('status', e.target.value)}
-						>
-							<option value="inreview">Send for review</option>
-							<option value="draft">Draft</option>
-						</select>
-					</div>
-				</div>
-			)}
-
 			{submitError && <p className={style.errorText}>{submitError}</p>}
 
-{(step === 4 || (step === 3 && formData.type === 'event')) && (
+			{(step === 4 || (step === 3 && formData.type === 'event')) && (
 				<div className={style.form__buttonContainer}>
 					<button
 						className={style.nextBtn}
 						onClick={prevStep}
 						disabled={isSubmitting}
+						type="button"
 					>
 						Back
 					</button>
@@ -152,11 +111,7 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
 						onClick={submitForm}
 						disabled={isSubmitting}
 					>
-						{isSubmitting
-							? 'Submitting...'
-							: formData.status === 'draft'
-							? 'Save as Draft'
-							: 'Submit for Review'}
+						{isSubmitting ? 'Submitting...' : 'Submit for Review'}
 					</button>
 				</div>
 			)}

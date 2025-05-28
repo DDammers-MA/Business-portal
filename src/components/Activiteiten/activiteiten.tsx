@@ -1,16 +1,9 @@
-/**
- * eslint-disable @next/next/no-img-element
- *
- * @format
- */
+'use client';
 
-"use client";
-
-import React, { useState, useEffect } from "react";
-import styles from "./activiteiten.module.scss";
-import Link from "next/link"; // Add import for Link
-// Import Firestore functions and db instance
-import { db } from "../../../utils/firebase.browser";
+import React, { useState, useEffect } from 'react';
+import styles from './activiteiten.module.scss';
+import Link from 'next/link';
+import { db } from '../../../utils/firebase.browser';
 import {
 	collection,
 	query,
@@ -21,45 +14,47 @@ import {
 	Query,
 	DocumentData,
 	updateDoc,
-} from "firebase/firestore";
-// Import AuthContext hook
-import { useAuth } from "@/context/AuthContext";
-
+} from 'firebase/firestore';
+import { useAuth } from '@/context/AuthContext';
 import { FormData } from '@/types/FormData';
 import { ActivityInfoModal } from '@/app/activities/approve/infoModal';
 import { toast } from 'sonner';
-import { getUserDetailsAction, UserDetails } from '@/app/activities/approve/actions';
+import {
+	getUserDetailsAction,
+	UserDetails,
+} from '@/app/activities/approve/actions';
+import FilterTabs from './FilterTabs';
+import { usePathname } from 'next/navigation';
+import Image from 'next/image';
 
-// Define configuration for status badges
 const STATUS_CONFIG = {
 	published: {
-		label: "Published",
-		backgroundColor: "#198754",
-		color: "white",
+		label: 'Published',
+		backgroundColor: '#198754',
+		color: 'white',
 	},
 	inreview: {
-		label: "In review",
-		backgroundColor: "#ffc107",
-		color: "#333",
+		label: 'In review',
+		backgroundColor: '#ffc107',
+		color: '#333',
 	},
 	denied: {
-		label: "Denied",
-		backgroundColor: "#ff2d2d",
-		color: "#333",
+		label: 'Denied',
+		backgroundColor: '#ff2d2d',
+		color: '#333',
 	},
 	draft: {
-		label: "Draft",
-		backgroundColor: "#6c757d",
-		color: "white",
+		label: 'Draft',
+		backgroundColor: '#6c757d',
+		color: 'white',
 	},
 	default: {
-		label: "Unknown",
-		backgroundColor: "#6c757d",
-		color: "white",
+		label: 'Unknown',
+		backgroundColor: '#6c757d',
+		color: 'white',
 	},
 };
 
-// Add online/offline badge configuration
 const ONLINE_STATUS_CONFIG = {
 	online: {
 		label: 'Online',
@@ -73,15 +68,38 @@ const ONLINE_STATUS_CONFIG = {
 	},
 };
 
-// Define props interface including the optional filter
+const TYPE_BADGE_CONFIG = {
+	event: {
+		label: 'Event',
+		backgroundColor: '#007bff',
+		color: 'white',
+	},
+	activity: {
+		label: 'Activity',
+		backgroundColor: '#28a745',
+		color: 'white',
+	},
+	default: {
+		label: 'Unknown',
+		backgroundColor: '#6c757d',
+		color: 'white',
+	},
+};
+
 interface ActiviteitenProps {
 	filter?: string;
+	contentType?: 'activities' | 'events' | 'all';
 }
 
-// Update component signature to accept props
-const Activiteiten = ({ filter }: ActiviteitenProps) => {
+const Activiteiten = ({
+	filter,
+	contentType = 'activities',
+}: ActiviteitenProps) => {
+	const pathname = usePathname();
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	const [selectedActivity, setSelectedActivity] = useState<FormData | null>(null);
+	const [selectedActivity, setSelectedActivity] = useState<FormData | null>(
+		null
+	);
 	const [creatorData, setCreatorData] = useState<UserDetails | null>(null);
 	const [modalUserLoading, setModalUserLoading] = useState<boolean>(false);
 	const [activiteiten, setActiviteiten] = useState<FormData[]>([]);
@@ -115,59 +133,49 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 
 	useEffect(() => {
 		if (isModalOpen) {
-			// Prevent scrolling
 			document.body.style.overflow = 'hidden';
 		} else {
-			// Restore scrolling
 			document.body.style.overflow = '';
 		}
 
-		// Cleanup on unmount
 		return () => {
 			document.body.style.overflow = '';
 		};
 	}, [isModalOpen]);
 
-	// Fetch data on mount and when filter changes
 	useEffect(() => {
+		if (authLoading) {
+			setLoading(true);
+			return;
+		}
+
+		if (!isAdmin && !user) {
+			setActiviteiten([]);
+			setLoading(false);
+			setError(null);
+			return;
+		}
+
 		const fetchData = async () => {
-			// Show loading state if auth is still loading
-			if (authLoading) {
-				setLoading(true);
-				return;
-			}
-
-			// If not admin and not logged in, show no activities
-			if (!isAdmin && !user) {
-				setActiviteiten([]);
-				setLoading(false);
-				setError(null); // Clear any previous errors
-				return;
-			}
-
 			setLoading(true);
 			setError(null);
 			try {
-				// Base query for the activities collection
 				let q: Query<DocumentData> = query(collection(db, 'activities'));
 
-				console.log(filter);
+				if (contentType === 'activities') {
+					q = query(q, where('type', '==', 'activity'));
+				} else if (contentType === 'events') {
+					q = query(q, where('type', '==', 'event'));
+				}
 
-				// Apply filter if it's valid
-				if (filter === 'draft') {
-					// If filter is 'draft', fetch both 'draft' and 'denied'
-					q = query(q, where('status', 'in', ['draft', 'denied']));
-				} else if (
+				if (
 					filter &&
-					['published', 'inreview', 'denied'].includes(filter)
+					['published', 'inreview', 'denied', 'draft'].includes(filter)
 				) {
-					// For other valid statuses, filter specifically
 					q = query(q, where('status', '==', filter.toLowerCase()));
 				}
 
-				// Apply user-specific filter if not admin and logged in
 				if (!isAdmin && user) {
-					// Use 'creatorId' as confirmed
 					q = query(q, where('creatorUid', '==', user.uid));
 				}
 
@@ -176,7 +184,6 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 					id: doc.id,
 					...(doc.data() as Omit<FormData, 'id'>),
 				}));
-				console.log(fetchedActiviteiten);
 				setActiviteiten(fetchedActiviteiten);
 			} catch (err) {
 				console.error('Error fetching activities:', err);
@@ -187,110 +194,135 @@ const Activiteiten = ({ filter }: ActiviteitenProps) => {
 		};
 
 		fetchData();
-		// Update dependencies to include auth state
-	}, [filter, user, isAdmin, authLoading]);
+	}, [filter, user, isAdmin, authLoading, contentType]);
 
-	// Update handleDelete to remove from Firestore
 	const handleDelete = async (id: string, title: string) => {
 		if (!id) return;
 
-		// Add confirmation dialog
 		const confirmation = window.confirm(
-			`Are you sure you want to delete the activity "${title}"?`
+			`Are you sure you want to delete this ${
+				contentType === 'events' ? 'event' : 'activity'
+			}?`
 		);
 		if (!confirmation) {
-			return; // Stop deletion if user cancels
+			return;
 		}
 
 		try {
 			await deleteDoc(doc(db, 'activities', id));
 			setActiviteiten((prevActiviteiten) =>
 				prevActiviteiten.filter((activiteit) => activiteit.id !== id)
-
 			);
-			toast.success('Activity deleted successfully!')
+			toast.success('Activity deleted successfully!');
 		} catch (err) {
-			toast.error('Failed to delete activity.')
+			toast.error('Failed to delete activity.');
 			console.error('Error deleting activity:', err);
 		}
 	};
 
 	return (
-		<div className={styles.event}>
-			<div className={styles.event__container}>
+		<>
+			<FilterTabs baseUrl={pathname} />
+			<div className={styles.event}>
+				<div className={styles.event__container}>
+					<div className={styles.event__list}>
+						{loading ? (
+							<div className={styles.spinner}></div>
+						) : error ? (
+							<div className={`${styles.message} ${styles.error}`}>{error}</div>
+						) : activiteiten.length === 0 ? (
+							<div className={styles.message}>
+								{contentType === 'activities'
+									? 'No activities found.'
+									: contentType === 'events'
+									? 'No events found.'
+									: 'No items found.'}
+							</div>
+						) : (
+							activiteiten.map((activiteit, index) => {
+								const typeKey =
+									activiteit.type &&
+									(activiteit.type === 'event' ||
+										activiteit.type === 'activity')
+										? activiteit.type
+										: 'default';
+								const currentStatus = activiteit.status || 'draft';
+								const badgeConfig =
+									STATUS_CONFIG[currentStatus] || STATUS_CONFIG.default;
+								const typeBadgeConfig = TYPE_BADGE_CONFIG[typeKey];
 
-				<div className={styles.event__list}>
-					{/* Conditional Rendering Section */}
-					{loading ? (
-						<div className={styles.spinner}></div>
-					) : error ? (
-						<div className={`${styles.message} ${styles.error}`}>{error}</div>
-					) : activiteiten.length === 0 ? (
-						<div className={styles.message}>No activities found.</div>
-					) : (
-						/* Map through activities only if not loading, no error, and activities exist */
-						activiteiten.map((activiteit, index) => {
-							// Determine status and look up config
-							const currentStatus = activiteit.status || 'draft'; // Default to draft if undefined
-							const badgeConfig =
-								STATUS_CONFIG[currentStatus] || STATUS_CONFIG.default;
+								const cleanActivity = {
+									...activiteit,
+									addr: activiteit.addr || '',
+									type: typeKey,
+								};
 
-							return (
-								<ActiviteitCard
-									key={activiteit.id}
-									id={activiteit.id || ''}
-									image={activiteit.image_url || '/images/default.png'}
-									title={activiteit.name}
-									description={activiteit.description}
-									badgeConfig={badgeConfig}
-									active={activiteit.active ?? false}
-									onDelete={() => handleDelete(activiteit.id || '', activiteit.name)}
-									onInfoClick={() => handleOpenInfoModal(activiteit)}
-									animationDelay={`${index * 50}ms`}
-								/>
-							);
-						})
-					)}
+								return (
+									<ActiviteitCard
+										key={activiteit.id}
+										id={activiteit.id || ''}
+										image={activiteit.image_url || '/images/default.png'}
+										title={activiteit.name}
+										description={activiteit.description}
+										typeBadgeConfig={typeBadgeConfig}
+										badgeConfig={badgeConfig}
+										active={activiteit.active ?? false}
+										onDelete={() =>
+											handleDelete(activiteit.id || '', activiteit.name)
+										}
+										onInfoClick={() => handleOpenInfoModal(cleanActivity)}
+										animationDelay={`${index * 50}ms`}
+									/>
+								);
+							})
+						)}
+					</div>
 				</div>
+				{selectedActivity && (
+					<ActivityInfoModal
+						isOpen={isModalOpen}
+						onClose={handleCloseInfoModal}
+						activity={selectedActivity}
+						creatorData={creatorData}
+						modalUserLoading={modalUserLoading}
+						modalActionLoading={false}
+						onStatusUpdate={() => {}}
+					/>
+				)}
 			</div>
-			{selectedActivity && (
-				<ActivityInfoModal
-					isOpen={isModalOpen}
-					onClose={handleCloseInfoModal}
-					activity={selectedActivity}
-					creatorData={creatorData}
-					modalUserLoading={modalUserLoading}
-					modalActionLoading={false}
-					onStatusUpdate={() => { }}
-				/>
-			)}
-		</div>
+		</>
 	);
 };
 
 interface ActiviteitCardProps {
-	id: string; // Add id
+	id: string;
 	image: string;
 	title: string;
 	description: string;
+	typeBadgeConfig: {
+		label: string;
+		backgroundColor: string;
+		color: string;
+	};
 	badgeConfig: {
 		label: string;
 		backgroundColor: string;
 		color: string;
-	}; // Add badge config prop
-	active: boolean; // Renamed from online
+	};
+	active: boolean;
 	onDelete: () => void;
 	onInfoClick: () => void;
 	animationDelay?: string;
 }
 
 const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
-	id, // Receive id
+	id,
 	image,
 	title,
 	description,
-	badgeConfig, // Receive badgeConfig
-	active, // Receive corrected prop
+	badgeConfig,
+	typeBadgeConfig,
+	active,
 	onDelete,
 	onInfoClick,
 	animationDelay,
@@ -298,37 +330,33 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 	const defaultImage = '/images/default.png';
 	const [isToggled, setIsToggled] = useState(active);
 	const [isUpdating, setIsUpdating] = useState(false);
-	// State for image loading and error
-	const [imageLoading, setImageLoading] = useState(
-		!!image && image !== defaultImage
-	);
+	const [imageLoading, setImageLoading] = useState(true);
 	const [imageError, setImageError] = useState(false);
 
 	// Get online status config
-	const onlineStatusConfig = ONLINE_STATUS_CONFIG[isToggled ? 'online' : 'offline'];
+	const onlineStatusConfig =
+		ONLINE_STATUS_CONFIG[isToggled ? 'online' : 'offline'];
 
-	// Reset loading state if image prop changes
 	useEffect(() => {
 		setImageError(false);
-		setImageLoading(!!image && image !== defaultImage);
+		setImageLoading(true);
 	}, [image]);
 
 	// Update handler to toggle 'active' status in Firebase
 	const handleToggle = async () => {
-		if (isUpdating) return; // Prevent multiple clicks
+		if (isUpdating) return;
 
-		const newActiveStatus = !isToggled; // Use new variable name
+		const newActiveStatus = !isToggled;
 		setIsUpdating(true);
 
 		try {
 			const activityRef = doc(db, 'activities', id);
 			await updateDoc(activityRef, {
-				active: newActiveStatus, // Update active field in Firestore
+				active: newActiveStatus,
 			});
-			setIsToggled(newActiveStatus); // Update local state on success
+			setIsToggled(newActiveStatus);
 		} catch (error) {
-			console.error('Error updating active status:', error); // Update error message
-			// Optionally show an error message to the user
+			console.error('Error updating active status:', error);
 		} finally {
 			setIsUpdating(false);
 		}
@@ -340,11 +368,12 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 	return (
 		<div
 			onClick={onInfoClick}
-			className={`${styles.project} ${!isToggled ? styles.project__toggled : ''} ${styles.cardFadeIn}`}
+			className={`${styles.project} ${
+				!isToggled ? styles.project__toggled : ''
+			} ${styles.cardFadeIn}`}
 			style={{ animationDelay }}
 		>
 			<div className={styles.project__badges}>
-				{/* Status Badge - Left side */}
 				<span
 					className={styles.statusBadge}
 					style={{
@@ -355,7 +384,6 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 					{badgeConfig.label}
 				</span>
 
-				{/* Online/Offline Badge - Right side */}
 				<span
 					className={styles.statusBadge}
 					style={{
@@ -363,25 +391,27 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 						color: onlineStatusConfig.color,
 					}}
 				>
-					{onlineStatusConfig.label}
+					{typeBadgeConfig.label}
 				</span>
 			</div>
 
-			{/* Image container */}
 			<div className={styles.project__imageContainer}>
-				{/* Show spinner while loading */}
 				{imageLoading && <div className={styles.spinner}></div>}
-				{/* Image element */}
-				<img
+				<Image
 					src={displayUrl}
 					alt={title}
+					width={400}
+					height={300}
 					className={`${styles.project__image} ${!isToggled ? styles['project__image--offline'] : ''}`}
-					onLoad={() => setImageLoading(false)}
+					onLoadingComplete={() => setImageLoading(false)}
 					onError={() => {
 						setImageLoading(false);
 						setImageError(true);
 					}}
+					priority={false}
 					style={{ display: imageLoading ? 'none' : 'block' }}
+					unoptimized={true}
+					loading="eager"
 				/>
 			</div>
 
@@ -391,7 +421,10 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 			</div>
 
 			<div className={styles.project__footer}>
-				<div className={styles.project__actions} onClick={(e) => e.stopPropagation()}>
+				<div
+					className={styles.project__actions}
+					onClick={(e) => e.stopPropagation()}
+				>
 					<i
 						className="fa-solid fa-trash"
 						style={{ color: '#f00f0f', cursor: 'pointer' }}
@@ -401,7 +434,7 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 					<Link href={`/activity/edit/${id}`} legacyBehavior>
 						<a
 							style={{ color: 'inherit', textDecoration: 'none' }}
-							onClick={(e) => e.stopPropagation()} // prevent card click
+							onClick={(e) => e.stopPropagation()}
 						>
 							<i
 								className="fa-regular fa-pen-to-square"
@@ -411,7 +444,9 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 					</Link>
 				</div>
 				<div
-					className={`${styles.toggle} ${isToggled ? styles['toggle--online'] : styles.toggle__on} ${isUpdating ? styles.toggle__disabled : ''}`}
+					className={`${styles.toggle} ${
+						isToggled ? styles['toggle--online'] : styles.toggle__on
+					} ${isUpdating ? styles.toggle__disabled : ''}`}
 					onClick={(e) => {
 						e.stopPropagation();
 						handleToggle();

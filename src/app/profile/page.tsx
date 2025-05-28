@@ -70,13 +70,17 @@ const ProfilePage = () => {
 
 		try {
 			const profileRef = doc(db, 'users', user.uid);
-			await setDoc(profileRef, {
-				companyName: profile.companyName,
-				companyEmail: profile.companyEmail,
-				kvk: profile.kvkNumber,
-				phone: profile.phoneNumber,
-				creatorUid: user.uid
-			}, { merge: true });
+			await setDoc(
+				profileRef,
+				{
+					companyName: profile.companyName,
+					companyEmail: profile.companyEmail,
+					kvk: profile.kvkNumber,
+					phone: profile.phoneNumber,
+					creatorUid: user.uid,
+				},
+				{ merge: true }
+			);
 
 			setIsEditing(false);
 			toast.success('Profile updated successfully');
@@ -86,7 +90,10 @@ const ProfilePage = () => {
 		}
 	};
 
-	const handlePasswordChange = async (currentPassword: string, newPassword: string) => {
+	const handlePasswordChange = async (
+		currentPassword: string,
+		newPassword: string
+	) => {
 		if (!user) {
 			throw new Error('No user logged in');
 		}
@@ -115,7 +122,9 @@ const ProfilePage = () => {
 
 			<div className={styles.profileInfo}>
 				<div className={styles.infoItem}>
-					<strong><i className="fas fa-building"></i> Company name</strong>
+					<strong>
+						<i className="fas fa-building"></i> Company name
+					</strong>
 					{isEditing ? (
 						<input
 							name="companyName"
@@ -128,7 +137,9 @@ const ProfilePage = () => {
 					)}
 				</div>
 				<div className={styles.infoItem}>
-					<strong><i className="fas fa-envelope"></i> Company email</strong>
+					<strong>
+						<i className="fas fa-envelope"></i> Company email
+					</strong>
 					{isEditing ? (
 						<input
 							name="companyEmail"
@@ -141,7 +152,9 @@ const ProfilePage = () => {
 					)}
 				</div>
 				<div className={styles.infoItem}>
-					<strong><i className="fas fa-id-card"></i> Unique entrepreneur ID</strong>
+					<strong>
+						<i className="fas fa-id-card"></i> KVK number
+					</strong>
 					{isEditing ? (
 						<input
 							name="kvkNumber"
@@ -154,7 +167,9 @@ const ProfilePage = () => {
 					)}
 				</div>
 				<div className={styles.infoItem}>
-					<strong><i className="fas fa-phone"></i> Phone number</strong>
+					<strong>
+						<i className="fas fa-phone"></i> Phone number
+					</strong>
 					{isEditing ? (
 						<input
 							name="phoneNumber"

@@ -59,3 +59,29 @@ export async function isPasswordPwned(password: string): Promise<boolean> {
 		throw new Error('Could not verify password security. Please try again.');
 	}
 }
+
+export function generateSecurePassword(): string {
+	const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+	const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	const numbers = '0123456789';
+	const special = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+	// Ensure at least one of each required character type
+	let password = '';
+	password += uppercase[Math.floor(Math.random() * uppercase.length)]; // One uppercase
+	password += lowercase[Math.floor(Math.random() * lowercase.length)]; // One lowercase
+	password += numbers[Math.floor(Math.random() * numbers.length)]; // One number
+	password += special[Math.floor(Math.random() * special.length)]; // One special
+
+	// Add 8 more random characters to make it 12 characters long and more random
+	const allChars = lowercase + uppercase + numbers + special;
+	for (let i = 0; i < 8; i++) {
+		password += allChars[Math.floor(Math.random() * allChars.length)];
+	}
+
+	// Shuffle the password to make it more random
+	return password
+		.split('')
+		.sort(() => Math.random() - 0.5)
+		.join('');
+}

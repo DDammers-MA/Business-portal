@@ -36,12 +36,13 @@ const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
 	onApprove,
 	onDeny,
 	isUpdating,
-	animationDelay
-
+	animationDelay,
 }) => {
 	const defaultImage = '/images/default.png';
 	const imageUrl = activity.image_url || defaultImage;
-	const [submitterName, setSubmitterName] = useState<string | null>('Loading...');
+	const [submitterName, setSubmitterName] = useState<string | null>(
+		'Loading...'
+	);
 	const [isSubmitterLoading, setIsSubmitterLoading] = useState<boolean>(true);
 
 	useEffect(() => {
@@ -88,11 +89,11 @@ const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
 		}
 	};
 
-	// Removed duplicate handleDenyWithReason function as it is unused
-
 	return (
-	
-		<div style={{ animationDelay }} className={`${styles.summaryCard} ${styles.cardFadeIn}`}>
+		<div
+			style={{ animationDelay }}
+			className={`${styles.summaryCard} ${styles.cardFadeIn}`}
+		>
 			<span className={`${styles.statusBadge} ${styles.inReview}`}>
 				In Review
 			</span>
@@ -118,7 +119,7 @@ const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
 					<h3 className={styles.summaryCard__Title} title={activity.name}>
 						{activity.name}
 					</h3>
-					
+
 					<div className={styles.locationDateContainer}>
 						{activity.place && activity.addr && (
 							<div className={styles.locationInfo}>
@@ -144,7 +145,6 @@ const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
 					</p>
 				</div>
 			</div>
-			{/* Action buttons always visible at the bottom */}
 			<div className={styles.summaryCard__Actions}>
 				<button
 					className={`${styles.summaryCard__Button} ${styles.summaryCard__ButtonDeny}`}
@@ -182,8 +182,7 @@ export default function ApprovePage() {
 	);
 
 	const [isDenyModalOpen, setIsDenyModalOpen] = useState(false);
-const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
-
+	const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
 
 	const [creatorData, setCreatorData] = useState<UserDetails | null>(null);
 	const [modalUserLoading, setModalUserLoading] = useState<boolean>(false);
@@ -191,9 +190,6 @@ const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
 	const [directUpdateStates, setDirectUpdateStates] = useState<
 		Record<string, boolean>
 	>({});
-
-	// Fullscreen image modal state
-	// const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
 
 	useEffect(() => {
 		if (authLoading) {
@@ -269,18 +265,18 @@ const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
 
 	const handleDenySubmit = async (reason: string) => {
 		if (!activityToDeny?.id) return;
-	
+
 		try {
 			await updateDoc(doc(db, 'activities', activityToDeny.id), {
 				status: 'denied',
 				denyReason: reason,
 			});
-	
+
 			// Remove from list
 			setActivitiesToApprove((prev) =>
 				prev.filter((activity) => activity.id !== activityToDeny.id)
 			);
-	
+
 			// Close modal
 			setIsDenyModalOpen(false);
 			setActivityToDeny(null);
@@ -289,7 +285,6 @@ const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
 			alert('Failed to deny the activity. Please try again.');
 		}
 	};
-	
 
 	const updateActivityStatus = useCallback(
 		async (activityId: string, newStatus: 'published' | 'denied') => {
@@ -346,19 +341,10 @@ const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
 			setDirectUpdateStates((prev) => ({ ...prev, [activityId]: true }));
 			try {
 				await updateActivityStatus(activityId, newStatus);
-			} catch {
-			}
+			} catch {}
 		},
 		[updateActivityStatus]
 	);
-
-	// const handleImageClick = (imageUrl: string) => {
-	// 	setFullscreenImage(imageUrl);
-	// };
-
-	// const handleCloseFullscreen = () => {
-	// 	setFullscreenImage(null);
-	// };
 
 	if (authLoading || loading) {
 		return <div className={styles.spinner}></div>;
@@ -395,37 +381,35 @@ const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
 								return Promise.resolve();
 							}}
 							isUpdating={directUpdateStates[activity.id || ''] || false}
-						   animationDelay={`${index * 100}ms`}
+							animationDelay={`${index * 100}ms`}
 						/>
 					))}
 				</div>
 			)}
 
 			{selectedActivity && (
-
 				<ActivityInfoModal
-			isOpen={isModalOpen}
-			onClose={handleCloseModal}
-			activity={selectedActivity}
-			creatorData={creatorData}
-			modalUserLoading={modalUserLoading}
-			modalActionLoading={modalActionLoading}
-			onStatusUpdate={handleModalStatusUpdate}
-		/>
-		
+					isOpen={isModalOpen}
+					onClose={handleCloseModal}
+					activity={selectedActivity}
+					creatorData={creatorData}
+					modalUserLoading={modalUserLoading}
+					modalActionLoading={modalActionLoading}
+					onStatusUpdate={handleModalStatusUpdate}
+				/>
 			)}
 
-{activityToDeny && (
-    <DenyModal
-        isOpen={isDenyModalOpen}
-        onClose={() => {
-            setIsDenyModalOpen(false);
-            setActivityToDeny(null);
-        }}
-        onSubmit={handleDenySubmit}
-    />
-)}
-
+			{activityToDeny && (
+				<DenyModal
+					isOpen={isDenyModalOpen}
+					onClose={() => {
+						setIsDenyModalOpen(false);
+						setActivityToDeny(null);
+					}}
+					onSubmit={handleDenySubmit}
+					activity={activityToDeny}
+				/>
+			)}
 		</div>
 	);
 }

@@ -8,6 +8,7 @@ interface EventInfoProps {
 	formData: FormData;
 	setFormData: React.Dispatch<React.SetStateAction<FormData>>;
 	nextStep: () => void;
+	prevStep: () => void;
 }
 
 interface FormErrors {
@@ -16,7 +17,6 @@ interface FormErrors {
 	budget?: string;
 }
 
-// Define a type for touched fields
 interface TouchedFields {
 	[key: string]: boolean;
 }
@@ -25,10 +25,10 @@ const EventInfo: React.FC<EventInfoProps> = ({
 	formData,
 	setFormData,
 	nextStep,
+	prevStep,
 }) => {
 	const [errors, setErrors] = useState<FormErrors>({});
 	const [isNextDisabled, setIsNextDisabled] = useState(true);
-	// Add touched state
 	const [touched, setTouched] = useState<TouchedFields>({});
 
 	const validateField = (
@@ -88,13 +88,10 @@ const EventInfo: React.FC<EventInfoProps> = ({
 	) => {
 		const { value } = e.target;
 		setFormData({ ...formData, [field]: value });
-
-		// Validate on change to update errors state
 		const error = validateField(field, value);
 		setErrors((prevErrors) => ({ ...prevErrors, [field]: error }));
 	};
 
-	// Add handleBlur function
 	const handleBlur = (
 		e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>,
 		field: keyof FormData
@@ -166,15 +163,6 @@ const EventInfo: React.FC<EventInfoProps> = ({
 				</div>
 
 				<div className={styles.form__divContainer}>
-					{/* <FormInput
-      label="Opening Hours"
-      type="time"
-      placeholder="Enter Opening Hours"
-      value={formData.opening_hours}
-      onChange={(e) => setFormData({ ...formData, opening_hours: e.target.value })}
-      className={styles["timepicker"]}
-        />         */}
-
 					<FormInput
 						iconClass="fa-solid fa-euro-sign"
 						label="Budget per person"
@@ -201,13 +189,18 @@ const EventInfo: React.FC<EventInfoProps> = ({
 						/>
 					</div>
 				</div>
-				<button
-					className={styles.nextBtn}
-					onClick={nextStep}
-					disabled={isNextDisabled}
-				>
-					Next
-				</button>
+				<div className={styles.form__buttonContainer}>
+					<button className={styles.nextBtn} onClick={prevStep} disabled={true}>
+						Back
+					</button>
+					<button
+						className={styles.nextBtn}
+						onClick={nextStep}
+						disabled={isNextDisabled}
+					>
+						Next
+					</button>
+				</div>
 			</div>
 
 			<div className={styles.form__previewContainer}>

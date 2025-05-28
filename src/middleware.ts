@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 const protectedPaths = ['/', '/create'];
-const adminPaths = ['/users', '/activities/approve', '/statistics'];
+const adminPaths = ['/users', '/activities/approve'];
 const publicOnlyPaths = ['/login'];
 
 export async function middleware(request: NextRequest) {
