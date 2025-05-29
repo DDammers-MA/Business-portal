@@ -28,7 +28,7 @@ interface UserManagementClientProps {
 	initialUsers: CombinedUser[];
 }
 
-export default function UserManagementClient({
+export default function CompanyManagementClient({
 	initialUsers,
 }: UserManagementClientProps) {
 	const { user: loggedInUser, isAdmin } = useAuth();
@@ -98,8 +98,8 @@ export default function UserManagementClient({
 			columnHelper.accessor(
 				(row) => row.companyName || row.displayName || row.email || 'Unknown',
 				{
-					id: 'user',
-					header: 'User',
+					id: 'company',
+					header: 'Company',
 					cell: (info) => (
 						<div className={styles.user__userCell}>
 							<i className={`fa-solid fa-user ${styles.user__userIcon}`}></i>
@@ -212,7 +212,7 @@ export default function UserManagementClient({
 
 		if (
 			!window.confirm(
-				'Are you sure you want to delete this user? This action cannot be undone.'
+				'Are you sure you want to delete this company? This action cannot be undone.'
 			)
 		) {
 			return;
@@ -224,11 +224,11 @@ export default function UserManagementClient({
 		startTransition(async () => {
 			const result: DeleteUserResult = await deleteUserAction(userId);
 			if (result.success) {
-				toast.success('User deleted successfully');
+				toast.success('Company deleted successfully');
 				setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
 				console.log(result.message);
 			} else {
-				toast.error(`Failed to delete user: ${result.message}`);
+				toast.error(`Failed to delete company: ${result.message}`);
 				setFormError(result.message);
 				console.error('Deletion failed:', result.message);
 			}
@@ -257,20 +257,20 @@ export default function UserManagementClient({
 						);
 						setIsModalOpen(false);
 						setCurrentUser(null);
-						toast.success('User updated successfully');
+						toast.success('Company updated successfully');
 					} else {
 						setFormError(result.message);
-						toast.error(`Failed to update user: ${result.message}`);
+						toast.error(`Failed to update company: ${result.message}`);
 					}
 				} else {
 					if (!userFormData.email) {
-						setFormError('Email is required to add a new user.');
-						toast.error('Email is required to add a new user');
+						setFormError('Email is required to add a new company.');
+						toast.error('Email is required to add a new company');
 						return;
 					}
 					if (!loggedInUser) {
-						setFormError('Cannot add user: Logged in user not found.');
-						toast.error('Cannot add user: You are not logged in');
+						setFormError('Cannot add company: Logged in user not found.');
+						toast.error('Cannot add company: You are not logged in');
 						return;
 					}
 					const addData = {
@@ -291,10 +291,10 @@ export default function UserManagementClient({
 						]);
 						setIsModalOpen(false);
 						setCurrentUser(null);
-						toast.success(result.message || 'User added successfully');
+						toast.success(result.message || 'Company added successfully');
 					} else {
-						setFormError(result.message || 'Failed to add user.');
-						toast.error(result.message || 'Failed to add user');
+						setFormError(result.message || 'Failed to add company.');
+						toast.error(result.message || 'Failed to add company');
 					}
 				}
 			} catch (error) {
@@ -313,7 +313,7 @@ export default function UserManagementClient({
 		<div className={styles.user__container}>
 			{isLoading && (
 				<div className={styles.loadingOverlay}>
-					Loading additional user data...
+					Loading additional company data...
 				</div>
 			)}
 			<div className={styles.user__header}>
@@ -321,7 +321,7 @@ export default function UserManagementClient({
 					<i className="fa-solid fa-magnifying-glass"></i>
 					<input
 						type="text"
-						placeholder="Search users by name or email"
+						placeholder="Search companies by name or email"
 						className={styles.user__inputField}
 						value={searchTerm}
 						onChange={(e) => setSearchTerm(e.target.value)}
@@ -337,7 +337,7 @@ export default function UserManagementClient({
 					}}
 					disabled={isPending}
 				>
-					Add new user
+					Add new company
 				</button>
 			</div>
 
@@ -383,7 +383,7 @@ export default function UserManagementClient({
 				</table>
 			</div>
 
-			{filteredData.length === 0 && <p>No users found.</p>}
+			{filteredData.length === 0 && <p>No companies found.</p>}
 
 			<div className={styles.user__pagination}>
 				<button
@@ -506,7 +506,9 @@ function UserForm({
 	return (
 		<form className={styles.modalForm} onSubmit={handleSubmit}>
 			<h3>
-				{isEditMode ? `Edit ${formData.companyName || 'User'}` : 'Add New User'}
+				{isEditMode
+					? `Edit ${formData.companyName || 'Company'}`
+					: 'Add New Company'}
 			</h3>
 
 			{error && <p className={styles.errorBannerModal}>{error}</p>}
@@ -613,7 +615,7 @@ function UserForm({
 				) : isEditMode ? (
 					'Save Changes'
 				) : (
-					'Add User'
+					'Add Company'
 				)}
 			</button>
 		</form>

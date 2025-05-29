@@ -52,13 +52,13 @@ export default function TransferOwnership({
 				},
 			});
 
-			if (!response.ok) throw new Error('Failed to fetch users');
+			if (!response.ok) throw new Error('Failed to fetch companies');
 
 			const data = await response.json();
 			setUsers(data.users.filter((u: User) => u.id !== currentOwnerId));
 		} catch (error) {
-			console.error('Error fetching users:', error);
-			toast.error('Failed to load users');
+			console.error('Error fetching companies:', error);
+			toast.error('Failed to load companies');
 		}
 	};
 

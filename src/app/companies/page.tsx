@@ -2,7 +2,7 @@ import React from 'react';
 import { firebaseAdmin, db } from '../../../utils/firebase.admin';
 import { UserRecord } from 'firebase-admin/auth';
 import admin from 'firebase-admin';
-import UserManagementClient from './UserManagementClient';
+import CompanyManagementClient from './CompanyManagementClient';
 import styles from './user.module.scss';
 import type { CombinedUser } from './types';
 
@@ -82,7 +82,7 @@ export default async function UsersPage() {
 			{fetchError ? (
 				<p>{fetchError}</p>
 			) : (
-				<UserManagementClient initialUsers={combinedUsers} />
+				<CompanyManagementClient initialUsers={combinedUsers} />
 			)}
 		</div>
 	);
