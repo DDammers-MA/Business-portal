@@ -2,8 +2,8 @@
 
 import styles from '../page.module.scss';
 import Activiteiten from '@/components/Activiteiten/activiteiten';
-import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import AddNewButton from '@/components/AddNewButton/AddNewButton';
 
 export default function EventsPage() {
 	const searchParams = useSearchParams();
@@ -12,9 +12,7 @@ export default function EventsPage() {
 
 	return (
 		<>
-			<Link className={styles.modal__button} href="/create">
-				<i className="fa-solid fa-plus"></i>Add new
-			</Link>
+			<AddNewButton />
 			<main className={styles.page__main}>
 				<Activiteiten filter={filter} contentType="events" />
 			</main>

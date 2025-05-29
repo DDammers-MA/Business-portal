@@ -17,7 +17,11 @@ import { useAuth } from '@/context/AuthContext';
 import { FormData } from '@/types/FormData';
 import styles from './approve.module.scss';
 import Image from 'next/image';
-import { getUserDetailsAction, UserDetails } from './actions';
+import {
+	getUserDetailsAction,
+	UserDetails,
+	getBatchUserDetailsAction,
+} from './actions';
 import { ActivityInfoModal } from './infoModal';
 import DenyModal from './denyModal';
 
@@ -28,6 +32,7 @@ interface ActivitySummaryCardProps {
 	onDeny: (activityId: string) => Promise<void>;
 	isUpdating: boolean;
 	animationDelay?: string;
+	userDetails?: UserDetails;
 }
 
 const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
@@ -37,18 +42,23 @@ const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
 	onDeny,
 	isUpdating,
 	animationDelay,
+	userDetails,
 }) => {
 	const defaultImage = '/images/default.png';
 	const imageUrl = activity.image_url || defaultImage;
 	const [submitterName, setSubmitterName] = useState<string | null>(
-		'Loading...'
+		userDetails
+			? userDetails.companyName || userDetails.displayName || 'N/A'
+			: 'Loading...'
 	);
-	const [isSubmitterLoading, setIsSubmitterLoading] = useState<boolean>(true);
+	const [isSubmitterLoading, setIsSubmitterLoading] = useState<boolean>(
+		!userDetails
+	);
 
 	useEffect(() => {
 		let isMounted = true;
 		const getSubmitter = async () => {
-			if (activity.creatorUid) {
+			if (!userDetails && activity.creatorUid) {
 				setIsSubmitterLoading(true);
 				const result = await getUserDetailsAction(activity.creatorUid);
 				if (isMounted) {
@@ -62,18 +72,23 @@ const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
 					}
 					setIsSubmitterLoading(false);
 				}
-			} else {
-				if (isMounted) {
-					setSubmitterName('N/A');
-					setIsSubmitterLoading(false);
-				}
 			}
 		};
 		getSubmitter();
 		return () => {
 			isMounted = false;
 		};
-	}, [activity.creatorUid]);
+	}, [activity.creatorUid, userDetails]);
+
+	// Update submitter name when userDetails changes
+	useEffect(() => {
+		if (userDetails) {
+			setSubmitterName(
+				userDetails.companyName || userDetails.displayName || 'N/A'
+			);
+			setIsSubmitterLoading(false);
+		}
+	}, [userDetails]);
 
 	const handleApproveClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
@@ -85,7 +100,9 @@ const ActivitySummaryCard: React.FC<ActivitySummaryCardProps> = ({
 	const handleDenyClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		if (!isUpdating && activity.id) {
-			onDeny(activity.id);
+			onDeny(activity.id).catch((error) => {
+				console.error('Error denying activity:', error);
+			});
 		}
 	};
 
@@ -180,16 +197,17 @@ export default function ApprovePage() {
 	const [selectedActivity, setSelectedActivity] = useState<FormData | null>(
 		null
 	);
-
 	const [isDenyModalOpen, setIsDenyModalOpen] = useState(false);
 	const [activityToDeny, setActivityToDeny] = useState<FormData | null>(null);
-
 	const [creatorData, setCreatorData] = useState<UserDetails | null>(null);
 	const [modalUserLoading, setModalUserLoading] = useState<boolean>(false);
 	const [modalActionLoading, setModalActionLoading] = useState<boolean>(false);
 	const [directUpdateStates, setDirectUpdateStates] = useState<
 		Record<string, boolean>
 	>({});
+	const [userDetailsMap, setUserDetailsMap] = useState<{
+		[key: string]: UserDetails;
+	}>({});
 
 	useEffect(() => {
 		if (authLoading) {
@@ -220,6 +238,24 @@ export default function ApprovePage() {
 					id: doc.id,
 					...(doc.data() as Omit<FormData, 'id'>),
 				}));
+
+				// Get unique creator IDs
+				const creatorIds = Array.from(
+					new Set(
+						fetchedActivities
+							.map((activity) => activity.creatorUid)
+							.filter((id): id is string => id !== undefined)
+					)
+				);
+
+				// Fetch all user details in one batch
+				if (creatorIds.length > 0) {
+					const result = await getBatchUserDetailsAction(creatorIds);
+					if (result.success && result.users) {
+						setUserDetailsMap(result.users);
+					}
+				}
+
 				setActivitiesToApprove(fetchedActivities);
 			} catch (err) {
 				console.error('Error fetching activities for approval:', err);
@@ -232,29 +268,33 @@ export default function ApprovePage() {
 		fetchActivities();
 	}, [isAdmin, authLoading]);
 
-	const handleOpenModal = useCallback(async (activity: FormData) => {
-		setSelectedActivity(activity);
-		setIsModalOpen(true);
-		setCreatorData(null);
-		if (activity.creatorUid) {
-			setModalUserLoading(true);
-			const result = await getUserDetailsAction(activity.creatorUid);
-			if (result.success && result.user) {
-				setCreatorData(result.user);
-			} else {
-				console.error(
-					'Failed to fetch creator details for modal:',
-					result.message
-				);
-				setCreatorData(null);
+	const handleOpenModal = useCallback(
+		async (activity: FormData) => {
+			setSelectedActivity(activity);
+			setIsModalOpen(true);
+			if (activity.creatorUid) {
+				setModalUserLoading(true);
+				// Use the cached user details instead of making a new request
+				const userDetails = userDetailsMap[activity.creatorUid];
+				if (userDetails) {
+					setCreatorData(userDetails);
+				} else {
+					// Fallback to individual request if not in cache
+					const result = await getUserDetailsAction(activity.creatorUid);
+					if (result.success && result.user) {
+						setCreatorData(result.user);
+						// Add to cache
+						setUserDetailsMap((prev) => ({
+							...prev,
+							[activity.creatorUid!]: result.user!,
+						}));
+					}
+				}
+				setModalUserLoading(false);
 			}
-			setModalUserLoading(false);
-		} else {
-			console.warn('Activity is missing creatorUid');
-			setCreatorData(null);
-			setModalUserLoading(false);
-		}
-	}, []);
+		},
+		[userDetailsMap]
+	);
 
 	const handleCloseModal = useCallback(() => {
 		setIsModalOpen(false);
@@ -328,12 +368,13 @@ export default function ApprovePage() {
 	);
 
 	// Handler for direct card action buttons
-	const handleDenyWithReason = (activityId: string) => {
+	const handleDenyWithReason = async (activityId: string): Promise<void> => {
 		const activity = activitiesToApprove.find((a) => a.id === activityId);
 		if (activity) {
 			setActivityToDeny(activity);
 			setIsDenyModalOpen(true);
 		}
+		return Promise.resolve();
 	};
 
 	const handleDirectStatusUpdate = useCallback(
@@ -376,12 +417,14 @@ export default function ApprovePage() {
 							activity={activity}
 							onCardClick={handleOpenModal}
 							onApprove={(id) => handleDirectStatusUpdate(id, 'published')}
-							onDeny={async (activityId) => {
-								handleDenyWithReason(activityId);
-								return Promise.resolve();
-							}}
+							onDeny={handleDenyWithReason}
 							isUpdating={directUpdateStates[activity.id || ''] || false}
 							animationDelay={`${index * 100}ms`}
+							userDetails={
+								activity.creatorUid
+									? userDetailsMap[activity.creatorUid]
+									: undefined
+							}
 						/>
 					))}
 				</div>

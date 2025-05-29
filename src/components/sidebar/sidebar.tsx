@@ -116,6 +116,14 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 												>
 													Profile
 												</Link>
+												{isAdmin && (
+													<Link
+														href="/settings"
+														onClick={() => setIsProfileOpen(false)}
+													>
+														Settings
+													</Link>
+												)}
 												<button onClick={handleLogout}>Logout</button>
 											</div>
 										)}
@@ -159,8 +167,8 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 							<h2 className={styles.sidebar__title}>Admin</h2>
 							<SidebarItem
 								onClick={() => setIsOpen(false)}
-								href="/users"
-								label="Users"
+								href="/companies"
+								label="Companies"
 							/>
 							<SidebarItem
 								onClick={() => setIsOpen(false)}

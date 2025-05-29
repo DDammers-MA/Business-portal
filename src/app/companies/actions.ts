@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { firebaseAdmin, db } from '../../../utils/firebase.admin';
 import admin from 'firebase-admin'; // Import admin
-import { CombinedUser } from './page'; // Assuming type is exported from page.tsx
+import type { CombinedUser } from './types'; // Assuming type is exported from page.tsx
 // Import FirebaseError from the correct path
 import { FirebaseError } from 'firebase-admin/app';
 import type { UpdateData } from 'firebase-admin/firestore'; // Import UpdateData type for Firestore updates
@@ -97,10 +97,10 @@ export async function addUserAction(
 			kvk: formData.kvk || '',
 			createdAt: admin.firestore.FieldValue.serverTimestamp(),
 		};
-		await db.collection('users').doc(newUserRecord.uid).set(userData);
+		await db.collection('companies').doc(newUserRecord.uid).set(userData);
 		console.log('User data saved to Firestore for UID:', newUserRecord.uid);
 
-		revalidatePath('/users');
+		revalidatePath('/companies');
 
 		const combinedUserData: CombinedUser = {
 			id: newUserRecord.uid,
@@ -124,7 +124,7 @@ export async function addUserAction(
 				return {
 					success: true,
 					message:
-						'User added successfully. A password reset email has been sent.',
+						'Company added successfully. A password reset email has been sent.',
 					newUser: combinedUserData,
 				};
 			} catch (emailError) {
@@ -133,7 +133,7 @@ export async function addUserAction(
 				return {
 					success: true,
 					message:
-						'User added successfully, but there was an issue sending the password reset email. Please try resetting the password manually.',
+						'Company added successfully, but there was an issue sending the password reset email. Please try resetting the password manually.',
 					newUser: combinedUserData,
 				};
 			}
@@ -175,8 +175,8 @@ export async function updateUserAction(
 		await userRef.update(updateData);
 		console.log('User data updated in Firestore for UID:', userId);
 
-		revalidatePath('/users');
-		return { success: true, message: 'User updated successfully.' };
+		revalidatePath('/companies');
+		return { success: true, message: 'Company updated successfully.' };
 	} catch (error) {
 		console.error(`Error updating user ${userId}:`, error);
 		return { success: false, message: formatFirebaseError(error) };
@@ -197,39 +197,40 @@ export async function deleteUserAction(
 
 		// 1. Delete user from Firebase Authentication
 		await auth.deleteUser(userId);
-		console.log('User deleted from Auth, UID:', userId);
+		console.log('Company deleted from Auth, UID:', userId);
 
 		// 2. Delete user data from Firestore 'users' collection
-		await db.collection('users').doc(userId).delete();
-		console.log('User data deleted from Firestore for UID:', userId);
+		await db.collection('companies').doc(userId).delete();
+		console.log('Company data deleted from Firestore for UID:', userId);
 
-		revalidatePath('/users');
-		return { success: true, message: 'User deleted successfully.' };
+		revalidatePath('/companies');
+		return { success: true, message: 'Company deleted successfully.' };
 	} catch (error) {
-		console.error(`Error deleting user ${userId}:`, error);
+		console.error(`Error deleting company ${userId}:`, error);
 		// Handle case where user might be deleted from Auth but Firestore delete fails, or vice versa
 		// Use the type guard
 		if (isFirebaseError(error) && error.code === 'auth/user-not-found') {
-			// Try deleting Firestore data even if Auth user is gone
+			// Try deleting Firestore data even if Auth company is gone
 			try {
-				await db.collection('users').doc(userId).delete();
+				await db.collection('companies').doc(userId).delete();
 				console.log(
-					'Cleaned up Firestore data for already deleted Auth user:',
+					'Cleaned up Firestore data for already deleted Auth company:',
 					userId
 				);
-				revalidatePath('/users');
+				revalidatePath('/companies');
 				return {
 					success: true,
-					message: 'User already deleted from Auth, Firestore data cleaned up.',
+					message:
+						'Company already deleted from Auth, Firestore data cleaned up.',
 				};
 			} catch (firestoreError) {
 				console.error(
-					`Error cleaning up Firestore data for user ${userId}:`,
+					`Error cleaning up Firestore data for company ${userId}:`,
 					firestoreError
 				);
 				return {
 					success: false,
-					message: `User deleted from Auth, but failed to clean up Firestore data: ${formatFirebaseError(
+					message: `Company deleted from Auth, but failed to clean up Firestore data: ${formatFirebaseError(
 						firestoreError
 					)}`,
 				};

@@ -220,6 +220,47 @@ const Activiteiten = ({
 		}
 	};
 
+	const refreshActivities = async () => {
+		const fetchData = async () => {
+			setLoading(true);
+			setError(null);
+			try {
+				let q: Query<DocumentData> = query(collection(db, 'activities'));
+
+				if (contentType === 'activities') {
+					q = query(q, where('type', '==', 'activity'));
+				} else if (contentType === 'events') {
+					q = query(q, where('type', '==', 'event'));
+				}
+
+				if (
+					filter &&
+					['published', 'inreview', 'denied', 'draft'].includes(filter)
+				) {
+					q = query(q, where('status', '==', filter.toLowerCase()));
+				}
+
+				if (!isAdmin && user) {
+					q = query(q, where('creatorUid', '==', user.uid));
+				}
+
+				const querySnapshot = await getDocs(q);
+				const fetchedActiviteiten = querySnapshot.docs.map((doc) => ({
+					id: doc.id,
+					...(doc.data() as Omit<FormData, 'id'>),
+				}));
+				setActiviteiten(fetchedActiviteiten);
+			} catch (err) {
+				console.error('Error fetching activities:', err);
+				setError('Failed to load activities.');
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		await fetchData();
+	};
+
 	return (
 		<>
 			<FilterTabs baseUrl={pathname} />
@@ -271,7 +312,7 @@ const Activiteiten = ({
 											handleDelete(activiteit.id || '', activiteit.name)
 										}
 										onInfoClick={() => handleOpenInfoModal(cleanActivity)}
-										animationDelay={`${index * 50}ms`}
+										animationDelay={`${index * 0.1}s`}
 									/>
 								);
 							})
@@ -287,6 +328,7 @@ const Activiteiten = ({
 						modalUserLoading={modalUserLoading}
 						modalActionLoading={false}
 						onStatusUpdate={() => {}}
+						onTransferComplete={refreshActivities}
 					/>
 				)}
 			</div>
@@ -332,6 +374,7 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [imageLoading, setImageLoading] = useState(true);
 	const [imageError, setImageError] = useState(false);
+	const { isAdmin } = useAuth();
 
 	// Get online status config
 	const onlineStatusConfig =
@@ -402,7 +445,9 @@ const ActiviteitCard: React.FC<ActiviteitCardProps> = ({
 					alt={title}
 					width={400}
 					height={300}
-					className={`${styles.project__image} ${!isToggled ? styles['project__image--offline'] : ''}`}
+					className={`${styles.project__image} ${
+						!isToggled ? styles['project__image--offline'] : ''
+					}`}
 					onLoadingComplete={() => setImageLoading(false)}
 					onError={() => {
 						setImageLoading(false);

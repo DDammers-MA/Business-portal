@@ -3,7 +3,7 @@
 import { useState, useTransition, useEffect, useMemo } from 'react';
 import styles from './user.module.scss';
 import { Modal } from '@/components/modal/modal';
-import { CombinedUser } from './page';
+import type { CombinedUser } from './types';
 import { addUserAction, updateUserAction, deleteUserAction } from './actions';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
@@ -17,6 +17,8 @@ import {
 	SortingState,
 } from '@tanstack/react-table';
 import { PasswordField } from '@/components/password-field/PasswordField';
+import AdminBadge from '@/components/AdminBadge';
+import AdminControls from '@/components/AdminControls';
 
 type AddUserResult = Awaited<ReturnType<typeof addUserAction>>;
 type UpdateUserResult = Awaited<ReturnType<typeof updateUserAction>>;
@@ -26,11 +28,12 @@ interface UserManagementClientProps {
 	initialUsers: CombinedUser[];
 }
 
-export default function UserManagementClient({
+export default function CompanyManagementClient({
 	initialUsers,
 }: UserManagementClientProps) {
-	const { user: loggedInUser } = useAuth();
+	const { user: loggedInUser, isAdmin } = useAuth();
 	const [users, setUsers] = useState<CombinedUser[]>(initialUsers);
+	const [isLoading, setIsLoading] = useState(true);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [currentUser, setCurrentUser] = useState<Partial<CombinedUser> | null>(
 		null
@@ -44,28 +47,82 @@ export default function UserManagementClient({
 
 	const columnHelper = createColumnHelper<CombinedUser>();
 
+	const adminCount = useMemo(
+		() => users.filter((u) => u.isAdmin).length,
+		[users]
+	);
+
+	useEffect(() => {
+		const fetchAdditionalUserData = async () => {
+			if (!isAdmin) return;
+
+			try {
+				const idToken = await loggedInUser?.getIdToken();
+				if (!idToken) return;
+
+				const response = await fetch('/api/auth/admin/users/batch', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${idToken}`,
+					},
+					body: JSON.stringify({ userIds: users.map((u) => u.id) }),
+				});
+
+				if (!response.ok) {
+					throw new Error('Failed to fetch additional user data');
+				}
+
+				const data = await response.json();
+				setUsers(data.users);
+			} catch (error) {
+				console.error('Error fetching additional user data:', error);
+				// Fall back to initial users if batch request fails
+				setUsers(initialUsers);
+			} finally {
+				setIsLoading(false);
+			}
+		};
+
+		setUsers(initialUsers);
+		fetchAdditionalUserData();
+	}, [initialUsers, isAdmin, loggedInUser]);
+
+	const handleAdminStatusChange = () => {
+		// Refresh the users list to get updated admin statuses
+		window.location.reload();
+	};
+
 	const columns = useMemo(
 		() => [
 			columnHelper.accessor(
-				(row) => row.companyName || row.displayName || row.email || 'Onbekend',
+				(row) => row.companyName || row.displayName || row.email || 'Unknown',
 				{
-					id: 'user',
-					header: 'User',
+					id: 'company',
+					header: 'Company',
 					cell: (info) => (
 						<div className={styles.user__userCell}>
 							<i className={`fa-solid fa-user ${styles.user__userIcon}`}></i>
-							<span className={styles.user__userName}>{info.getValue()}</span>
+							<span className={styles.user__userName}>
+								{info.getValue()}
+								{info.row.original.isAdmin && <AdminBadge />}
+								{info.row.original.id === loggedInUser?.uid && (
+									<span className={styles.user__youBadge} title="This is you">
+										<i className="fa-solid fa-circle-user"></i>
+									</span>
+								)}
+							</span>
 						</div>
 					),
 				}
 			),
 			columnHelper.accessor('email', {
 				header: 'Email address',
-				cell: (info) => info.getValue() || 'Geen e-mailadres',
+				cell: (info) => info.getValue() || 'No email address',
 			}),
 			columnHelper.accessor('phone', {
 				header: 'Phone number',
-				cell: (info) => info.getValue() || 'Geen telefoonnummer',
+				cell: (info) => info.getValue() || 'No phone number',
 			}),
 			columnHelper.accessor('lastLoginAt', {
 				header: 'Last login',
@@ -79,26 +136,35 @@ export default function UserManagementClient({
 				header: 'Actions',
 				cell: (info) => (
 					<div className={styles.user__actions}>
-						<i
-							className={`fa-regular fa-pen-to-square ${styles.user__editIcon}`}
-							title="Wijzig gebruiker"
-							onClick={() => {
-								if (isPending) return;
-								setCurrentUser(info.row.original);
-								setFormError(null);
-								setIsModalOpen(true);
-							}}
-						></i>
-						<i
-							className={`fa-solid fa-trash ${styles.user__deleteIcon}`}
-							title="Verwijder gebruiker"
-							onClick={() => handleDeleteUser(info.getValue())}
-						></i>
+						{isAdmin && (
+							<AdminControls
+								userId={info.getValue()}
+								isAdmin={Boolean(info.row.original.isAdmin)}
+								isCurrentUser={info.getValue() === loggedInUser?.uid}
+								isLastAdmin={
+									adminCount === 1 && Boolean(info.row.original.isAdmin)
+								}
+								onStatusChange={handleAdminStatusChange}
+								onEdit={() => {
+									if (isPending) return;
+									setCurrentUser(info.row.original);
+									setFormError(null);
+									setIsModalOpen(true);
+								}}
+								onDelete={() => handleDeleteUser(info.getValue())}
+								userName={
+									info.row.original.companyName ||
+									info.row.original.displayName ||
+									info.row.original.email ||
+									'Unknown'
+								}
+							/>
+						)}
 					</div>
 				),
 			}),
 		],
-		[isPending]
+		[isPending, isAdmin, loggedInUser?.uid, adminCount]
 	);
 
 	const filteredData = useMemo(
@@ -146,7 +212,7 @@ export default function UserManagementClient({
 
 		if (
 			!window.confirm(
-				'Are you sure you want to delete this user? This action cannot be undone.'
+				'Are you sure you want to delete this company? This action cannot be undone.'
 			)
 		) {
 			return;
@@ -158,11 +224,11 @@ export default function UserManagementClient({
 		startTransition(async () => {
 			const result: DeleteUserResult = await deleteUserAction(userId);
 			if (result.success) {
-				toast.success('User deleted successfully');
+				toast.success('Company deleted successfully');
 				setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
 				console.log(result.message);
 			} else {
-				toast.error(`Failed to delete user: ${result.message}`);
+				toast.error(`Failed to delete company: ${result.message}`);
 				setFormError(result.message);
 				console.error('Deletion failed:', result.message);
 			}
@@ -191,34 +257,29 @@ export default function UserManagementClient({
 						);
 						setIsModalOpen(false);
 						setCurrentUser(null);
-						toast.success('User updated successfully');
+						toast.success('Company updated successfully');
 					} else {
 						setFormError(result.message);
-						toast.error(`Failed to update user: ${result.message}`);
+						toast.error(`Failed to update company: ${result.message}`);
 					}
 				} else {
 					if (!userFormData.email) {
-						setFormError('Email is required to add a new user.');
-						toast.error('Email is required to add a new user');
+						setFormError('Email is required to add a new company.');
+						toast.error('Email is required to add a new company');
 						return;
 					}
 					if (!loggedInUser) {
-						setFormError('Cannot add user: Logged in user not found.');
-						toast.error('Cannot add user: You are not logged in');
+						setFormError('Cannot add company: Logged in user not found.');
+						toast.error('Cannot add company: You are not logged in');
 						return;
 					}
-					const addData: Pick<
-						CombinedUser,
-						'email' | 'companyName' | 'phone' | 'kvk'
-					> & { password?: string } = {
+					const addData = {
 						email: userFormData.email,
-						companyName: userFormData.companyName,
-						phone: userFormData.phone,
-						kvk: userFormData.kvk,
+						companyName: userFormData.companyName || '',
+						phone: userFormData.phone || '',
+						kvk: userFormData.kvk || '',
+						password: userFormData.password,
 					};
-					if (userFormData.password) {
-						addData.password = userFormData.password;
-					}
 					const result: AddUserResult = await addUserAction(
 						addData,
 						loggedInUser.uid
@@ -230,10 +291,10 @@ export default function UserManagementClient({
 						]);
 						setIsModalOpen(false);
 						setCurrentUser(null);
-						toast.success(result.message || 'User added successfully');
+						toast.success(result.message || 'Company added successfully');
 					} else {
-						setFormError(result.message || 'Failed to add user.');
-						toast.error(result.message || 'Failed to add user');
+						setFormError(result.message || 'Failed to add company.');
+						toast.error(result.message || 'Failed to add company');
 					}
 				}
 			} catch (error) {
@@ -250,12 +311,17 @@ export default function UserManagementClient({
 
 	return (
 		<div className={styles.user__container}>
+			{isLoading && (
+				<div className={styles.loadingOverlay}>
+					Loading additional company data...
+				</div>
+			)}
 			<div className={styles.user__header}>
 				<div className={styles.user__searchBar}>
 					<i className="fa-solid fa-magnifying-glass"></i>
 					<input
 						type="text"
-						placeholder="Search users by name or email"
+						placeholder="Search companies by name or email"
 						className={styles.user__inputField}
 						value={searchTerm}
 						onChange={(e) => setSearchTerm(e.target.value)}
@@ -271,7 +337,7 @@ export default function UserManagementClient({
 					}}
 					disabled={isPending}
 				>
-					Add new user
+					Add new company
 				</button>
 			</div>
 
@@ -317,7 +383,7 @@ export default function UserManagementClient({
 				</table>
 			</div>
 
-			{filteredData.length === 0 && <p>No users found.</p>}
+			{filteredData.length === 0 && <p>No companies found.</p>}
 
 			<div className={styles.user__pagination}>
 				<button
@@ -410,7 +476,7 @@ function UserForm({
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
-		setFormData((prev) => ({ ...prev, [name]: value }));
+		setFormData((prev: Partial<CombinedUser>) => ({ ...prev, [name]: value }));
 		if (error) clearError();
 	};
 
@@ -418,7 +484,7 @@ function UserForm({
 		e.preventDefault();
 		if (isLoading) return;
 
-		if (passwordMode === 'manual') {
+		if (!isEditMode && passwordMode === 'manual') {
 			if (!password || !repeatPassword) {
 				clearError();
 				setError('Please fill in both password fields.');
@@ -440,7 +506,9 @@ function UserForm({
 	return (
 		<form className={styles.modalForm} onSubmit={handleSubmit}>
 			<h3>
-				{isEditMode ? `Edit ${formData.companyName || 'User'}` : 'Add New User'}
+				{isEditMode
+					? `Edit ${formData.companyName || 'Company'}`
+					: 'Add New Company'}
 			</h3>
 
 			{error && <p className={styles.errorBannerModal}>{error}</p>}
@@ -547,7 +615,7 @@ function UserForm({
 				) : isEditMode ? (
 					'Save Changes'
 				) : (
-					'Add User'
+					'Add Company'
 				)}
 			</button>
 		</form>
