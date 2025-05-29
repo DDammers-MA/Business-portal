@@ -18,6 +18,7 @@ interface FormErrors {
 	addr?: string;
 	start_time?: string;
 	end_time?: string;
+	region?: string;
 }
 
 interface TouchedFields {
@@ -32,7 +33,6 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
 }) => {
 	const [errors, setErrors] = useState<FormErrors>({});
 	const [isNextDisabled, setIsNextDisabled] = useState(true);
-	// Add touched state
 	const [touched, setTouched] = useState<TouchedFields>({});
 
 	const validateField = (
@@ -41,8 +41,8 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
 	): string | undefined => {
 		switch (name) {
 			case 'place':
-				return value.trim().length < 5
-					? 'Place must be at least 5 characters long.'
+				return value.trim().length < 2
+					? 'Place must be at least 2 characters long.'
 					: undefined;
 			case 'date':
 				return value.trim().length < 10 ? 'Date must be selected' : undefined;
@@ -63,6 +63,7 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
 				return value.trim().length < 5
 					? 'there must be an end time.'
 					: undefined;
+		
 
 			default:
 				return undefined;
@@ -79,12 +80,7 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
 			hasErrors = true;
 		}
 
-		const dateError = validateField('date', formData.date);
-		if (dateError) {
-			currentErrors.date = dateError;
-			hasErrors = true;
-		}
-
+	
 		const postal_codeError = validateField('postal_code', formData.postal_code);
 		if (postal_codeError) {
 			currentErrors.postal_code = postal_codeError;
@@ -97,7 +93,16 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
 			hasErrors = true;
 		}
 
+
 		if (formData.type === 'event') {
+
+				const dateError = validateField('date', formData.date);
+		if (dateError) {
+			currentErrors.date = dateError;
+			hasErrors = true;
+		}
+
+
 			const start_timeError = validateField('start_time', formData.start_time);
 			if (start_timeError) {
 				currentErrors.start_time = start_timeError;
@@ -118,7 +123,7 @@ const requiredFieldsFilled =
 	formData.postal_code &&
 	formData.addr &&
 	(formData.type !== 'event' ||
-		(formData.start_time && formData.end_time));
+		( formData.date && formData.start_time && formData.end_time));
 
 setIsNextDisabled(hasErrors || !requiredFieldsFilled);
 	}, [
@@ -161,9 +166,9 @@ setIsNextDisabled(hasErrors || !requiredFieldsFilled);
 
 				<div className={styles.form__divContainer}>
 					<FormInput
-						label="Place"
+						label="City/ Town"
 						type="text"
-						placeholder="Enter Place"
+						placeholder="Enter city or town"
 						value={formData.place}
 						onChange={(e) => handleChange(e, 'place')}
 						onBlur={(e) => handleBlur(e, 'place')}
@@ -172,15 +177,15 @@ setIsNextDisabled(hasErrors || !requiredFieldsFilled);
 					/>
 
 					<FormInput
-						label="Date"
-						type="Date"
-						placeholder="Enter Date"
-						value={formData.date}
-						onChange={(e) => handleChange(e, 'date')}
-						onBlur={(e) => handleBlur(e, 'date')}
+						label="Street Address"
+						type="text"
+						placeholder="Enter steet and number"
+						value={formData.addr}
+						onChange={(e) => handleChange(e, 'addr')}
+						onBlur={(e) => handleBlur(e, 'addr')}
+						error={touched.addr && errors.addr ? errors.addr : undefined}
 						className={styles['form__input--title']}
-						error={touched.date && errors.date ? errors.date : undefined}
-					/>
+					/> 
 				</div>
 
 				<div className={styles.form__divContainer}>
@@ -199,20 +204,38 @@ setIsNextDisabled(hasErrors || !requiredFieldsFilled);
 						className={styles['form__input--title']}
 					/>
 
-					<FormInput
-						label="Address"
+							<FormInput
+						label="Region / Province"
 						type="text"
-						placeholder="Enter address"
-						value={formData.addr}
-						onChange={(e) => handleChange(e, 'addr')}
-						onBlur={(e) => handleBlur(e, 'addr')}
-						error={touched.addr && errors.addr ? errors.addr : undefined}
+						placeholder="Enter region or province"
+						value={formData.region }
+						onChange={(e) => handleChange(e, 'region')}
+						onBlur={(e) => handleBlur(e, 'region')}
+
 						className={styles['form__input--title']}
 					/>
+
+				
 				</div>
 
-				{formData.type === "event" &&(
+				{formData.type === "event" && (
+					
+				
+					
+
 					<div className={styles.form__divContainer}>
+
+							<FormInput
+						label="Date"
+						type="Date"
+						placeholder="Enter Date"
+						value={formData.date}
+						onChange={(e) => handleChange(e, 'date')}
+						onBlur={(e) => handleBlur(e, 'date')}
+						className={styles['form__input--title']}
+						error={touched.date && errors.date ? errors.date : undefined}
+					/>
+
 						<FormInput
 							label="Start time"
 							type="time"

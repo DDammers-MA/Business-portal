@@ -17,7 +17,8 @@ interface ActivityData {
 	date: string;
 	place: string;
 	postal_code: string;
-	creatorUid?: string; // Added creatorUid as optional here, will be added before saving
+	creatorUid?: string;
+	status: 'draft' | 'inreview' | 'approved' | 'denied';
 }
 
 export async function POST(request: Request) {
@@ -48,25 +49,27 @@ export async function POST(request: Request) {
 		// 2. Parse Request Body
 		const data: Omit<ActivityData, 'creatorUid'> = await request.json(); // Exclude creatorUid initially
 
-		// 3. Basic Validation - Check for essential fields
-		const requiredFields: (keyof Omit<ActivityData, 'creatorUid'>)[] = [
-			'type',
-			'name',
-			'addr',
-			'description',
-			'date',
-			'place',
-			'postal_code',
-		];
-		const missingFields = requiredFields.filter((field) => !data[field]);
+		// 3. Basic Validation - Check for essential fields only if not a draft
+		if (data.status !== 'draft') {
+			const requiredFields: (keyof Omit<ActivityData, 'creatorUid'>)[] = [
+				'type',
+				'name',
+				'addr',
+				'description',
+				'date',
+				'place',
+				'postal_code',
+			];
+			const missingFields = requiredFields.filter((field) => !data[field]);
 
-		if (missingFields.length > 0) {
-			return NextResponse.json(
-				{
-					message: `Missing required fields: ${missingFields.join(', ')}`,
-				},
-				{ status: 400 }
-			);
+			if (missingFields.length > 0) {
+				return NextResponse.json(
+					{
+						message: `Missing required fields: ${missingFields.join(', ')}`,
+					},
+					{ status: 400 }
+				);
+			}
 		}
 
 		// 4. Add creatorUid to data

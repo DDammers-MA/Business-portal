@@ -26,8 +26,13 @@ type SidebarItemProps = {
 const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 	const { user } = useAuth();
 	const router = useRouter();
+	const pathname = usePathname();
 	const [isProfileOpen, setIsProfileOpen] = useState(false);
 	const isLoggedIn = user !== null;
+
+	const shouldShowNavigation = ['/', '/activities', '/events'].includes(
+		pathname
+	);
 
 	const handleLogout = async () => {
 		try {
@@ -76,14 +81,13 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 						</div>
 
 						<div className={styles.header__center}>
-							{isLoggedIn && (
+							{isLoggedIn && shouldShowNavigation && (
 								<ul
 									className={`${styles.header__navList} ${styles['header__navList--first']}`}
 								>
-									<HeaderItem href="/" label="Activities" />
-									<HeaderItem href="/?filter=published" label="Published" />
-									<HeaderItem href="/?filter=inreview" label="In review" />
-									<HeaderItem href="/?filter=draft" label="Drafts" />
+									<HeaderItem href="/" label="All" />
+									<HeaderItem href="/activities" label="Activities" />
+									<HeaderItem href="/events" label="Events" />
 								</ul>
 							)}
 						</div>
@@ -112,6 +116,14 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 												>
 													Profile
 												</Link>
+												{isAdmin && (
+													<Link
+														href="/settings"
+														onClick={() => setIsProfileOpen(false)}
+													>
+														Settings
+													</Link>
+												)}
 												<button onClick={handleLogout}>Logout</button>
 											</div>
 										)}
@@ -143,49 +155,25 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 					</div>
 					<nav className={styles.sidebar__nav}>
 						<ul className={styles.sidebar__navList}>
-							<h2 className={styles.sidebar__title}>Admin</h2>
-
+							<h2 className={styles.sidebar__title}>Homepage</h2>
 							<SidebarItem
 								onClick={() => setIsOpen(false)}
-								href="/users"
-								label="Users"
+								href="/"
+								label="All"
+							/>
+						</ul>
+
+						<ul className={styles.sidebar__navList}>
+							<h2 className={styles.sidebar__title}>Admin</h2>
+							<SidebarItem
+								onClick={() => setIsOpen(false)}
+								href="/companies"
+								label="Companies"
 							/>
 							<SidebarItem
 								onClick={() => setIsOpen(false)}
 								href="/activities/approve"
 								label="Unapproved activities"
-							/>
-							<SidebarItem
-								onClick={() => setIsOpen(false)}
-								href="/statistics"
-								label="Statistics"
-							/>
-						</ul>
-
-						<ul
-							className={`${styles.sidebar__navList} ${styles['sidebar__navList--second']}`}
-						>
-							<h2 className={styles.sidebar__title}>Navigation</h2>
-
-							<SidebarItem
-								onClick={() => setIsOpen(false)}
-								href="/"
-								label="Activities"
-							/>
-							<SidebarItem
-								onClick={() => setIsOpen(false)}
-								href="/"
-								label="Published"
-							/>
-							<SidebarItem
-								onClick={() => setIsOpen(false)}
-								href="/"
-								label="Unpublished"
-							/>
-							<SidebarItem
-								onClick={() => setIsOpen(false)}
-								href="/"
-								label="Drafts"
 							/>
 						</ul>
 					</nav>
@@ -197,7 +185,7 @@ const Sidebar = ({ isOpen, setIsOpen, isAdmin }: SidebarProps) => {
 
 const SidebarItem = ({ href, label, onClick }: SidebarItemProps) => {
 	const pathname = usePathname();
-	const isActive = pathname === '/activities';
+	const isActive = pathname === href;
 
 	return (
 		<li className={styles.sidebar__navItem} onClick={onClick}>

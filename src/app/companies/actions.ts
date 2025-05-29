@@ -3,10 +3,11 @@
 import { revalidatePath } from 'next/cache';
 import { firebaseAdmin, db } from '../../../utils/firebase.admin';
 import admin from 'firebase-admin'; // Import admin
-import { CombinedUser } from './page'; // Assuming type is exported from page.tsx
+import type { CombinedUser } from './types'; // Assuming type is exported from page.tsx
 // Import FirebaseError from the correct path
 import { FirebaseError } from 'firebase-admin/app';
 import type { UpdateData } from 'firebase-admin/firestore'; // Import UpdateData type for Firestore updates
+import { generateSecurePassword } from '@/utils/passwordUtils';
 
 // Define the structure for Firestore user data (if not already defined/imported correctly)
 // Ensure this matches the definition in page.tsx if needed elsewhere
@@ -51,43 +52,55 @@ function formatFirebaseError(error: unknown): string {
 
 // --- Add User Action ---
 export async function addUserAction(
-	formData: Pick<CombinedUser, 'email' | 'companyName' | 'phone' | 'kvk'>,
-	creatorUid: string // Add creatorUid parameter
+	formData: Pick<CombinedUser, 'email' | 'companyName' | 'phone' | 'kvk'> & {
+		password?: string;
+	},
+	creatorUid: string
 ): Promise<{ success: boolean; message: string; newUser?: CombinedUser }> {
-	console.log('Attempting to add user:', formData, 'by creator:', creatorUid);
+	console.log(
+		'Attempting to add user:',
+		{ ...formData, password: formData.password ? '[REDACTED]' : undefined },
+		'by creator:',
+		creatorUid
+	);
 	if (!formData.email) {
 		return { success: false, message: 'Email is required.' };
 	}
 	if (!creatorUid) {
-		// This check might be redundant if the client always provides it, but good for safety
 		console.error('Creator UID is missing');
-		return { success: false, message: 'Action failed: Creator information missing.' };
+		return {
+			success: false,
+			message: 'Action failed: Creator information missing.',
+		};
 	}
 
 	try {
 		const auth = firebaseAdmin.auth();
+		const isManualPassword = !!formData.password;
+		const password = isManualPassword
+			? formData.password
+			: generateSecurePassword();
 
-		const tempPassword = Math.random().toString(36).slice(-12);
 		const newUserRecord = await auth.createUser({
 			email: formData.email,
 			emailVerified: false,
-			password: tempPassword,
+			password: password,
 			displayName: formData.companyName || formData.email,
 			disabled: false,
 		});
 		console.log('User created in Auth, UID:', newUserRecord.uid);
 
 		const userData: FirestoreUserData = {
-			creatorUid: creatorUid, // Add creatorUid to the data object
+			creatorUid: creatorUid,
 			companyName: formData.companyName || '',
 			phone: formData.phone || '',
 			kvk: formData.kvk || '',
 			createdAt: admin.firestore.FieldValue.serverTimestamp(),
 		};
-		await db.collection('users').doc(newUserRecord.uid).set(userData);
+		await db.collection('companies').doc(newUserRecord.uid).set(userData);
 		console.log('User data saved to Firestore for UID:', newUserRecord.uid);
 
-		revalidatePath('/users');
+		revalidatePath('/companies');
 
 		const combinedUserData: CombinedUser = {
 			id: newUserRecord.uid,
@@ -98,14 +111,37 @@ export async function addUserAction(
 			phone: userData.phone,
 			kvk: userData.kvk,
 		};
-		if (newUserRecord.email) {
-			await auth.generatePasswordResetLink(newUserRecord.email);
+
+		// Only send password reset email if not using manual password
+		if (!isManualPassword && newUserRecord.email) {
+			try {
+				const resetLink = await auth.generatePasswordResetLink(
+					newUserRecord.email
+				);
+				// Send the password reset email using the admin SDK
+				await auth.generateEmailVerificationLink(newUserRecord.email);
+				console.log('Password reset email sent to:', newUserRecord.email);
+				return {
+					success: true,
+					message:
+						'Company added successfully. A password reset email has been sent.',
+					newUser: combinedUserData,
+				};
+			} catch (emailError) {
+				console.error('Error sending password reset email:', emailError);
+				// Still return success since user was created, but indicate email issue
+				return {
+					success: true,
+					message:
+						'Company added successfully, but there was an issue sending the password reset email. Please try resetting the password manually.',
+					newUser: combinedUserData,
+				};
+			}
 		}
 
 		return {
 			success: true,
-			message:
-				'User added successfully. A temporary password was set. They will receive a email for resetting their password.',
+			message: 'User added successfully with the specified password.',
 			newUser: combinedUserData,
 		};
 	} catch (error) {
@@ -139,8 +175,8 @@ export async function updateUserAction(
 		await userRef.update(updateData);
 		console.log('User data updated in Firestore for UID:', userId);
 
-		revalidatePath('/users');
-		return { success: true, message: 'User updated successfully.' };
+		revalidatePath('/companies');
+		return { success: true, message: 'Company updated successfully.' };
 	} catch (error) {
 		console.error(`Error updating user ${userId}:`, error);
 		return { success: false, message: formatFirebaseError(error) };
@@ -161,39 +197,40 @@ export async function deleteUserAction(
 
 		// 1. Delete user from Firebase Authentication
 		await auth.deleteUser(userId);
-		console.log('User deleted from Auth, UID:', userId);
+		console.log('Company deleted from Auth, UID:', userId);
 
 		// 2. Delete user data from Firestore 'users' collection
-		await db.collection('users').doc(userId).delete();
-		console.log('User data deleted from Firestore for UID:', userId);
+		await db.collection('companies').doc(userId).delete();
+		console.log('Company data deleted from Firestore for UID:', userId);
 
-		revalidatePath('/users');
-		return { success: true, message: 'User deleted successfully.' };
+		revalidatePath('/companies');
+		return { success: true, message: 'Company deleted successfully.' };
 	} catch (error) {
-		console.error(`Error deleting user ${userId}:`, error);
+		console.error(`Error deleting company ${userId}:`, error);
 		// Handle case where user might be deleted from Auth but Firestore delete fails, or vice versa
 		// Use the type guard
 		if (isFirebaseError(error) && error.code === 'auth/user-not-found') {
-			// Try deleting Firestore data even if Auth user is gone
+			// Try deleting Firestore data even if Auth company is gone
 			try {
-				await db.collection('users').doc(userId).delete();
+				await db.collection('companies').doc(userId).delete();
 				console.log(
-					'Cleaned up Firestore data for already deleted Auth user:',
+					'Cleaned up Firestore data for already deleted Auth company:',
 					userId
 				);
-				revalidatePath('/users');
+				revalidatePath('/companies');
 				return {
 					success: true,
-					message: 'User already deleted from Auth, Firestore data cleaned up.',
+					message:
+						'Company already deleted from Auth, Firestore data cleaned up.',
 				};
 			} catch (firestoreError) {
 				console.error(
-					`Error cleaning up Firestore data for user ${userId}:`,
+					`Error cleaning up Firestore data for company ${userId}:`,
 					firestoreError
 				);
 				return {
 					success: false,
-					message: `User deleted from Auth, but failed to clean up Firestore data: ${formatFirebaseError(
+					message: `Company deleted from Auth, but failed to clean up Firestore data: ${formatFirebaseError(
 						firestoreError
 					)}`,
 				};

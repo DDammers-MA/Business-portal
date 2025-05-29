@@ -1,0 +1,27 @@
+.addNewButton {
+	position: fixed;
+	bottom: 1rem;
+	right: 1rem;
+	font-size: 2rem;
+	padding: 1rem 3rem;
+	background: #fc9047;
+	color: white;
+	border-radius: 8px;
+	border: none;
+	z-index: 99999;
+	text-decoration: none;
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+
+	i {
+		font-size: 2rem;
+	}
+
+	&:hover {
+		background: #c26120;
+		cursor: pointer;
+		transform: scale(1.05);
+		transition: all 0.3s ease-in-out;
+	}
+}

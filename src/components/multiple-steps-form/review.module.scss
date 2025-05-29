@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 .card {
 	display: flex;
 	align-items: center;
@@ -35,8 +37,6 @@
 	flex-direction: column;
 	gap: 0rem;
 
-
-
 	&__Container {
 		width: 100%;
 	}
@@ -53,18 +53,23 @@
 	color: white;
 	border: none;
 	cursor: pointer;
-	transition: background 0.3s;
+	transition: background 0.3s, opacity 0.3s;
 
-	&:hover {
-		background: darken(#bc76f1, 10%);
+	&:hover:not(:disabled) {
+		background: color.adjust(#bc76f1, $lightness: -10%);
+	}
+
+	&:disabled {
+		background-color: #d8b4f7;
+		cursor: not-allowed;
+		opacity: 0.7;
 	}
 }
 
 // Input Grouping and Styling
 .inputGroup {
-
 	display: flex;
-justify-content: center;
+	justify-content: center;
 	align-items: center;
 	gap: 1.5rem;
 	width: 100%;
@@ -72,9 +77,7 @@ justify-content: center;
 	margin-top: 1rem;
 }
 
-
 .formControl {
-
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
@@ -151,10 +154,8 @@ justify-content: center;
 	}
 }
 
-@media screen and (max-width: 900px){
-
-	.inputGroup{
+@media screen and (max-width: 900px) {
+	.inputGroup {
 		padding: 2rem;
 	}
-
 }

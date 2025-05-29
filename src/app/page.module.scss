@@ -1,39 +1,38 @@
-.body{
-  
+.page__main {
+	background-color: white;
+	min-height: 100vh;
+	padding-bottom: 2rem;
 }
 
-.modal{
-    &__button{
-        position: fixed;
-        bottom: 1rem;
-        right: 1rem;
-        font-size: 2rem;
-        padding: 1rem 3rem ; 
-        background: #FC9047;
-        color: white;
-        border-radius: 8px;
-        border: none;
-        z-index: 99999;
-        color: white;
-        text-decoration: none;
+.modal {
+	&__button {
+		position: fixed;
+		bottom: 1rem;
+		right: 1rem;
+		font-size: 2rem;
+		padding: 1rem 3rem;
+		background: #fc9047;
+		color: white;
+		border-radius: 8px;
+		border: none;
+		z-index: 99999;
+		color: white;
+		text-decoration: none;
 
-        i{
-            font-size: 2rem;
-        }
-        
-        a{
-            color: white;
-           text-decoration: none;
-        }
+		i {
+			font-size: 2rem;
+		}
 
-        &:hover{
-            background: #c26120;
-            cursor: pointer;
-            transform: scale(1.05);
-            transition: all 0.3s ease-in-out;
-        }
+		a {
+			color: white;
+			text-decoration: none;
+		}
 
-
-    
-    }
+		&:hover {
+			background: #c26120;
+			cursor: pointer;
+			transform: scale(1.05);
+			transition: all 0.3s ease-in-out;
+		}
+	}
 }

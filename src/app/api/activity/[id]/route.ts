@@ -144,15 +144,19 @@ export async function PUT(
 			'place',
 			'postal_code',
 		];
-		const missingFields = requiredFields.filter(
-			(field) => !(field in data) || !data[field]
-		);
 
-		if (missingFields.length > 0) {
-			return NextResponse.json(
-				{ message: `Missing required fields: ${missingFields.join(', ')}` },
-				{ status: 400 }
+		// Only validate required fields if not a draft
+		if (data.status !== 'draft') {
+			const missingFields = requiredFields.filter(
+				(field) => !(field in data) || !data[field]
 			);
+
+			if (missingFields.length > 0) {
+				return NextResponse.json(
+					{ message: `Missing required fields: ${missingFields.join(', ')}` },
+					{ status: 400 }
+				);
+			}
 		}
 
 		// Remove creatorUid from update payload if present (should not be changeable)
@@ -181,10 +185,7 @@ export async function PUT(
 			);
 		}
 
-		// Force status to inreview on any update
-		data.status = 'inreview';
-
-		// Perform the update
+		// Update the document
 		await docRef.update(data);
 
 		console.log('Document updated with ID: ', id);
