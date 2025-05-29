@@ -3,16 +3,71 @@ import { firebaseAdmin } from '../../../../../../../utils/firebase.admin';
 import { rateLimit } from '@/utils/rateLimit';
 
 const limiter = rateLimit({
-	interval: 1000, // 1 second
-	uniqueTokenPerInterval: 500, // Max 500 users per second
+	interval: 250,
+	uniqueTokenPerInterval: 500,
 });
+
+export async function GET(request: NextRequest) {
+	try {
+		await limiter.check(request, 5, 'GET_ALL_USERS');
+
+		const authorization = request.headers.get('Authorization');
+		if (!authorization?.startsWith('Bearer ')) {
+			return NextResponse.json(
+				{ message: 'Unauthorized: Missing or invalid Bearer token' },
+				{ status: 401 }
+			);
+		}
+
+		const token = authorization.substring(7);
+		const decodedToken = await firebaseAdmin.auth().verifyIdToken(token);
+
+		if (!decodedToken.admin) {
+			return NextResponse.json(
+				{ message: 'Forbidden: Only admins can access user data' },
+				{ status: 403 }
+			);
+		}
+
+		const auth = firebaseAdmin.auth();
+		const db = firebaseAdmin.firestore();
+
+		// Get all users from Firebase Auth
+		const listUsersResult = await auth.listUsers();
+		const users = listUsersResult.users;
+
+		// Get Firestore data for all users
+		const usersSnapshot = await db.collection('users').get();
+		const firestoreData: { [key: string]: any } = {};
+		usersSnapshot.forEach((doc) => {
+			firestoreData[doc.id] = doc.data();
+		});
+
+		// Combine Auth and Firestore data
+		const combinedUsers = users.map((user) => ({
+			id: user.uid,
+			email: user.email,
+			displayName: user.displayName,
+			photoURL: user.photoURL,
+			lastLoginAt: user.metadata.lastSignInTime,
+			isAdmin: user.customClaims?.admin || false,
+			...firestoreData[user.uid],
+		}));
+
+		return NextResponse.json({ users: combinedUsers }, { status: 200 });
+	} catch (error) {
+		console.error('Error fetching users:', error);
+		return NextResponse.json(
+			{ message: 'Internal Server Error' },
+			{ status: 500 }
+		);
+	}
+}
 
 export async function POST(request: NextRequest) {
 	try {
-		// Apply rate limiting
-		await limiter.check(request, 1, 'BATCH_USER_DATA');
+		await limiter.check(request, 5, 'BATCH_USER_DATA');
 
-		// Get the authorization token
 		const authorization = request.headers.get('Authorization');
 		if (!authorization?.startsWith('Bearer ')) {
 			return NextResponse.json(
@@ -23,7 +78,6 @@ export async function POST(request: NextRequest) {
 
 		const token = authorization.substring(7);
 
-		// Verify the admin's token
 		const adminDecodedToken = await firebaseAdmin.auth().verifyIdToken(token);
 		if (!adminDecodedToken.admin) {
 			return NextResponse.json(
@@ -32,7 +86,6 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		// Get user IDs from request body
 		const { userIds } = await request.json();
 		if (!Array.isArray(userIds) || userIds.length === 0) {
 			return NextResponse.json(
@@ -44,7 +97,6 @@ export async function POST(request: NextRequest) {
 		const db = firebaseAdmin.firestore();
 		const auth = firebaseAdmin.auth();
 
-		// Batch get Firestore user data
 		const MAX_BATCH_SIZE = 30;
 		const firestoreData: { [key: string]: any } = {};
 
@@ -60,10 +112,8 @@ export async function POST(request: NextRequest) {
 			});
 		}
 
-		// Get admin status for all users in a single batch
 		const userRecords = await auth.getUsers(userIds.map((uid) => ({ uid })));
 
-		// Get custom claims for all users
 		const customClaimsPromises = userRecords.users.map((user) =>
 			auth.getUser(user.uid).then((fullUser) => ({
 				uid: user.uid,
@@ -75,7 +125,6 @@ export async function POST(request: NextRequest) {
 			adminStatuses.map((status) => [status.uid, status.isAdmin])
 		);
 
-		// Combine all data
 		const combinedUsers = userRecords.users.map((user) => ({
 			id: user.uid,
 			email: user.email,

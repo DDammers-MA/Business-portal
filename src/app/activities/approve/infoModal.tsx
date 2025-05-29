@@ -6,6 +6,8 @@ import { FormData } from '@/types/FormData';
 import { UserDetails } from './actions';
 import Image from 'next/image';
 import styles from './infomodal.module.scss';
+import { useAuth } from '@/context/AuthContext';
+import TransferOwnership from '@/components/AdminControls/TransferOwnership';
 
 interface ActivityInfoModalProps {
 	isOpen: boolean;
@@ -15,6 +17,7 @@ interface ActivityInfoModalProps {
 	modalUserLoading: boolean;
 	modalActionLoading: boolean;
 	onStatusUpdate: (newStatus: 'published' | 'denied') => void;
+	onTransferComplete?: () => void;
 }
 
 export const ActivityInfoModal: React.FC<ActivityInfoModalProps> = ({
@@ -23,8 +26,10 @@ export const ActivityInfoModal: React.FC<ActivityInfoModalProps> = ({
 	activity,
 	creatorData,
 	modalUserLoading,
+	onTransferComplete,
 }) => {
 	const imageUrl = activity.image_url || '/images/default.png';
+	const { isAdmin } = useAuth();
 
 	return (
 		<Modal isOpen={isOpen} onClose={onClose}>
@@ -95,6 +100,18 @@ export const ActivityInfoModal: React.FC<ActivityInfoModalProps> = ({
 									<p>
 										<strong>Email:</strong> {creatorData.email || 'N/A'}
 									</p>
+									{isAdmin && activity.id && activity.creatorUid && (
+										<div className={styles.modal__AdminActions}>
+											<TransferOwnership
+												activityId={activity.id}
+												currentOwnerId={activity.creatorUid}
+												onTransferComplete={() => {
+													onTransferComplete?.();
+													onClose();
+												}}
+											/>
+										</div>
+									)}
 								</div>
 							) : (
 								<p className={styles.modalText}>

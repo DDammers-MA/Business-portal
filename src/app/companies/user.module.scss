@@ -177,6 +177,24 @@
 		gap: 0.5rem;
 	}
 
+	&__youBadge {
+		display: inline-flex;
+		align-items: center;
+		color: #4a90e2;
+		font-size: 0.9em;
+		margin-left: 0.25rem;
+
+		i {
+			transition: color 0.2s ease;
+		}
+
+		&:hover {
+			i {
+				color: #357abd;
+			}
+		}
+	}
+
 	&__actions {
 		display: flex;
 		justify-content: center;

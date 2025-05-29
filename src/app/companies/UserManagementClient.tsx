@@ -106,6 +106,11 @@ export default function UserManagementClient({
 							<span className={styles.user__userName}>
 								{info.getValue()}
 								{info.row.original.isAdmin && <AdminBadge />}
+								{info.row.original.id === loggedInUser?.uid && (
+									<span className={styles.user__youBadge} title="This is you">
+										<i className="fa-solid fa-circle-user"></i>
+									</span>
+								)}
 							</span>
 						</div>
 					),
