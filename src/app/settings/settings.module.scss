@@ -1,18 +1,16 @@
 .settings {
 	padding: 4rem;
 	min-height: 100vh;
-	background-color: #f8f9fa;
+	background-color: #fff;
 
 	&__container {
 		max-width: 800px;
 		margin: 0 auto;
-		background: white;
-		padding: 2rem;
-		border-radius: 12px;
-		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		background: #fff;
+		padding: 2.5rem;
 
 		h1 {
-			font-size: 2.5rem;
+			font-size: 2.4rem;
 			color: #212529;
 			margin-bottom: 2rem;
 			font-weight: 600;
@@ -21,13 +19,11 @@
 
 	&__section {
 		margin-bottom: 2rem;
-		padding: 1.5rem;
-		background: #f8f9fa;
-		border-radius: 8px;
-		border: 1px solid #e9ecef;
+		padding: 2rem;
+		background: #fff;
 
 		h2 {
-			font-size: 1.5rem;
+			font-size: 1.8rem;
 			color: #495057;
 			margin-bottom: 1.5rem;
 			font-weight: 500;
@@ -37,11 +33,11 @@
 	&__option {
 		display: flex;
 		align-items: center;
-		gap: 1rem;
+		gap: 1.5rem;
 	}
 
 	&__optionLabel {
-		font-size: 1rem;
+		font-size: 1.4rem;
 		color: #495057;
 	}
 
@@ -57,7 +53,7 @@
 			height: 0;
 
 			&:checked + .settings__toggleSlider {
-				background-color: #2196f3;
+				background-color: #fc9047;
 			}
 
 			&:checked + .settings__toggleSlider:before {

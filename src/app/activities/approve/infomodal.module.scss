@@ -33,6 +33,29 @@
 		}
 	}
 
+	&__DenyReason {
+		margin-top: 2rem;
+		padding: 1.5rem;
+		background-color: #fff3f3;
+		border: 1px solid #ffcdd2;
+		border-radius: 6px;
+		grid-column: 1 / -1;
+	}
+
+	&__DenyReasonTitle {
+		color: #d32f2f;
+		font-size: 1.8rem;
+		margin-bottom: 1rem;
+		font-weight: 600;
+	}
+
+	&__DenyReasonText {
+		color: #424242;
+		font-size: 1.5rem;
+		line-height: 1.6;
+		white-space: pre-wrap;
+	}
+
 	&__Actions {
 		display: flex;
 		justify-content: flex-end;

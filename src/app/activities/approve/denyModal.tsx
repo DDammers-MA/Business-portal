@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Modal } from '@/components/modal/modal';
 import styles from './denyModal.module.scss';
+import { toast } from 'sonner';
 
 interface DenyModalProps {
 	isOpen: boolean;
@@ -22,7 +23,7 @@ const DenyModal: React.FC<DenyModalProps> = ({
 
 	const handleSubmit = async () => {
 		if (!reason.trim()) {
-			alert('Please provide a reason for denying the event.');
+			toast.error('Please provide a reason for denying the event.');
 			return;
 		}
 
@@ -31,9 +32,14 @@ const DenyModal: React.FC<DenyModalProps> = ({
 			await onSubmit(reason);
 			setReason('');
 			onClose();
+			toast.success(
+				`${
+					activity?.type === 'event' ? 'Event' : 'Activity'
+				} has been denied successfully`
+			);
 		} catch (error) {
 			console.error('Error submitting reason:', error);
-			alert('Failed to submit the reason. Please try again.');
+			toast.error('Failed to submit the reason. Please try again.');
 		} finally {
 			setIsSubmitting(false);
 		}

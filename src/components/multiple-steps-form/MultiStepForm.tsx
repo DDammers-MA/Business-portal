@@ -116,9 +116,9 @@ const MultiStepForm = ({ mode, initialData }: MultiStepFormProps) => {
 
 				const storageRef = ref(
 					storage,
-					`activities/${auth.currentUser.uid}-${Date.now()}-${formData.name
+					`activityImages/${auth.currentUser.uid}-${Date.now()}-${formData.name
 						.toLowerCase()
-						.replace(/ /g, '-')}`
+						.replace(/[^a-z0-9]/g, '-')}`
 				);
 				const uploadTask = uploadBytesResumable(storageRef, fileToUpload);
 
@@ -141,14 +141,24 @@ const MultiStepForm = ({ mode, initialData }: MultiStepFormProps) => {
 				created_at: new Date().toISOString(),
 				updated_at: new Date().toISOString(),
 				creatorUid: auth.currentUser.uid,
+				denyReason: null,
 			};
 
 			delete submissionData.image_file;
 
-			const response = await fetch('/api/activity/create', {
-				method: 'POST',
+			const token = await auth.currentUser.getIdToken();
+
+			// Use PUT for edit mode, POST for create mode
+			const endpoint =
+				mode === 'edit' && initialData?.id
+					? `/api/activity/${initialData.id}`
+					: '/api/activity/create';
+
+			const response = await fetch(endpoint, {
+				method: mode === 'edit' ? 'PUT' : 'POST',
 				headers: {
 					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`,
 				},
 				body: JSON.stringify(submissionData),
 			});

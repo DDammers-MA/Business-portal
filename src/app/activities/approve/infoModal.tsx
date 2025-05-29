@@ -57,6 +57,15 @@ export const ActivityInfoModal: React.FC<ActivityInfoModalProps> = ({
 						)}
 					</div>
 
+					{activity.status === 'denied' && activity.denyReason && (
+						<div className={styles.modal__DenyReason}>
+							<h4 className={styles.modal__DenyReasonTitle}>Denial Reason</h4>
+							<p className={styles.modal__DenyReasonText}>
+								{activity.denyReason}
+							</p>
+						</div>
+					)}
+
 					<div className={styles.modal__DetailsSection}>
 						<div className={styles.modal__Section}>
 							<h3 className={styles.modal__ActivityTitle}>{activity.name}</h3>
