@@ -4,6 +4,7 @@ import Activiteiten from '@/components/Activiteiten/activiteiten';
 import { useSearchParams } from 'next/navigation';
 import AddNewButton from '@/components/AddNewButton/AddNewButton';
 import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export default function Home() {
 	const searchParams = useSearchParams();
@@ -17,6 +18,7 @@ export default function Home() {
 				<Activiteiten filter={filter} contentType="all" />
 			</main>
 			<Analytics />
+			<SpeedInsights />
 		</>
 	);
 }
