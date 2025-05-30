@@ -3,6 +3,7 @@ import styles from './page.module.scss';
 import Activiteiten from '@/components/Activiteiten/activiteiten';
 import { useSearchParams } from 'next/navigation';
 import AddNewButton from '@/components/AddNewButton/AddNewButton';
+import { Analytics } from '@vercel/analytics/next';
 
 export default function Home() {
 	const searchParams = useSearchParams();
@@ -15,6 +16,7 @@ export default function Home() {
 			<main className={styles.page__main}>
 				<Activiteiten filter={filter} contentType="all" />
 			</main>
+			<Analytics />
 		</>
 	);
 }
