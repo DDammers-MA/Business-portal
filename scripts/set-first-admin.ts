@@ -1,35 +1,24 @@
 import admin from 'firebase-admin';
-
-// --- IMPORTANT CONFIGURATION ---
-// !!! Replace with the UID of the user you want to make the first admin !!!
-const FIRST_ADMIN_UID: string = 'vk9Nv90RgKXNqZ6MTym3WYwW6Lo2';
-// -----------------------------
-
-// --- Environment Variable Loading (Optional but Recommended) ---
-// If you use a .env file (e.g., .env.local) to store your admin credentials,
-// uncomment the next two lines and run `npm install dotenv`
 import dotenv from 'dotenv';
-dotenv.config({ path: '.env' }); // Load from current working directory (project root)
-// -----------------------------------------------------------
 
-// --- Firebase Admin SDK Initialization ---
-// Mimics the logic from utils/firebase.admin.ts
+const FIRST_ADMIN_UID: string = 'vk9Nv90RgKXNqZ6MTym3WYwW6Lo2';
+dotenv.config({ path: '.env' });
+
 let initializedAdmin: admin.app.App | null = null;
 
 function initializeAdminSDK() {
 	if (admin.apps.length > 0) {
 		console.log('Admin SDK already initialized.');
-		return admin.apps[0]; // Return the existing default app
+		return admin.apps[0];
 	}
 
 	console.log('Initializing Admin SDK for script...');
 	const serviceAccount = {
 		projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
 		clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-		privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\n/g, '\n'), // Handle potential newline issues in env var
+		privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\n/g, '\n'),
 	};
 
-	// Check if required environment variables are set
 	if (
 		!serviceAccount.projectId ||
 		!serviceAccount.clientEmail ||
@@ -49,7 +38,7 @@ function initializeAdminSDK() {
 			credential: admin.credential.cert(serviceAccount),
 			databaseURL:
 				process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL ||
-				`https://${serviceAccount.projectId}.firebaseio.com`, // Construct if needed
+				`https://${serviceAccount.projectId}.firebaseio.com`,
 		});
 		console.log('Admin SDK initialized successfully.');
 		return app;
@@ -60,7 +49,6 @@ function initializeAdminSDK() {
 }
 
 initializedAdmin = initializeAdminSDK();
-// --- End Initialization ---
 
 async function setFirstAdminClaim() {
 	if (!FIRST_ADMIN_UID || FIRST_ADMIN_UID === 'REPLACE_WITH_USER_UID') {
@@ -98,5 +86,4 @@ async function setFirstAdminClaim() {
 	}
 }
 
-// Run the function
 setFirstAdminClaim();
